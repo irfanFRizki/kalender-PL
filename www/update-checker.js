@@ -8,8 +8,8 @@
    ============================================================ */
 (function () {
   // GANTI dua baris ini sesuai repo Anda setelah dibuat di GitHub:
-  var GITHUB_OWNER = 'OWNER_GANTI_INI';
-  var GITHUB_REPO = 'REPO_GANTI_INI';
+  var GITHUB_OWNER = 'irfanFRizki';
+  var GITHUB_REPO = 'kalender-PL';
 
   // Diisi otomatis oleh GitHub Actions saat build (lihat workflow),
   // jangan diedit manual. Fallback 'dev' untuk build lokal.
