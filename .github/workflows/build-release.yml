@@ -1,0 +1,98 @@
+name: Build & Release APK
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*.*.*"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      HAS_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE_BASE64 != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      # ── Versi otomatis (Pola B: dari git tag) ─────────────────────────
+      # Kalau push ke main biasa (bukan tag), versionName pakai "0.0.0-dev"
+      # + nomor run, supaya tetap terinstal untuk testing tapi auto-update
+      # tidak menganggapnya rilis resmi (karena selalu "lebih lama" dari
+      # tag semantik seperti v1.0.0).
+      - name: Tentukan versionName
+        id: ver
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            VERSION_NAME="${GITHUB_REF_NAME#v}"
+          else
+            VERSION_NAME="0.0.0-dev.${GITHUB_RUN_NUMBER}"
+          fi
+          echo "version_name=$VERSION_NAME" >> "$GITHUB_OUTPUT"
+          echo "APP_VERSION_NAME=$VERSION_NAME" >> "$GITHUB_ENV"
+
+      # Tanam nomor versi ke JS auto-update SEBELUM build, supaya app tahu
+      # versi dirinya sendiri saat membandingkan ke GitHub Releases.
+      - name: Tanam versi ke update-checker.js
+        run: |
+          sed -i "s/__APP_VERSION__/${APP_VERSION_NAME}/" www/update-checker.js
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      # ── Signing key konsisten (A2 dari prompt master) ─────────────────
+      - name: Siapkan keystore dari secret
+        if: env.HAS_KEYSTORE == 'true'
+        run: |
+          echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 -d > android/app/release.keystore
+          cat > android/keystore.properties <<EOF
+          storeFile=app/release.keystore
+          storePassword=${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          keyAlias=${{ secrets.RELEASE_KEY_ALIAS }}
+          keyPassword=${{ secrets.RELEASE_KEY_PASSWORD }}
+          EOF
+
+      - name: Build APK release
+        working-directory: android
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Rename APK
+        run: |
+          mkdir -p out
+          cp android/app/build/outputs/apk/release/app-release*.apk \
+             "out/kalender-estimasi-barang-${{ steps.ver.outputs.version_name }}.apk"
+
+      - name: Upload artifact (setiap push, buat cek cepat)
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk-${{ steps.ver.outputs.version_name }}
+          path: out/*.apk
+
+      # ── Publish ke GitHub Releases hanya saat push TAG (vX.Y.Z) ───────
+      - name: Buat GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: out/*.apk
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
