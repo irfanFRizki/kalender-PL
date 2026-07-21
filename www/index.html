@@ -710,8 +710,8 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
       <button id="tabHistogram" class="flex-1 sm:flex-none whitespace-nowrap px-4 sm:px-6 py-2.5 rounded-lg text-xs sm:text-sm font-extrabold transition-all relative z-10 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-300/50 dark:hover:bg-gray-700 flex items-center gap-1.5">
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>Data Histogram
       </button>
-      <div class="w-px bg-gray-300 dark:bg-gray-600 mx-1 self-stretch rounded-full flex-shrink-0"></div>
-      <button id="tabAdminView" class="flex-1 sm:flex-none whitespace-nowrap px-4 sm:px-6 py-2.5 rounded-lg text-xs sm:text-sm font-extrabold transition-all relative z-10 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 flex items-center gap-1.5" title="Monitoring status proses bongkar per PL">
+      <div style="display:none" class="w-px bg-gray-300 dark:bg-gray-600 mx-1 self-stretch rounded-full flex-shrink-0"></div>
+      <button id="tabAdminView" style="display:none" class="flex-1 sm:flex-none whitespace-nowrap px-4 sm:px-6 py-2.5 rounded-lg text-xs sm:text-sm font-extrabold transition-all relative z-10 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 flex items-center gap-1.5" title="Monitoring status proses bongkar per PL">
         <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         <span class="hidden sm:inline">Admin View</span><span class="sm:hidden">Admin</span>
         <span id="adminViewWarnBadge" class="hidden ml-1 text-[9px] font-black bg-red-500 text-white px-1.5 py-0.5 rounded-full"></span>
@@ -1054,12 +1054,11 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
       <!-- Filters -->
       <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 flex-shrink-0">
         <div class="flex flex-wrap items-center gap-3">
-          <!-- Sumber data -->
-          <div class="flex items-center gap-2">
+          <!-- Sumber data (disembunyikan di build APK — hanya Estimasi yang dipakai) -->
+          <div class="hidden items-center gap-2">
             <label class="text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sumber:</label>
             <select id="listPLSource" onchange="_populateListPLYearMonth();renderListPL();" class="text-xs font-bold border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm">
               <option value="estimasi">📅 Estimasi Kedatangan</option>
-              <option value="gudang">📦 Barang di Gudang</option>
             </select>
           </div>
           <!-- Tahun -->
@@ -5451,13 +5450,9 @@ function avDeleteHoliday(key) {
 var _listPLMonthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
 function openListPLModal() {
-  // Set default sumber sesuai tab aktif
+  // Sumber di build APK dikunci ke Estimasi saja (opsi Gudang dihapus)
   var src = document.getElementById('listPLSource');
-  if (currentTab === 'gudang' || currentTab === 'histogram') {
-    src.value = 'gudang';
-  } else {
-    src.value = 'estimasi';
-  }
+  src.value = 'estimasi';
   _populateListPLYearMonth();
   renderListPL();
   document.getElementById('listPLModal').classList.remove('hidden');
