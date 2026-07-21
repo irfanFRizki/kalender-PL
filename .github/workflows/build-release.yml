@@ -60,6 +60,9 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
+      - name: Pastikan gradlew executable
+        run: chmod +x android/gradlew
+
       # ── Signing key konsisten (A2 dari prompt master) ─────────────────
       - name: Siapkan keystore dari secret
         if: env.HAS_KEYSTORE == 'true'
