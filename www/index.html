@@ -1196,6 +1196,9 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
 
     </div>
 
+    <!-- Tab Gudang: tampilan list "Antrean Gudang" (bukan kalender) -->
+    <div id="gudangListView" class="hidden flex-col flex-grow overflow-y-auto overflow-x-hidden custom-scrollbar p-3 sm:p-4 space-y-3 bg-gray-50/50 dark:bg-gray-900/50 transition-colors duration-200"></div>
+
     <!-- Sidebar Overlay Backdrop -->
     <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
@@ -2838,6 +2841,11 @@ function renderCalendar() {
 
   // Feature 13: update gudang count badge
   _updateGudangNavBadge();
+
+  // Kalau tab Gudang lagi aktif, refresh juga tampilan list Antrean Gudang
+  if (currentTab === 'gudang' && typeof renderGudangListView === 'function') {
+    renderGudangListView();
+  }
 }
 
 // ================================================================
@@ -5988,6 +5996,15 @@ var elDG = document.getElementById('dashGudangContainer');
 var elMD = document.getElementById('miniDashboardWrapper');
 var elMA = document.getElementById('mainContentArea');
 var elHP = document.getElementById('histogramPanel');
+var elCZ = document.getElementById('calendarSwipeZone');
+var elGL = document.getElementById('gudangListView');
+
+// Render tampilan list "Antrean Gudang" (dipakai tab Gudang, pengganti kalender)
+function renderGudangListView() {
+  if (typeof updateSidebar === 'function') updateSidebar(); // pastikan sidebarGudangContent ter-update
+  var src = document.getElementById('sidebarGudangContent');
+  elGL.innerHTML = src ? src.innerHTML : '';
+}
 
 elTE.onclick = function() {
   currentTab='estimasi';
@@ -5996,6 +6013,8 @@ elTE.onclick = function() {
   elLG.classList.add('hidden');    elSG.classList.add('hidden');    elDG.classList.add('hidden');
   elAP.classList.add('hidden');    elAP.classList.remove('flex');
   elMA.classList.remove('hidden'); elHP.classList.add('hidden');
+  elGL.classList.add('hidden');    elGL.classList.remove('flex');
+  elCZ.classList.remove('hidden');
   renderCalendar();
 };
 elTG.onclick = function() {
@@ -6005,7 +6024,9 @@ elTG.onclick = function() {
   elLE.classList.add('hidden');    elSE.classList.add('hidden');    elDE.classList.add('hidden');
   elAP.classList.add('hidden');    elAP.classList.remove('flex');
   elMA.classList.remove('hidden'); elHP.classList.add('hidden');
-  renderCalendar();
+  elCZ.classList.add('hidden');
+  elGL.classList.remove('hidden'); elGL.classList.add('flex');
+  renderGudangListView();
 };
 elTH.onclick = function() {
   currentTab='histogram';
