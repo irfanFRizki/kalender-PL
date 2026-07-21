@@ -710,12 +710,6 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
       <button id="tabHistogram" class="flex-1 sm:flex-none whitespace-nowrap px-4 sm:px-6 py-2.5 rounded-lg text-xs sm:text-sm font-extrabold transition-all relative z-10 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-300/50 dark:hover:bg-gray-700 flex items-center gap-1.5">
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>Data Histogram
       </button>
-      <div style="display:none" class="w-px bg-gray-300 dark:bg-gray-600 mx-1 self-stretch rounded-full flex-shrink-0"></div>
-      <button id="tabAdminView" style="display:none" class="flex-1 sm:flex-none whitespace-nowrap px-4 sm:px-6 py-2.5 rounded-lg text-xs sm:text-sm font-extrabold transition-all relative z-10 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 flex items-center gap-1.5" title="Monitoring status proses bongkar per PL">
-        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        <span class="hidden sm:inline">Admin View</span><span class="sm:hidden">Admin</span>
-        <span id="adminViewWarnBadge" class="hidden ml-1 text-[9px] font-black bg-red-500 text-white px-1.5 py-0.5 rounded-full"></span>
-      </button>
     </div>
     <div id="liveIndicator" class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1.5 opacity-50 transition-all duration-300 hidden sm:flex">
       <span class="relative flex h-2.5 w-2.5"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span></span>
@@ -5983,7 +5977,7 @@ var TAB_INACTIVE_ICON = TAB_INACTIVE + ' flex items-center gap-1.5';
 var elTE = document.getElementById('tabEstimasi');
 var elTG = document.getElementById('tabGudang');
 var elTH = document.getElementById('tabHistogram');
-var elTA = document.getElementById('tabAdminView');
+var elTA = document.createElement('div'); // dummy: tombol Admin View sudah dihapus di build APK
 var elAP = document.getElementById('adminViewPanel');
 var elLE = document.getElementById('legendaEstimasi');
 var elLG = document.getElementById('legendaGudang');
@@ -6029,16 +6023,6 @@ elTH.onclick = function() {
   }
 };
 
-elTA.onclick = function() {
-  currentTab='adminview';
-  elTA.className=TAB_ACTIVE_RED; elTE.className=TAB_INACTIVE; elTG.className=TAB_INACTIVE; elTH.className=TAB_INACTIVE_ICON;
-  elLE.classList.add('hidden'); elLG.classList.add('hidden');
-  elSE.classList.add('hidden'); elSG.classList.add('hidden');
-  elDE.classList.add('hidden'); elDG.classList.add('hidden');
-  elMD.classList.add('hidden'); elMA.classList.add('hidden'); elHP.classList.add('hidden');
-  elAP.classList.remove('hidden'); elAP.classList.add('flex');
-  if (!_avDataLoaded) loadAdminViewData();
-};
 
 document.getElementById('btnPrev').onclick    = function() { window._calSlideDir='right'; currentDate.setMonth(currentDate.getMonth()-1); renderCalendar(); };
 document.getElementById('btnNext').onclick    = function() { window._calSlideDir='left';  currentDate.setMonth(currentDate.getMonth()+1); renderCalendar(); };
@@ -8256,7 +8240,7 @@ function mobileNavClick(tab) {
   else if (tab === 'gudang')     document.getElementById('tabGudang').click();
   else if (tab === 'histogram')  document.getElementById('tabHistogram').click();
   else if (tab === 'listpl')     { _closeMobileListPL(); openListPLModal(); }
-  else if (tab === 'adminview')  document.getElementById('tabAdminView').click();
+  else if (tab === 'adminview')  { var _btnAV = document.getElementById('tabAdminView'); if (_btnAV) _btnAV.click(); }
 }
 
 // ── Mobile List PL Panel ──
