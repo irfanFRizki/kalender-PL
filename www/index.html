@@ -819,7 +819,7 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
           <button onclick="_histoNavMonth(-1)" class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-violet-100 dark:hover:bg-violet-900/40 hover:text-violet-600 dark:hover:text-violet-400 transition-all text-gray-600 dark:text-gray-300 font-black text-lg" title="Bulan sebelumnya">‹</button>
           <div class="text-center">
             <span id="histoMonthLabel" class="text-sm font-extrabold text-gray-800 dark:text-gray-100"></span>
-            <p class="text-[10px] text-gray-400 font-bold mt-0.5">Geser atau klik ‹ › untuk pindah bulan</p>
+            <p class="text-[10px] text-gray-400 font-bold mt-0.5">Klik ‹ › untuk pindah bulan</p>
           </div>
           <button onclick="_histoNavMonth(1)" class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-violet-100 dark:hover:bg-violet-900/40 hover:text-violet-600 dark:hover:text-violet-400 transition-all text-gray-600 dark:text-gray-300 font-black text-lg" title="Bulan berikutnya">›</button>
         </div>
@@ -3393,29 +3393,8 @@ function _histoNavMonth(dir) {
   renderHistogram();
 }
 
-// Inisialisasi swipe pada chart area untuk pindah bulan (mode shipment/bongkar)
-(function() {
-  var _sx = 0, _sy = 0, _sActive = false;
-  document.addEventListener('DOMContentLoaded', function() {
-    var area = document.getElementById('histoChartArea');
-    if (!area) return;
-    area.addEventListener('touchstart', function(e) {
-      if (e.touches.length !== 1) return;
-      _sx = e.touches[0].clientX;
-      _sy = e.touches[0].clientY;
-      _sActive = true;
-    }, {passive: true});
-    area.addEventListener('touchend', function(e) {
-      if (!_sActive) return;
-      _sActive = false;
-      if (histoMode !== 'shipment' && histoMode !== 'bongkar') return;
-      var dx = e.changedTouches[0].clientX - _sx;
-      var dy = e.changedTouches[0].clientY - _sy;
-      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
-      _histoNavMonth(dx < 0 ? 1 : -1);
-    }, {passive: true});
-  });
-})();
+// Swipe untuk pindah bulan di tab Grafik sudah dinonaktifkan —
+// pindah bulan sekarang hanya lewat tombol klik ‹ › (lihat _histoNavMonth).
 
 function renderHistogram() {
   if (histoMode === 'pengiriman') { renderHistogramPengiriman(); return; }
