@@ -864,8 +864,40 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
   </div>
 
   <!-- ============================================================ -->
-  <!-- Admin View Panel                                            -->
+  <!-- Tentang Aplikasi Panel                                        -->
   <!-- ============================================================ -->
+  <div id="aboutPanel" class="hidden flex-col flex-grow overflow-y-auto bg-gray-50 dark:bg-gray-900 transition-colors duration-200 custom-scrollbar">
+    <div class="p-4 sm:p-6 max-w-lg mx-auto w-full">
+
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 text-center mb-4">
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-600 flex items-center justify-center text-white mb-3">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        </div>
+        <h3 class="font-extrabold text-gray-800 dark:text-gray-100 text-base">Kalender Estimasi Barang</h3>
+        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Aplikasi Android — dibungkus dari web app</p>
+        <div class="mt-3 inline-flex items-center gap-1.5 bg-gray-100 dark:bg-gray-700 rounded-full px-3 py-1">
+          <span class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase">Versi Terpasang</span>
+          <span id="aboutCurrentVersion" class="text-xs font-black text-blue-600 dark:text-blue-400">-</span>
+        </div>
+      </div>
+
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 mb-4">
+        <div class="flex items-center justify-between gap-3 mb-3">
+          <h4 class="font-extrabold text-gray-800 dark:text-gray-100 text-sm">Update Aplikasi</h4>
+          <button id="aboutCheckUpdateBtn" onclick="_aboutCheckUpdateNow()" class="text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors shadow-sm flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Cek Update
+          </button>
+        </div>
+        <div id="aboutUpdateStatus" class="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 p-3.5 text-xs text-gray-500 dark:text-gray-400 font-semibold">
+          Belum dicek pada sesi ini.
+        </div>
+      </div>
+
+      <p class="text-center text-[10px] text-gray-400 dark:text-gray-600">Sumber data: Google Sheets · Update: GitHub Releases</p>
+    </div>
+  </div>
+
   <div id="adminViewPanel" class="hidden flex-col flex-grow overflow-hidden bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Header bar -->
     <div class="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex-shrink-0 gap-3 flex-wrap">
@@ -5998,6 +6030,7 @@ var elMA = document.getElementById('mainContentArea');
 var elHP = document.getElementById('histogramPanel');
 var elCZ = document.getElementById('calendarSwipeZone');
 var elGL = document.getElementById('gudangListView');
+var elAB = document.getElementById('aboutPanel');
 
 // Render tampilan list "Antrean Gudang" (dipakai tab Gudang, pengganti kalender)
 function renderGudangListView() {
@@ -6014,6 +6047,7 @@ elTE.onclick = function() {
   elAP.classList.add('hidden');    elAP.classList.remove('flex');
   elMA.classList.remove('hidden'); elHP.classList.add('hidden');
   elGL.classList.add('hidden');    elGL.classList.remove('flex');
+  elAB.classList.add('hidden');    elAB.classList.remove('flex');
   elCZ.classList.remove('hidden');
   renderCalendar();
 };
@@ -6024,6 +6058,7 @@ elTG.onclick = function() {
   elLE.classList.add('hidden');    elSE.classList.add('hidden');    elDE.classList.add('hidden');
   elAP.classList.add('hidden');    elAP.classList.remove('flex');
   elMA.classList.remove('hidden'); elHP.classList.add('hidden');
+  elAB.classList.add('hidden');    elAB.classList.remove('flex');
   elCZ.classList.add('hidden');
   elGL.classList.remove('hidden'); elGL.classList.add('flex');
   renderGudangListView();
@@ -6036,11 +6071,74 @@ elTH.onclick = function() {
   elDE.classList.add('hidden'); elDG.classList.add('hidden');
   elMD.classList.add('hidden'); elMA.classList.add('hidden'); elHP.classList.remove('hidden');
   elAP.classList.add('hidden');
+  elAB.classList.add('hidden'); elAB.classList.remove('flex');
   // Load prefix dari backend saat pertama kali buka tab histogram
   if (!_prefixGroupsLoaded) {
     loadHistoPrefixGroups(function() { renderHistogram(); });
   } else {
     renderHistogram();
+  }
+};
+
+// Tab "Tentang Aplikasi" — hanya diakses lewat bottom nav mobile
+function showAboutTab() {
+  currentTab = 'about';
+  elTE.className=TAB_INACTIVE; elTG.className=TAB_INACTIVE; elTH.className=TAB_INACTIVE_ICON; elTA.className=TAB_INACTIVE_RED;
+  elLE.classList.add('hidden'); elLG.classList.add('hidden');
+  elSE.classList.add('hidden'); elSG.classList.add('hidden');
+  elDE.classList.add('hidden'); elDG.classList.add('hidden');
+  elMD.classList.add('hidden'); elMA.classList.add('hidden'); elHP.classList.add('hidden');
+  elGL.classList.add('hidden'); elGL.classList.remove('flex');
+  elAP.classList.add('hidden');
+  elAB.classList.remove('hidden'); elAB.classList.add('flex');
+  _aboutRenderVersion();
+}
+
+function _aboutRenderVersion() {
+  var v = window.APP_CURRENT_VERSION || 'dev';
+  var el = document.getElementById('aboutCurrentVersion');
+  if (el) el.textContent = 'v' + String(v).replace(/^v/i, '');
+}
+
+function _aboutCheckUpdateNow() {
+  var btn = document.getElementById('aboutCheckUpdateBtn');
+  if (btn) btn.disabled = true;
+  if (typeof window.checkForAppUpdate === 'function') {
+    window.checkForAppUpdate().then(function() {
+      if (btn) btn.disabled = false;
+    }).catch(function() {
+      if (btn) btn.disabled = false;
+    });
+  } else if (btn) {
+    btn.disabled = false;
+  }
+}
+
+// Dipanggil dari update-checker.js setiap kali status cek update berubah,
+// baik otomatis saat app dibuka maupun manual lewat tombol "Cek Update".
+window._onUpdateStatus = function(status) {
+  var box = document.getElementById('aboutUpdateStatus');
+  var dot = document.getElementById('mnavAboutUpdateDot');
+  if (!box) return;
+  var base = 'rounded-xl border p-3.5 text-xs font-semibold ';
+  if (status.state === 'checking') {
+    box.className = base + 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400';
+    box.textContent = 'Memeriksa update...';
+  } else if (status.state === 'up-to-date') {
+    box.className = base + 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400';
+    box.textContent = '✓ Sudah pakai versi terbaru.';
+    if (dot) dot.classList.add('hidden');
+  } else if (status.state === 'downloading') {
+    box.className = base + 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400';
+    box.textContent = 'Update ' + status.latestVersion + ' ditemukan, sedang download...';
+  } else if (status.state === 'update-ready') {
+    box.className = base + 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400';
+    box.innerHTML = '✓ Update ' + status.latestVersion + ' siap diinstall.'
+      + '<button onclick="window._installDownloadedUpdate &amp;&amp; window._installDownloadedUpdate()" class="mt-2 w-full py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-extrabold transition-colors">Install Sekarang</button>';
+    if (dot) dot.classList.remove('hidden');
+  } else if (status.state === 'error') {
+    box.className = base + 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400';
+    box.textContent = status.message || 'Gagal cek update.';
   }
 };
 
@@ -7730,6 +7828,12 @@ document.addEventListener('DOMContentLoaded', function() {
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
     <span>Grafik</span>
   </div>
+  <div class="mnav-item" id="mnav-tentang" onclick="mobileNavClick('tentang')">
+    <div class="mnav-active-bar"></div>
+    <span id="mnavAboutUpdateDot" class="mnav-dot hidden" style="background:#22c55e"></span>
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <span>Tentang</span>
+  </div>
 </nav>
 
 <!-- ============================================================
@@ -8250,6 +8354,7 @@ function mobileNavClick(tab) {
   else if (tab === 'histogram')  document.getElementById('tabHistogram').click();
   else if (tab === 'listpl')     { _closeMobileListPL(); openListPLModal(); }
   else if (tab === 'adminview')  { var _btnAV = document.getElementById('tabAdminView'); if (_btnAV) _btnAV.click(); }
+  else if (tab === 'tentang')    showAboutTab();
 }
 
 // ── Mobile List PL Panel ──

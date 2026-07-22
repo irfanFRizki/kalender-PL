@@ -5,6 +5,12 @@
    background -> tampilkan tombol "Install Update" -> user tap
    sekali -> Android tampilkan dialog instal (tap sekali lagi,
    ini TIDAK BISA dilewati, itu proteksi sistem Android).
+
+   Juga melapor status pengecekan ke window._onUpdateStatus(status)
+   kalau ada yang "berlangganan" (dipakai tab Tentang Aplikasi),
+   selain tetap menampilkan banner mengambang seperti biasa.
+   status.state salah satu dari:
+     'checking' | 'up-to-date' | 'update-ready' | 'downloading' | 'error'
    ============================================================ */
 (function () {
   // GANTI dua baris ini sesuai repo Anda setelah dibuat di GitHub:
@@ -14,6 +20,7 @@
   // Diisi otomatis oleh GitHub Actions saat build (lihat workflow),
   // jangan diedit manual. Fallback 'dev' untuk build lokal.
   var CURRENT_VERSION = '__APP_VERSION__';
+  window.APP_CURRENT_VERSION = CURRENT_VERSION; // dibaca tab "Tentang Aplikasi"
 
   var STORAGE_KEY_VERSION = 'kalender_downloaded_version';
   var STORAGE_KEY_PATH = 'kalender_downloaded_path';
@@ -40,6 +47,13 @@
       if (x < y) return false;
     }
     return false;
+  }
+
+  // Lapor status ke pendengar luar (tab Tentang Aplikasi), kalau ada.
+  function report(status) {
+    if (typeof window._onUpdateStatus === 'function') {
+      try { window._onUpdateStatus(status); } catch (e) {}
+    }
   }
 
   function showUpdateBanner(onInstallClick) {
@@ -89,32 +103,51 @@
     var canInstall = await ApkInstaller.canInstall();
     if (!canInstall.value) {
       await ApkInstaller.requestInstallPermission();
-      // Beri kesempatan user aktifkan izin, lalu tap banner lagi untuk lanjut.
+      // Beri kesempatan user aktifkan izin, lalu tap banner/tombol lagi untuk lanjut.
       return;
     }
     await ApkInstaller.install({ path: path });
   }
+  window._installDownloadedUpdate = function () {
+    var path = localStorage.getItem(STORAGE_KEY_PATH);
+    if (path) installDownloaded(path);
+  };
 
   async function checkForUpdate() {
-    if (!isNative()) return; // skip di browser biasa / preview
+    if (!isNative()) {
+      report({ state: 'error', message: 'Cek update hanya berjalan di dalam APK, bukan browser.' });
+      return;
+    }
+
+    report({ state: 'checking' });
 
     try {
       var res = await fetch(API_URL);
-      if (!res.ok) return; // repo belum punya release, atau rate-limit
+      if (!res.ok) {
+        report({ state: 'error', message: 'Belum ada rilis di GitHub, atau gagal menghubungi server.' });
+        return;
+      }
       var release = await res.json();
       var latestTag = release.tag_name || '';
-      if (!latestTag || !isNewerVersion(latestTag, CURRENT_VERSION)) return;
+      if (!latestTag || !isNewerVersion(latestTag, CURRENT_VERSION)) {
+        report({ state: 'up-to-date', currentVersion: CURRENT_VERSION });
+        return;
+      }
 
       var apkAsset = (release.assets || []).find(function (a) {
         return /\.apk$/i.test(a.name);
       });
-      if (!apkAsset) return;
+      if (!apkAsset) {
+        report({ state: 'error', message: 'Rilis ' + latestTag + ' ada, tapi belum ada file APK terlampir.' });
+        return;
+      }
 
       // Sudah pernah didownload sebelumnya untuk versi yang sama? langsung tawarkan install.
       var downloadedVersion = localStorage.getItem(STORAGE_KEY_VERSION);
       var downloadedPath = localStorage.getItem(STORAGE_KEY_PATH);
 
       if (downloadedVersion === latestTag && downloadedPath) {
+        report({ state: 'update-ready', latestVersion: latestTag });
         showUpdateBanner(function () {
           installDownloaded(downloadedPath);
         });
@@ -122,12 +155,15 @@
       }
 
       // Download di background, baru tawarkan tombol install setelah selesai.
+      report({ state: 'downloading', latestVersion: latestTag });
       var path = await downloadApk(apkAsset.browser_download_url, latestTag);
+      report({ state: 'update-ready', latestVersion: latestTag });
       showUpdateBanner(function () {
         installDownloaded(path);
       });
     } catch (err) {
       console.warn('[update-checker] gagal cek update:', err);
+      report({ state: 'error', message: 'Gagal cek update: koneksi bermasalah.' });
     }
   }
 
