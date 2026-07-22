@@ -1,8 +1,0 @@
-{
-  "appId": "com.aqilla.kalenderbarang",
-  "appName": "Kalender Estimasi Barang",
-  "webDir": "www",
-  "server": {
-    "androidScheme": "https"
-  }
-}
