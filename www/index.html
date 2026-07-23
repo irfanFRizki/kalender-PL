@@ -3372,7 +3372,7 @@ function switchHistoMode(mode) {
   // Tampilkan/sembunyikan month nav
   var nav = document.getElementById('histoMonthNav');
   if (nav) {
-    if (mode === 'shipment' || mode === 'bongkar') {
+    if (mode === 'shipment' || mode === 'bongkar' || mode === 'pengiriman') {
       nav.classList.remove('hidden');
       nav.classList.add('flex');
     } else {
@@ -3509,7 +3509,9 @@ function renderHistogram() {
 }
 
 // Render chart 4 batang besar untuk mode Shipment per-bulan
-function _renderHistoChartSingleMonth(GROUPS, shipData, shipPL, isDark) {
+// (dipakai ulang juga oleh mode Pengiriman — lihat renderHistogramPengiriman)
+function _renderHistoChartSingleMonth(GROUPS, shipData, shipPL, isDark, drillFn) {
+  drillFn = drillFn || function(key, mIdx) { return "_shipmentDrill('" + key + "'," + mIdx + ")"; };
   var maxVal = GROUPS.reduce(function(s,g){ return Math.max(s, shipData[g.key]); }, 0);
   if (maxVal === 0) maxVal = 100;
 
@@ -3551,7 +3553,7 @@ function _renderHistoChartSingleMonth(GROUPS, shipData, shipPL, isDark) {
         inner += '<text class="histo-bar-label" x="'+(x+BAR_W/2)+'" y="'+(ty+fs/2)+'" text-anchor="middle" font-size="'+fs+'" font-weight="900" fill="white" font-family="sans-serif">'+v.toLocaleString('id-ID')+'</text>';
       }
       inner += '<title>'+g.label+': '+v.toLocaleString('id-ID')+' koli — klik untuk lihat rincian</title>';
-      svgBars += '<g class="bar-clickable" onclick="_shipmentDrill(\''+g.key+'\','+histoMonthIdx+')" role="button" aria-label="'+g.label+' '+v+'">'+inner+'</g>';
+      svgBars += '<g class="bar-clickable" onclick="'+drillFn(g.key, histoMonthIdx)+'" role="button" aria-label="'+g.label+' '+v+'">'+inner+'</g>';
     } else {
       svgBars += '<text x="'+(x+BAR_W/2)+'" y="'+(PAD_T+CHART_H-8)+'" text-anchor="middle" font-size="10" fill="'+mc+'" font-family="sans-serif">0</text>';
     }
@@ -3744,116 +3746,119 @@ function renderHistogramPengiriman() {
     {key:'Container', label:'Container', color:'#f97316', colorDark:'#fb923c'}
   ];
   var isDark = document.documentElement.classList.contains('dark');
+
+  // Populate year filter
   var yearSet = new Set();
   rawGudangList.forEach(function(item) {
     var d = item.tglBongkarDate;
     if (d instanceof Date && !isNaN(d)) yearSet.add(String(d.getFullYear()));
   });
-
   var ys         = document.getElementById('histoYearFilter');
   var curYearVal = ys.value;
   var sortedYears = Array.from(yearSet).sort();
   var latestY    = sortedYears[sortedYears.length - 1];
-  // Only keep years as options (no 'Semua/all') — mixing years into 12-month slots produces wrong totals
   ys.innerHTML = '';
   sortedYears.forEach(function(y) {
     var o = document.createElement('option');
     o.value = y; o.textContent = y;
     ys.appendChild(o);
   });
-  // Keep current selection if valid, otherwise default to latest year
-  if (yearSet.has(curYearVal)) {
-    ys.value = curYearVal;
-  } else {
-    ys.value = latestY || '';
+  if (yearSet.has(curYearVal)) { ys.value = curYearVal; } else { ys.value = latestY || ''; }
+  ys.onchange = renderHistogramPengiriman;
+
+  var filterYear = ys.value;
+
+  // Pastikan histoMonthIdx valid untuk tahun aktif
+  var validMonths = new Set();
+  rawGudangList.forEach(function(item) {
+    var d = item.tglBongkarDate;
+    if (d instanceof Date && !isNaN(d) && String(d.getFullYear()) === filterYear) validMonths.add(d.getMonth());
+  });
+  if (validMonths.size > 0 && !validMonths.has(histoMonthIdx)) {
+    var sorted = Array.from(validMonths).sort(function(a,b){return a-b;});
+    histoMonthIdx = sorted[sorted.length - 1];
   }
-  ys.onchange = renderHistogramPengiriman; // FIX: panggil mode Pengiriman, bukan Shipment
+
+  // Update month label di nav
+  var monthLabel = document.getElementById('histoMonthLabel');
+  if (monthLabel) monthLabel.textContent = monthNames[histoMonthIdx] + ' ' + filterYear;
 
   // Update UI labels
   document.getElementById('histoTitle').innerHTML = '<svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg> Histogram Koli per Bulan by Pengiriman';
-  document.getElementById('histoSubtitle').textContent = 'Dikelompokkan berdasarkan Pengiriman (Metro / Container) — Sheet Barang Sudah Bongkar';
-  document.getElementById('histoTableTitle').textContent = 'Tabel Rekap Koli per Bulan by Pengiriman';
+  document.getElementById('histoSubtitle').textContent = 'Koli ' + monthNames[histoMonthIdx] + ' ' + filterYear + ' — dikelompokkan berdasarkan Pengiriman (Metro / Container)';
+  document.getElementById('histoTableTitle').textContent = 'Tabel Rekap Koli — ' + monthNames[histoMonthIdx] + ' ' + filterYear;
   document.getElementById('histoTableHead').innerHTML = '<tr class="bg-violet-50 dark:bg-violet-900/20 text-[10px] uppercase font-extrabold tracking-wider">'
-    + '<th class="px-4 py-3 text-left border-b border-violet-100 dark:border-violet-800/50 text-violet-800 dark:text-violet-300">Bulan</th>'
-    + '<th class="px-4 py-3 text-center border-b border-violet-100 dark:border-violet-800/50" style="color:#3b82f6">Metro</th>'
-    + '<th class="px-4 py-3 text-center border-b border-violet-100 dark:border-violet-800/50" style="color:#f97316">Container</th>'
-    + '<th class="px-4 py-3 text-center border-b border-violet-100 dark:border-violet-800/50 text-gray-600 dark:text-gray-400">TOTAL</th>'
+    + '<th class="px-4 py-3 text-left border-b border-violet-100 dark:border-violet-800/50 text-violet-800 dark:text-violet-300">Pengiriman</th>'
+    + '<th class="px-4 py-3 text-center border-b border-violet-100 dark:border-violet-800/50 text-gray-600 dark:text-gray-400">Total Koli</th>'
+    + '<th class="px-4 py-3 text-center border-b border-violet-100 dark:border-violet-800/50 text-gray-500 dark:text-gray-400">Jml PL</th>'
     + '</tr>';
 
-  var filterYear = ys.value;
-  var bulanData  = Array.from({length:12}, function() { return {Metro:0,Container:0}; });
-
+  // Hitung data BULAN AKTIF saja (bukan 12 bulan sekaligus)
+  var monthData = {Metro:0, Container:0};
+  var monthPL   = {Metro:new Set(), Container:new Set()};
   rawGudangList.forEach(function(item) {
     var d = item.tglBongkarDate;
     if (!(d instanceof Date) || isNaN(d)) return;
-    // Filter tahun wajib cocok — tidak boleh loncat antar tahun
-    if (!filterYear || String(d.getFullYear()) !== filterYear) return;
+    if (String(d.getFullYear()) !== filterYear) return;
+    if (d.getMonth() !== histoMonthIdx) return;
     var koli = parseInt(String(item.koli||'0').match(/\d+/))||0;
     if (koli === 0) return;
-    var mIdx = d.getMonth();
     var peng = String(item.pengiriman||'').toUpperCase().trim();
-    // Deteksi Metro/Container dari kolom Pengiriman DULU,
-    // jika tidak dikenal → fallback deteksi dari prefix Packing List
     var isMetro     = peng.includes('METRO');
     var isContainer = /^C\d+/.test(peng) || peng.includes('CONTAINER');
     if (!isMetro && !isContainer) {
-      // Fallback: PL dengan prefix Metro (dari getHistoGroups) → Metro
       var pl = String(item.packingList||'').toUpperCase().trim();
       var _metroGroups = getHistoGroups();
       if (_metroGroups.some(function(g){ return pl.startsWith(g.prefix); })) {
         isMetro = true;
       }
     }
-    if (isMetro)          { bulanData[mIdx].Metro     += koli; }
-    else if (isContainer) { bulanData[mIdx].Container += koli; }
+    var plName = String(item.packingList||'').trim();
+    if (isMetro)          { monthData.Metro     += koli; monthPL.Metro.add(plName); }
+    else if (isContainer) { monthData.Container += koli; monthPL.Container.add(plName); }
   });
 
-  // Summary cards
-  var totals = {Metro:0, Container:0};
-  bulanData.forEach(function(m){ totals.Metro+=m.Metro; totals.Container+=m.Container; });
+  var grandTotal = GROUPS.reduce(function(s,g){ return s + monthData[g.key]; }, 0);
+
+  // Summary cards — sama gaya dengan mode Shipment, klik langsung ke rincian bulan ini
   document.getElementById('histoSummaryCards').innerHTML = GROUPS.map(function(g) {
-    var isContainer = g.key === 'Container';
-    var isMetro     = g.key === 'Metro';
-    var clickAttr   = isContainer ? ' onclick="openContainerDrilldown()" title="Klik untuk lihat rincian per container"'
-                    : isMetro     ? ' onclick="openMetroDrilldown(null)" title="Klik untuk lihat rincian Metro"' : '';
-    var accentClr   = isContainer ? 'orange' : isMetro ? 'blue' : '';
-    var extraCls    = (isContainer||isMetro) ? ' cursor-pointer hover:shadow-md hover:border-'+accentClr+'-300 dark:hover:border-'+accentClr+'-600 transition-all group' : '';
-    var arrowClr    = isContainer ? 'text-orange-400' : 'text-blue-400';
-    var clickHint   = (isContainer||isMetro)
-      ? '<p class="text-[9px] '+arrowClr+' font-bold mt-0.5 group-hover:underline flex items-center gap-0.5"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>Lihat Rincian</p>'
-      : '';
-    return '<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-3.5 flex items-center gap-3' + extraCls + '"' + clickAttr + '>'
-      + '<div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-[10px] text-white shadow-sm flex-shrink-0 text-center leading-tight" style="background:' + (isDark?g.colorDark:g.color) + '">' + g.label + '</div>'
-      + '<div><p class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">Total Koli (' + g.label + ')</p>'
-      + '<p class="text-xl font-black" style="color:' + (isDark?g.colorDark:g.color) + '">' + totals[g.key].toLocaleString('id-ID') + '</p>'
-      + clickHint + '</div></div>';
+    var drillCall = g.key === 'Container' ? 'openContainerDrilldownByMonth('+histoMonthIdx+')' : 'openMetroPLByMonth('+histoMonthIdx+')';
+    return '<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-3.5 flex items-center gap-3 cursor-pointer hover:shadow-md hover:border-violet-300 dark:hover:border-violet-600 transition-all group" onclick="'+drillCall+'" title="Klik untuk lihat rincian '+g.label+'">'
+      + '<div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm text-white shadow-sm flex-shrink-0" style="background:' + (isDark?g.colorDark:g.color) + '">' + g.label + '</div>'
+      + '<div><p class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">Koli ' + g.label + '</p>'
+      + '<p class="text-xl font-black" style="color:' + (isDark?g.colorDark:g.color) + '">' + monthData[g.key].toLocaleString('id-ID') + '</p>'
+      + '<p class="text-[9px] text-violet-400 font-bold mt-0.5 group-hover:underline flex items-center gap-0.5"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>Lihat Rincian</p>'
+      + '</div></div>';
   }).join('');
 
-  _renderHistoChart(GROUPS, bulanData, isDark);
-  // Update debug panel
+  // Render chart — 2 batang besar (Metro / Container), gaya identik mode Shipment
+  _renderHistoChartSingleMonth(GROUPS, monthData, monthPL, isDark, function(key, mIdx) {
+    return key === 'Container' ? 'openContainerDrilldownByMonth('+mIdx+')' : 'openMetroPLByMonth('+mIdx+')';
+  });
+
   document.getElementById('debugContent').textContent = _buildDebugInfo();
 
+  // Tabel
   var tbody = document.getElementById('histoTableBody');
   tbody.innerHTML = '';
-  var grand = {Metro:0,Container:0,total:0};
-  monthNames.forEach(function(name, mIdx) {
-    var d    = bulanData[mIdx];
-    var rowT = d.Metro + d.Container;
-    grand.Metro+=d.Metro; grand.Container+=d.Container; grand.total+=rowT;
+  GROUPS.forEach(function(g) {
     var tr = document.createElement('tr');
-    tr.className = rowT===0 ? 'opacity-30 dark:opacity-20' : 'hover:bg-violet-50 dark:hover:bg-violet-900/10 transition-colors';
-    tr.innerHTML = '<td class="px-4 py-2.5 font-bold text-gray-700 dark:text-gray-300 whitespace-nowrap">'+name+'</td>'
-      + '<td class="px-4 py-2.5 text-center font-black" style="color:#3b82f6">'+(d.Metro>0?d.Metro:'—')+'</td>'
-      + '<td class="px-4 py-2.5 text-center font-black" style="color:#f97316">'+(d.Container>0?d.Container:'—')+'</td>'
-      + '<td class="px-4 py-2.5 text-center font-black text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-700/30">'+(rowT>0?rowT:'—')+'</td>';
+    tr.className = monthData[g.key] === 0 ? 'opacity-30 dark:opacity-20' : 'hover:bg-violet-50 dark:hover:bg-violet-900/10 transition-colors cursor-pointer';
+    if (monthData[g.key] > 0) {
+      tr.onclick = function() {
+        if (g.key === 'Container') openContainerDrilldownByMonth(histoMonthIdx);
+        else openMetroPLByMonth(histoMonthIdx);
+      };
+    }
+    tr.innerHTML = '<td class="px-4 py-2.5 font-bold text-gray-700 dark:text-gray-300 whitespace-nowrap flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-sm" style="background:'+(isDark?g.colorDark:g.color)+'"></span>'+g.label+'</td>'
+      + '<td class="px-4 py-2.5 text-center font-black" style="color:'+(isDark?g.colorDark:g.color)+'">'+(monthData[g.key]>0?monthData[g.key].toLocaleString('id-ID'):'—')+'</td>'
+      + '<td class="px-4 py-2.5 text-center text-gray-500 dark:text-gray-400 font-medium">'+(monthPL[g.key].size>0?monthPL[g.key].size+' PL':'—')+'</td>';
     tbody.appendChild(tr);
   });
   var trT = document.createElement('tr');
   trT.className = 'bg-violet-50 dark:bg-violet-900/20 border-t-2 border-violet-200 dark:border-violet-700';
   trT.innerHTML = '<td class="px-4 py-3 font-extrabold text-violet-800 dark:text-violet-300 text-xs uppercase">TOTAL</td>'
-    + '<td class="px-4 py-3 text-center font-black text-sm" style="color:#3b82f6">'+grand.Metro+'</td>'
-    + '<td class="px-4 py-3 text-center font-black text-sm" style="color:#f97316">'+grand.Container+'</td>'
-    + '<td class="px-4 py-3 text-center font-black text-sm text-gray-800 dark:text-gray-100 bg-violet-100 dark:bg-violet-900/40">'+grand.total+'</td>';
+    + '<td class="px-4 py-3 text-center font-black text-sm text-gray-800 dark:text-gray-100 bg-violet-100 dark:bg-violet-900/40" colspan="2">'+grandTotal.toLocaleString('id-ID')+'</td>';
   tbody.appendChild(trT);
 }
 
