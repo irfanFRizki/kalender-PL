@@ -6117,7 +6117,8 @@ window._onUpdateStatus = function(status) {
     if (dot) dot.classList.remove('hidden');
   } else if (status.state === 'error') {
     box.className = base + 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400';
-    box.textContent = status.message || 'Gagal cek update.';
+    var phaseLabel = { 'cek-versi':'Cek versi', 'download':'Download APK', 'simpan-file':'Simpan file', 'install':'Install' }[status.phase];
+    box.textContent = (phaseLabel ? '[' + phaseLabel + '] ' : '') + (status.message || 'Gagal cek update.');
   }
 };
 

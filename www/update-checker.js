@@ -1,16 +1,15 @@
 /* ============================================================
    update-checker.js
    Auto-update dari GitHub Releases (repo PUBLIC, tanpa token).
-   Alur: cek versi terbaru -> kalau ada yang baru, download di
-   background -> tampilkan tombol "Install Update" -> user tap
-   sekali -> Android tampilkan dialog instal (tap sekali lagi,
-   ini TIDAK BISA dilewati, itu proteksi sistem Android).
 
-   Juga melapor status pengecekan ke window._onUpdateStatus(status)
-   kalau ada yang "berlangganan" (dipakai tab Tentang Aplikasi),
-   selain tetap menampilkan banner mengambang seperti biasa.
-   status.state salah satu dari:
-     'checking' | 'up-to-date' | 'update-ready' | 'downloading' | 'error'
+   Versi ini melapor error PER TAHAP (bukan satu pesan generik),
+   pakai timeout eksplisit + retry, dan punya tombol "Coba Lagi"
+   di banner. Status dilapor ke window._onUpdateStatus(status)
+   dengan bentuk:
+     { state: 'checking'|'downloading'|'up-to-date'|'update-ready'|'error',
+       phase: 'cek-versi'|'download'|'simpan-file'|'install' (khusus error),
+       message: '<pesan asli, kalau state error>',
+       latestVersion, currentVersion (kalau relevan) }
    ============================================================ */
 (function () {
   // GANTI dua baris ini sesuai repo Anda setelah dibuat di GitHub:
@@ -56,6 +55,37 @@
     }
   }
 
+  // fetch() dengan timeout eksplisit (fetch bawaan tidak ada timeout,
+  // jadi kalau server lambat/hang, request bisa menggantung tanpa kabar).
+  function fetchWithTimeout(url, timeoutMs) {
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, timeoutMs);
+    return fetch(url, { signal: controller.signal }).finally(function () {
+      clearTimeout(timer);
+    });
+  }
+
+  // Coba fetch dengan timeout 15 detik, kalau timeout/abort, retry sekali
+  // dengan timeout 30 detik sebelum benar-benar menyerah.
+  async function fetchWithRetry(url) {
+    try {
+      return await fetchWithTimeout(url, 15000);
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        // Timeout pertama — retry sekali dengan waktu lebih longgar.
+        return await fetchWithTimeout(url, 30000);
+      }
+      throw err;
+    }
+  }
+
+  function describeFetchError(err, phase) {
+    if (err.name === 'AbortError') {
+      return { phase: phase, message: 'Server tidak merespon dalam waktu wajar (timeout). Coba lagi beberapa saat.' };
+    }
+    return { phase: phase, message: (err && err.message) ? err.message : String(err) };
+  }
+
   function showUpdateBanner(onInstallClick) {
     if (document.getElementById('apkUpdateBanner')) return;
     var el = document.createElement('div');
@@ -73,25 +103,80 @@
     document.getElementById('apkUpdateBtn').addEventListener('click', onInstallClick);
   }
 
-  async function downloadApk(downloadUrl, versionTag) {
-    var Filesystem = window.Capacitor.Plugins.Filesystem;
-    var response = await fetch(downloadUrl);
-    var blob = await response.blob();
-    var base64Data = await new Promise(function (resolve, reject) {
-      var reader = new FileReader();
-      reader.onloadend = function () {
-        resolve(reader.result.split(',')[1]);
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
+  function removeBanner() {
+    var el = document.getElementById('apkUpdateBanner');
+    if (el) el.remove();
+  }
 
-    var fileName = 'update-' + versionTag.replace(/[^a-zA-Z0-9.\-]/g, '') + '.apk';
-    var result = await Filesystem.writeFile({
-      path: fileName,
-      data: base64Data,
-      directory: 'CACHE',
+  function showErrorBanner(message, onRetryClick) {
+    removeBanner();
+    var el = document.createElement('div');
+    el.id = 'apkUpdateBanner';
+    el.style.cssText =
+      'position:fixed;left:0;right:0;bottom:0;z-index:99999;' +
+      'background:#b91c1c;color:#fff;padding:12px 16px;' +
+      'display:flex;align-items:center;justify-content:space-between;gap:10px;' +
+      'font:13px system-ui,sans-serif;box-shadow:0 -2px 10px rgba(0,0,0,.2);';
+    el.innerHTML =
+      '<span style="flex:1;min-width:0;">Cek update gagal: ' + message + '</span>' +
+      '<button id="apkRetryBtn" style="background:#fff;color:#b91c1c;border:none;' +
+      'padding:8px 14px;border-radius:6px;font-weight:600;flex-shrink:0;">Coba Lagi</button>';
+    document.body.appendChild(el);
+    document.getElementById('apkRetryBtn').addEventListener('click', function () {
+      removeBanner();
+      onRetryClick();
     });
+  }
+
+  async function downloadApk(downloadUrl, versionTag) {
+    var response;
+    try {
+      response = await fetchWithRetry(downloadUrl);
+    } catch (err) {
+      var d = describeFetchError(err, 'download');
+      var e2 = new Error(d.message);
+      e2.phase = d.phase;
+      throw e2;
+    }
+    if (!response.ok) {
+      var e3 = new Error('Server balas status ' + response.status + ' saat download APK.');
+      e3.phase = 'download';
+      throw e3;
+    }
+
+    var blob;
+    try {
+      blob = await response.blob();
+    } catch (err) {
+      var e4 = new Error('Gagal membaca file APK dari server: ' + (err.message || err));
+      e4.phase = 'download';
+      throw e4;
+    }
+
+    var base64Data;
+    try {
+      base64Data = await new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.onloadend = function () { resolve(reader.result.split(',')[1]); };
+        reader.onerror = function () { reject(reader.error || new Error('FileReader gagal')); };
+        reader.readAsDataURL(blob);
+      });
+    } catch (err) {
+      var e5 = new Error('Gagal konversi file APK: ' + (err.message || err));
+      e5.phase = 'download';
+      throw e5;
+    }
+
+    var Filesystem = window.Capacitor.Plugins.Filesystem;
+    var fileName = 'update-' + versionTag.replace(/[^a-zA-Z0-9.\-]/g, '') + '.apk';
+    var result;
+    try {
+      result = await Filesystem.writeFile({ path: fileName, data: base64Data, directory: 'CACHE' });
+    } catch (err) {
+      var e6 = new Error('Gagal simpan file ke penyimpanan HP (cek ruang kosong): ' + (err.message || err));
+      e6.phase = 'simpan-file';
+      throw e6;
+    }
 
     localStorage.setItem(STORAGE_KEY_VERSION, versionTag);
     localStorage.setItem(STORAGE_KEY_PATH, result.uri.replace('file://', ''));
@@ -99,14 +184,21 @@
   }
 
   async function installDownloaded(path) {
-    var ApkInstaller = window.Capacitor.Plugins.ApkInstaller;
-    var canInstall = await ApkInstaller.canInstall();
-    if (!canInstall.value) {
-      await ApkInstaller.requestInstallPermission();
-      // Beri kesempatan user aktifkan izin, lalu tap banner/tombol lagi untuk lanjut.
-      return;
+    try {
+      var ApkInstaller = window.Capacitor.Plugins.ApkInstaller;
+      var canInstall = await ApkInstaller.canInstall();
+      if (!canInstall.value) {
+        await ApkInstaller.requestInstallPermission();
+        // Beri kesempatan user aktifkan izin, lalu tap banner/tombol lagi untuk lanjut.
+        return;
+      }
+      await ApkInstaller.install({ path: path });
+    } catch (err) {
+      report({ state: 'error', phase: 'install', message: err.message || String(err) });
+      showErrorBanner('gagal buka installer (' + (err.message || err) + ')', function () {
+        installDownloaded(path);
+      });
     }
-    await ApkInstaller.install({ path: path });
   }
   window._installDownloadedUpdate = function () {
     var path = localStorage.getItem(STORAGE_KEY_PATH);
@@ -115,55 +207,88 @@
 
   async function checkForUpdate() {
     if (!isNative()) {
-      report({ state: 'error', message: 'Cek update hanya berjalan di dalam APK, bukan browser.' });
+      report({ state: 'error', phase: 'cek-versi', message: 'Cek update hanya berjalan di dalam APK, bukan browser.' });
       return;
     }
 
     report({ state: 'checking' });
+    removeBanner();
 
+    // ---- Tahap 1: cek versi terbaru ke GitHub API ----
+    var res;
     try {
-      var res = await fetch(API_URL);
-      if (!res.ok) {
-        report({ state: 'error', message: 'Belum ada rilis di GitHub, atau gagal menghubungi server.' });
-        return;
-      }
-      var release = await res.json();
-      var latestTag = release.tag_name || '';
-      if (!latestTag || !isNewerVersion(latestTag, CURRENT_VERSION)) {
-        report({ state: 'up-to-date', currentVersion: CURRENT_VERSION });
-        return;
-      }
+      res = await fetchWithRetry(API_URL);
+    } catch (err) {
+      var d = describeFetchError(err, 'cek-versi');
+      report({ state: 'error', phase: d.phase, message: d.message });
+      showErrorBanner(d.message, checkForUpdate);
+      return;
+    }
 
-      var apkAsset = (release.assets || []).find(function (a) {
-        return /\.apk$/i.test(a.name);
-      });
-      if (!apkAsset) {
-        report({ state: 'error', message: 'Rilis ' + latestTag + ' ada, tapi belum ada file APK terlampir.' });
-        return;
-      }
+    if (res.status === 403) {
+      var msg403 = 'GitHub membatasi jumlah pengecekan dari jaringan ini (rate limit). Coba lagi nanti / ganti jaringan.';
+      report({ state: 'error', phase: 'cek-versi', message: msg403 });
+      showErrorBanner(msg403, checkForUpdate);
+      return;
+    }
+    if (res.status === 404) {
+      var msg404 = 'Belum ada rilis resmi di GitHub Releases untuk repo ini.';
+      report({ state: 'error', phase: 'cek-versi', message: msg404 });
+      showErrorBanner(msg404, checkForUpdate);
+      return;
+    }
+    if (!res.ok) {
+      var msgErr = 'Server GitHub balas status ' + res.status + '.';
+      report({ state: 'error', phase: 'cek-versi', message: msgErr });
+      showErrorBanner(msgErr, checkForUpdate);
+      return;
+    }
 
-      // Sudah pernah didownload sebelumnya untuk versi yang sama? langsung tawarkan install.
-      var downloadedVersion = localStorage.getItem(STORAGE_KEY_VERSION);
-      var downloadedPath = localStorage.getItem(STORAGE_KEY_PATH);
+    var release;
+    try {
+      release = await res.json();
+    } catch (err) {
+      var msgJson = 'Gagal membaca balasan server (format tidak sesuai).';
+      report({ state: 'error', phase: 'cek-versi', message: msgJson });
+      showErrorBanner(msgJson, checkForUpdate);
+      return;
+    }
 
-      if (downloadedVersion === latestTag && downloadedPath) {
-        report({ state: 'update-ready', latestVersion: latestTag });
-        showUpdateBanner(function () {
-          installDownloaded(downloadedPath);
-        });
-        return;
-      }
+    var latestTag = release.tag_name || '';
+    if (!latestTag || !isNewerVersion(latestTag, CURRENT_VERSION)) {
+      report({ state: 'up-to-date', currentVersion: CURRENT_VERSION });
+      return;
+    }
 
-      // Download di background, baru tawarkan tombol install setelah selesai.
-      report({ state: 'downloading', latestVersion: latestTag });
+    var apkAsset = (release.assets || []).find(function (a) {
+      return /\.apk$/i.test(a.name);
+    });
+    if (!apkAsset) {
+      var msgNoApk = 'Rilis ' + latestTag + ' ada, tapi belum ada file APK terlampir.';
+      report({ state: 'error', phase: 'cek-versi', message: msgNoApk });
+      showErrorBanner(msgNoApk, checkForUpdate);
+      return;
+    }
+
+    // Sudah pernah didownload sebelumnya untuk versi yang sama? langsung tawarkan install.
+    var downloadedVersion = localStorage.getItem(STORAGE_KEY_VERSION);
+    var downloadedPath = localStorage.getItem(STORAGE_KEY_PATH);
+    if (downloadedVersion === latestTag && downloadedPath) {
+      report({ state: 'update-ready', latestVersion: latestTag });
+      showUpdateBanner(function () { installDownloaded(downloadedPath); });
+      return;
+    }
+
+    // ---- Tahap 2: download APK ----
+    report({ state: 'downloading', latestVersion: latestTag });
+    try {
       var path = await downloadApk(apkAsset.browser_download_url, latestTag);
       report({ state: 'update-ready', latestVersion: latestTag });
-      showUpdateBanner(function () {
-        installDownloaded(path);
-      });
+      showUpdateBanner(function () { installDownloaded(path); });
     } catch (err) {
-      console.warn('[update-checker] gagal cek update:', err);
-      report({ state: 'error', message: 'Gagal cek update: koneksi bermasalah.' });
+      var phase = err.phase || 'download';
+      report({ state: 'error', phase: phase, message: err.message || String(err) });
+      showErrorBanner(err.message || String(err), checkForUpdate);
     }
   }
 
