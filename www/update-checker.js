@@ -129,58 +129,34 @@
   }
 
   async function downloadApk(downloadUrl, versionTag) {
-    var response;
-    try {
-      response = await fetchWithRetry(downloadUrl);
-    } catch (err) {
-      var d = describeFetchError(err, 'download');
-      var e2 = new Error(d.message);
-      e2.phase = d.phase;
-      throw e2;
-    }
-    if (!response.ok) {
-      var e3 = new Error('Server balas status ' + response.status + ' saat download APK.');
-      e3.phase = 'download';
-      throw e3;
-    }
-
-    var blob;
-    try {
-      blob = await response.blob();
-    } catch (err) {
-      var e4 = new Error('Gagal membaca file APK dari server: ' + (err.message || err));
-      e4.phase = 'download';
-      throw e4;
-    }
-
-    var base64Data;
-    try {
-      base64Data = await new Promise(function (resolve, reject) {
-        var reader = new FileReader();
-        reader.onloadend = function () { resolve(reader.result.split(',')[1]); };
-        reader.onerror = function () { reject(reader.error || new Error('FileReader gagal')); };
-        reader.readAsDataURL(blob);
-      });
-    } catch (err) {
-      var e5 = new Error('Gagal konversi file APK: ' + (err.message || err));
-      e5.phase = 'download';
-      throw e5;
-    }
-
     var Filesystem = window.Capacitor.Plugins.Filesystem;
     var fileName = 'update-' + versionTag.replace(/[^a-zA-Z0-9.\-]/g, '') + '.apk';
     var result;
     try {
-      result = await Filesystem.writeFile({ path: fileName, data: base64Data, directory: 'CACHE' });
+      // Filesystem.downloadFile() download langsung lewat native (bukan fetch()
+      // di WebView), jadi tidak kena batasan CORS / blob dari browser sama sekali.
+      result = await Filesystem.downloadFile({
+        url: downloadUrl,
+        path: fileName,
+        directory: 'CACHE',
+      });
     } catch (err) {
-      var e6 = new Error('Gagal simpan file ke penyimpanan HP (cek ruang kosong): ' + (err.message || err));
-      e6.phase = 'simpan-file';
-      throw e6;
+      var e = new Error('Gagal download APK: ' + (err.message || err));
+      e.phase = 'download';
+      throw e;
     }
 
+    var uri = (result && (result.path || result.uri)) || '';
+    if (!uri) {
+      var e2 = new Error('Download selesai tapi lokasi file tidak diketahui.');
+      e2.phase = 'download';
+      throw e2;
+    }
+    uri = uri.replace('file://', '');
+
     localStorage.setItem(STORAGE_KEY_VERSION, versionTag);
-    localStorage.setItem(STORAGE_KEY_PATH, result.uri.replace('file://', ''));
-    return result.uri.replace('file://', '');
+    localStorage.setItem(STORAGE_KEY_PATH, uri);
+    return uri;
   }
 
   async function installDownloaded(path) {
