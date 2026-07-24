@@ -3066,11 +3066,63 @@ window.openGudangCard = function(plKey, dateKey) {
 };
 
 // ================================================================
+// DRILLDOWN KARTU DASHBOARD (Terlambat / Minggu Ini / Koli / Container)
+// — pakai modal yang sama persis dengan klik tanggal di kalender
+// ================================================================
+function openDashDrilldown(type) {
+  var todayD = new Date(); todayD.setHours(0,0,0,0);
+  var dow = todayD.getDay();
+  var diffMon = dow===0?-6:1-dow;
+  var startWeek = new Date(todayD); startWeek.setDate(todayD.getDate()+diffMon);
+  var endWeek   = new Date(startWeek); endWeek.setDate(startWeek.getDate()+6);
+
+  var picked = [];
+  for (var dk in eventsData) {
+    var p = dk.split('-');
+    var evDate = new Date(+p[0], +p[1]-1, +p[2]);
+    eventsData[dk].forEach(function(ev) {
+      var match = false;
+      if (type === 'terlambat') {
+        match = evDate < todayD && (!ev.infoAdmin || !ev.tglInfo || ev.tglInfo < todayD);
+      } else if (type === 'minggu') {
+        match = evDate >= startWeek && evDate <= endWeek;
+      } else if (type === 'koli') {
+        match = evDate.getMonth() === currentDate.getMonth() && evDate.getFullYear() === currentDate.getFullYear();
+      } else if (type === 'container') {
+        if (evDate.getMonth() === currentDate.getMonth() && evDate.getFullYear() === currentDate.getFullYear()) {
+          var peng = String(ev.pengiriman||'').toUpperCase().trim();
+          match = /^C\d+/.test(peng) || peng.includes('CONTAINER');
+        }
+      }
+      if (match) picked.push({ dateStr: dk, ev: ev, evDate: evDate });
+    });
+  }
+
+  picked.sort(function(a,b) { return a.evDate - b.evDate; });
+
+  var titleMap = {
+    terlambat: 'PL Terlambat',
+    minggu:    'PL Minggu Ini',
+    koli:      'Koli Bulan ' + monthNames[currentDate.getMonth()] + ' ' + currentDate.getFullYear(),
+    container: 'Container Bulan ' + monthNames[currentDate.getMonth()] + ' ' + currentDate.getFullYear()
+  };
+
+  var eventsForModal = picked.map(function(p) {
+    var evCopy = Object.assign({}, p.ev);
+    evCopy._drillDateLabel = formatIndoDate(p.dateStr);
+    return evCopy;
+  });
+
+  if (currentTab !== 'estimasi') { currentTab = 'estimasi'; }
+  openModal(titleMap[type] || 'Rincian', eventsForModal);
+}
+
+// ================================================================
 // MODAL DETAIL
 // ================================================================
 function openModal(dateStr, events, holidayName) {
   var cont = document.getElementById('modalContent');
-  document.getElementById('modalDateDisplay').textContent = formatIndoDate(dateStr);
+  document.getElementById('modalDateDisplay').textContent = /^\d{4}-\d{1,2}-\d{1,2}$/.test(dateStr) ? formatIndoDate(dateStr) : dateStr;
   cont.innerHTML = '';
 
   var totalKoli = events.reduce(function(a,ev) { return a + (parseInt(String(ev.koli).match(/\d+/))||0); }, 0);
@@ -3093,6 +3145,9 @@ function openModal(dateStr, events, holidayName) {
       : '<span class="inline-flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-500 px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold w-full sm:w-auto">Tidak Ada PO</span>';
 
     var badgeNew  = ev.isNew ? '<span class="absolute -top-2 -left-2 bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-md animate-pulse z-20">NEW ITEM</span>' : '';
+    var drillDateBadge = ev._drillDateLabel
+      ? '<div class="text-[10px] font-extrabold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-1.5 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>' + ev._drillDateLabel + '</div>'
+      : '';
     var infoHtml  = ev.infoAdmin
       ? '<div class="col-span-2 sm:col-span-3 mt-2 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 p-3 rounded flex items-start gap-2 shadow-sm"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><div><p class="text-[10px] uppercase font-bold text-yellow-800 dark:text-yellow-500">Pesan Admin</p><p class="text-sm font-medium text-gray-800 dark:text-gray-200">' + ev.infoAdmin + '</p></div></div>'
       : '';
@@ -3106,6 +3161,7 @@ function openModal(dateStr, events, holidayName) {
         : '';
 
       card.innerHTML = badgeNew + '<span class="absolute top-4 right-4 bg-gray-100 dark:bg-gray-700 text-gray-400 text-[10px] font-bold px-2 rounded z-10">#' + (idx+1) + '</span>'
+        + drillDateBadge
         + '<div class="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-4 pr-6 sm:pr-10 mt-3">'
         + '<div class="col-span-2 sm:col-span-3 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-100 dark:border-blue-800/50 flex justify-between items-center shadow-sm">'
         + '<div><p class="text-[9px] text-blue-500 uppercase font-bold tracking-widest mb-0.5">TG NOTA ASLI</p><p class="text-sm font-black text-blue-800 dark:text-blue-300">' + formatIndoDate(formatDateStr(ev.tgNotaAsli.getFullYear(), ev.tgNotaAsli.getMonth(), ev.tgNotaAsli.getDate())) + '</p></div>' + badgDiff + '</div>'
