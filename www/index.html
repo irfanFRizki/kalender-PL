@@ -3071,6 +3071,8 @@ function _gotoDrillDate(dateStr) {
   var p = dateStr.split('-');
   currentDate = new Date(+p[0], +p[1]-1, 1);
   document.getElementById('detailModal').classList.add('hidden');
+  if (typeof closeContainerModal === 'function') closeContainerModal();
+  else { var cdm = document.getElementById('containerDrillModal'); if (cdm) cdm.classList.add('hidden'); }
   currentTab = 'estimasi';
   if (typeof elTE !== 'undefined' && elTE) elTE.click();
   else renderCalendar();
@@ -3081,58 +3083,6 @@ function _gotoDrillDate(dateStr) {
   }, 300);
 }
 
-// ================================================================
-// DRILLDOWN KARTU DASHBOARD (Terlambat / Minggu Ini / Koli / Container)
-// — pakai modal yang sama persis dengan klik tanggal di kalender
-// ================================================================
-function openDashDrilldown(type) {
-  var todayD = new Date(); todayD.setHours(0,0,0,0);
-  var dow = todayD.getDay();
-  var diffMon = dow===0?-6:1-dow;
-  var startWeek = new Date(todayD); startWeek.setDate(todayD.getDate()+diffMon);
-  var endWeek   = new Date(startWeek); endWeek.setDate(startWeek.getDate()+6);
-
-  var picked = [];
-  for (var dk in eventsData) {
-    var p = dk.split('-');
-    var evDate = new Date(+p[0], +p[1]-1, +p[2]);
-    eventsData[dk].forEach(function(ev) {
-      var match = false;
-      if (type === 'terlambat') {
-        match = evDate < todayD && (!ev.infoAdmin || !ev.tglInfo || ev.tglInfo < todayD);
-      } else if (type === 'minggu') {
-        match = evDate >= startWeek && evDate <= endWeek;
-      } else if (type === 'koli') {
-        match = evDate.getMonth() === currentDate.getMonth() && evDate.getFullYear() === currentDate.getFullYear();
-      } else if (type === 'container') {
-        if (evDate.getMonth() === currentDate.getMonth() && evDate.getFullYear() === currentDate.getFullYear()) {
-          var peng = String(ev.pengiriman||'').toUpperCase().trim();
-          match = /^C\d+/.test(peng) || peng.includes('CONTAINER');
-        }
-      }
-      if (match) picked.push({ dateStr: dk, ev: ev, evDate: evDate });
-    });
-  }
-
-  picked.sort(function(a,b) { return a.evDate - b.evDate; });
-
-  var titleMap = {
-    terlambat: 'PL Terlambat',
-    minggu:    'PL Minggu Ini',
-    koli:      'Koli Bulan ' + monthNames[currentDate.getMonth()] + ' ' + currentDate.getFullYear(),
-    container: 'Container Bulan ' + monthNames[currentDate.getMonth()] + ' ' + currentDate.getFullYear()
-  };
-
-  var eventsForModal = picked.map(function(p) {
-    var evCopy = Object.assign({}, p.ev);
-    evCopy._drillDateLabel = formatIndoDate(p.dateStr);
-    evCopy._drillDateKey = p.dateStr;
-    return evCopy;
-  });
-
-  if (currentTab !== 'estimasi') { currentTab = 'estimasi'; }
-  openModal(titleMap[type] || 'Rincian', eventsForModal);
-}
 
 // ================================================================
 // MODAL DETAIL
@@ -4865,7 +4815,7 @@ window.openDashDrilldown = function(type) {
       var poanBadge = hasPoan
         ? '<span class="text-[9px] font-bold px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded border border-green-300">Ada POan</span>'
         : '';
-      html += '<div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-3 shadow-sm">'
+      html += '<div onclick="_gotoDrillDate(\'' + it.dateStr + '\')" class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-3 shadow-sm cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all">'
         + '<div class="flex justify-between items-start">'
         + '<div class="min-w-0 pr-2"><span class="text-[9px] text-gray-400 font-bold uppercase">#'+(idx+1)+'</span>'
         + '<p class="font-bold text-sm text-gray-800 dark:text-gray-200 truncate">' + it.packingList + '</p>'
@@ -4873,7 +4823,7 @@ window.openDashDrilldown = function(type) {
         + '<div class="text-right flex-shrink-0">'
         + '<p class="text-sm font-black text-indigo-600 dark:text-indigo-400">' + (parseInt(String(it.koli).match(/\d+/))||0) + ' Koli</p>'
         + poanBadge + '</div></div>'
-        + '<p class="text-[10px] font-bold ' + it.extraColor + ' mt-1.5 border-t border-gray-100 dark:border-gray-700 pt-1.5">' + it.extra + '</p>'
+        + '<p class="text-[10px] font-bold ' + it.extraColor + ' mt-1.5 border-t border-gray-100 dark:border-gray-700 pt-1.5 flex items-center justify-between"><span>' + it.extra + '</span><span class="text-indigo-500 font-extrabold">Lihat di kalender →</span></p>'
         + '</div>';
     });
     html += '</div>';
