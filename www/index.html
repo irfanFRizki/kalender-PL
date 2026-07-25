@@ -4810,12 +4810,17 @@ window.openDashDrilldown = function(type) {
     var html = '<div class="flex gap-2 mb-4"><span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1 rounded-full border">' + items.length + ' PL</span>'
       + '<span class="bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-bold px-3 py-1 rounded-full border border-indigo-200">' + totalKoliDrill + ' Koli</span></div>';
     html += '<div class="space-y-2">';
+    var isEstimasiType = (type === 'terlambat' || type === 'minggu' || type === 'koli' || type === 'container');
     items.forEach(function(it, idx) {
       var hasPoan = poanData[String(it.packingList).trim()] && poanData[String(it.packingList).trim()].length > 0;
       var poanBadge = hasPoan
         ? '<span class="text-[9px] font-bold px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded border border-green-300">Ada POan</span>'
         : '';
-      html += '<div onclick="_gotoDrillDate(\'' + it.dateStr + '\')" class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-3 shadow-sm cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all">'
+      var cardAttr = isEstimasiType
+        ? ' onclick="_gotoDrillDate(\'' + it.dateStr + '\')" class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-3 shadow-sm cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all"'
+        : ' class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-3 shadow-sm"';
+      var footerHint = isEstimasiType ? '<span class="text-indigo-500 font-extrabold">Lihat di kalender →</span>' : '';
+      html += '<div' + cardAttr + '>'
         + '<div class="flex justify-between items-start">'
         + '<div class="min-w-0 pr-2"><span class="text-[9px] text-gray-400 font-bold uppercase">#'+(idx+1)+'</span>'
         + '<p class="font-bold text-sm text-gray-800 dark:text-gray-200 truncate">' + it.packingList + '</p>'
@@ -4823,7 +4828,7 @@ window.openDashDrilldown = function(type) {
         + '<div class="text-right flex-shrink-0">'
         + '<p class="text-sm font-black text-indigo-600 dark:text-indigo-400">' + (parseInt(String(it.koli).match(/\d+/))||0) + ' Koli</p>'
         + poanBadge + '</div></div>'
-        + '<p class="text-[10px] font-bold ' + it.extraColor + ' mt-1.5 border-t border-gray-100 dark:border-gray-700 pt-1.5 flex items-center justify-between"><span>' + it.extra + '</span><span class="text-indigo-500 font-extrabold">Lihat di kalender →</span></p>'
+        + '<p class="text-[10px] font-bold ' + it.extraColor + ' mt-1.5 border-t border-gray-100 dark:border-gray-700 pt-1.5 flex items-center justify-between"><span>' + it.extra + '</span>' + footerHint + '</p>'
         + '</div>';
     });
     html += '</div>';
