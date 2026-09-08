@@ -876,40 +876,8 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
   </div>
 
   <!-- ============================================================ -->
-  <!-- Tentang Aplikasi Panel                                        -->
+  <!-- Admin View Panel                                            -->
   <!-- ============================================================ -->
-  <div id="aboutPanel" class="hidden flex-col flex-grow overflow-y-auto bg-gray-50 dark:bg-gray-900 transition-colors duration-200 custom-scrollbar">
-    <div class="p-4 sm:p-6 max-w-lg mx-auto w-full">
-
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 text-center mb-4">
-        <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-600 flex items-center justify-center text-white mb-3">
-          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-        </div>
-        <h3 class="font-extrabold text-gray-800 dark:text-gray-100 text-base">Kalender Estimasi Barang</h3>
-        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Aplikasi Android — dibungkus dari web app</p>
-        <div class="mt-3 inline-flex items-center gap-1.5 bg-gray-100 dark:bg-gray-700 rounded-full px-3 py-1">
-          <span class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase">Versi Terpasang</span>
-          <span id="aboutCurrentVersion" class="text-xs font-black text-blue-600 dark:text-blue-400">-</span>
-        </div>
-      </div>
-
-      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 mb-4">
-        <div class="flex items-center justify-between gap-3 mb-3">
-          <h4 class="font-extrabold text-gray-800 dark:text-gray-100 text-sm">Update Aplikasi</h4>
-          <button id="aboutCheckUpdateBtn" onclick="_aboutCheckUpdateNow()" class="text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg transition-colors shadow-sm flex items-center gap-1.5">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-            Cek Update
-          </button>
-        </div>
-        <div id="aboutUpdateStatus" class="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 p-3.5 text-xs text-gray-500 dark:text-gray-400 font-semibold">
-          Belum dicek pada sesi ini.
-        </div>
-      </div>
-
-      <p class="text-center text-[10px] text-gray-400 dark:text-gray-600">Sumber data: Google Sheets · Update: GitHub Releases</p>
-    </div>
-  </div>
-
   <div id="adminViewPanel" class="hidden flex-col flex-grow overflow-hidden bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
     <!-- Header bar -->
     <div class="flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex-shrink-0 gap-3 flex-wrap">
@@ -1242,6 +1210,37 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
 
     <!-- Tab Gudang: tampilan list "Antrean Gudang" (bukan kalender) -->
     <div id="gudangListView" class="hidden flex-col flex-grow overflow-y-auto overflow-x-hidden custom-scrollbar p-3 sm:p-4 space-y-3 bg-gray-50/50 dark:bg-gray-900/50 transition-colors duration-200"></div>
+
+    <!-- Tab Tentang Aplikasi -->
+    <div id="aboutPanel" class="hidden flex-col flex-grow overflow-y-auto bg-gray-50 dark:bg-gray-900 transition-colors duration-200 custom-scrollbar">
+      <div class="p-4 sm:p-6 max-w-lg mx-auto w-full space-y-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 text-center">
+          <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-sm">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          </div>
+          <h3 class="font-extrabold text-gray-800 dark:text-gray-100 text-lg">Kalender Estimasi Barang</h3>
+          <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Aplikasi Android — dibungkus dari web app</p>
+          <div class="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            Versi Terpasang <span id="aboutCurrentVersion" class="text-blue-600 dark:text-blue-400">v—</span>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
+          <div class="flex items-center justify-between mb-3">
+            <h4 class="font-extrabold text-gray-800 dark:text-gray-100 text-sm">Update Aplikasi</h4>
+            <button id="aboutCheckUpdateBtn" onclick="_aboutCheckUpdateNow()" class="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold px-3.5 py-2 rounded-lg transition-colors shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Cek Update
+            </button>
+          </div>
+          <div id="aboutUpdateStatus" class="rounded-xl border p-3.5 text-xs font-semibold border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400">
+            Belum dicek pada sesi ini.
+          </div>
+        </div>
+
+        <p class="text-center text-[10px] text-gray-400 dark:text-gray-600">Sumber data: Google Sheets · Update: GitHub Releases</p>
+      </div>
+    </div>
 
     <!-- Sidebar Overlay Backdrop -->
     <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
@@ -1591,6 +1590,14 @@ var SHEET_ESTIMASI  = 'barang belum bongkar';
 var SHEET_POAN      = 'Check POan';
 var SHEET_GUDANG    = 'Barang Sudah Bongkar';
 
+// ── Sumber Data Tambahan: MD (spreadsheet terpisah) ────────────────────────
+// Diambil dari spreadsheet LAIN (bukan SPREADSHEET_ID di atas).
+// Kolom yang dibaca: B = Packing List, C = Ctns, E = Tanggal Muat.
+// ISI 3 variabel di bawah ini secara manual sebelum fitur MD aktif.
+var MD_SPREADSHEET_ID = '1A4LVsqO1FIzJZaz-eExvmPS00oQcYIZEuRzUUAjMoe0';
+var SHEET_MD           = '2026'; // contoh: '2026'
+var MD_HEADER_ROW      = 3; // baris header kolom (No/Packing List/Ctns/...) di sheet MD — sesuaikan jika beda
+
 // ================================================================
 // DATA & STATE
 // ================================================================
@@ -1599,6 +1606,7 @@ var gudangData    = {};
 var poanData      = {};
 var rawGudangList = [];
 var rawEstimasiList = [];
+var rawMdList     = []; // daftar mentah PL dari sumber MD (spreadsheet terpisah)
 var currentTab    = 'estimasi';
 var currentDate   = new Date();
 var isFetchingData = false;
@@ -2084,10 +2092,11 @@ async function fetchAllData(isBackground) {
     try {
       var cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
       if (cached && cached.texts) {
-        var datas = cached.texts.map(function(t) { return JSON.parse(t.substring(47).slice(0, -2)); });
+        var datas = cached.texts.map(function(t) { return t ? JSON.parse(t.substring(47).slice(0, -2)) : null; });
         processPoanData(datas[1]);
         processGudangData(datas[2]);
         processEstimasiData(datas[0]);
+        if (datas[3]) processMdData(datas[3]); // cache lama (sebelum fitur MD ada) tidak punya index [3] — aman diabaikan
         var cachedKoli = localStorage.getItem('kalender_koli_cache_v1');
         if (cachedKoli) _patchKoliData(JSON.parse(cachedKoli));
         renderCalendar();
@@ -2145,14 +2154,24 @@ async function fetchAllData(isBackground) {
         + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(SHEET_GUDANG)
         + '&headers=8' + '&_=' + t;
     };
+    // Sumber MD: spreadsheet terpisah (SPREADSHEET_ID beda) — hanya di-fetch jika sudah dikonfigurasi
+    var isMdConfigured = MD_SPREADSHEET_ID && MD_SPREADSHEET_ID.indexOf('ISI_') !== 0
+                       && SHEET_MD && SHEET_MD.indexOf('ISI_') !== 0;
+    var urlMd = function() {
+      return 'https://docs.google.com/spreadsheets/d/' + MD_SPREADSHEET_ID
+        + '/gviz/tq?tqx=out:json&sheet=' + encodeURIComponent(SHEET_MD)
+        + '&headers=' + MD_HEADER_ROW + '&_=' + t;
+    };
+    var fetchMd = isMdConfigured ? fetch(urlMd()).catch(function() { return null; }) : Promise.resolve(null);
 
-    var responses = await Promise.all([fetch(url(SHEET_ESTIMASI, 4)), fetch(url(SHEET_POAN)), fetch(urlGudang())]);
-    var texts     = await Promise.all(responses.map(function(r) { return r.text(); }));
-    var datas     = texts.map(function(t) { return JSON.parse(t.substring(47).slice(0, -2)); });
+    var responses = await Promise.all([fetch(url(SHEET_ESTIMASI, 4)), fetch(url(SHEET_POAN)), fetch(urlGudang()), fetchMd]);
+    var texts     = await Promise.all(responses.map(function(r) { return r ? r.text() : Promise.resolve(null); }));
+    var datas     = texts.map(function(t) { return t ? JSON.parse(t.substring(47).slice(0, -2)) : null; });
 
     processPoanData(datas[1]);
     processGudangData(datas[2]);
     processEstimasiData(datas[0]);
+    processMdData(datas[3]); // digabung ke eventsData SETELAH processEstimasiData (yang me-reset eventsData)
 
     // ── Patch koli dari GAS setelah gviz dimuat ────────────────────────────
     // gviz kadang menggeser kolom (merged cell / sub-header) → koli salah.
@@ -2499,7 +2518,7 @@ function processEstimasiData(data) {
     if (plValue !== '-' && plValue !== '') {
       var _infoAdm  = idxInfo    !== -1 ? getSafeText(row.c[idxInfo])    : '';
       var _tglInfoR = idxTglInfo !== -1 ? getSafeText(row.c[idxTglInfo]) : '';
-      rawEstimasiList.push({ packingList: plValue, koli: getSafeText(row.c[idxKoli]), marking: getSafeText(row.c[idxPengiriman]), tgNota: getSafeText(row.c[idxTgNota]), infoAdmin: (_infoAdm !== '-' ? _infoAdm : ''), tglInfo: (_tglInfoR !== '-' ? _tglInfoR : '') });
+      rawEstimasiList.push({ packingList: plValue, koli: getSafeText(row.c[idxKoli]), marking: getSafeText(row.c[idxPengiriman]), tgNota: getSafeText(row.c[idxTgNota]), tgNotaDate: tgNota, infoAdmin: (_infoAdm !== '-' ? _infoAdm : ''), tglInfo: (_tglInfoR !== '-' ? _tglInfoR : '') });
     }
     if (tgNota) {
       var infoData   = idxInfo    !== -1 ? getSafeText(row.c[idxInfo])    : '-';
@@ -2569,6 +2588,213 @@ function processEstimasiData(data) {
   updateRunningText();
   checkUrgentNotification();
   checkUrgentToast();
+}
+
+// ================================================================
+// DATA MD (sumber terpisah — spreadsheet lain, sheet SHEET_MD)
+// Kolom yang dipakai: B = Packing List, C = Ctns, E = Tanggal Muat.
+// Digabung ke eventsData (tab "Estimasi Kedatangan") supaya tetap
+// tampil di kalender & pencarian PL, tapi ditandai isMD:true supaya
+// bisa dibedakan (garis/border khusus) dari data estimasi biasa.
+//
+// PENAMAAN PL: nama PL di sheet MD biasanya tidak pakai suffix tahun
+// (mis. "MLJ LCL 19"), sedangkan nama PL di sheet utama pakai suffix
+// " - <TAHUN>" (mis. "MLJ LCL 19 - 2026"). Supaya dianggap PL yang
+// sama, nama dari MD otomatis digabung memakai suffix " - " + SHEET_MD
+// (mis. SHEET_MD = '2026' → "MLJ LCL 19" jadi "MLJ LCL 19 - 2026").
+// ================================================================
+var mdLoadStatus = { loaded: false, count: 0, lastLoadTime: null }; // status utk preview & notifikasi
+
+// ── Deteksi otomatis "marking" pengiriman dari nama Packing List MD ────────
+// Sheet MD tidak punya kolom PENGIRIMAN, jadi label & estimasi tiba
+// diturunkan dari nama PL itu sendiri, mengikuti pola yang sama dengan
+// tab "Barang Belum Bongkar" (format: METRO/HART-<PREFIX>/<SEA|AIR>).
+// Contoh: "TN LCL 06 - 2026" → prefix "TN", token "LCL" → SEA
+//         → "METRO/HART-TN/SEA"  (estimasi tiba = tanggal muat + 1 bulan)
+//         "TN 05 A - 2026"       → token "A"   → AIR
+//         → "METRO/HART-TN/AIR"  (estimasi tiba = tanggal muat + 7 hari)
+function _mdDeriveMarking(rawPL) {
+  var tokens = String(rawPL || '').toUpperCase().trim().split(/[\s\-]+/).filter(Boolean);
+  if (!tokens.length) return 'MD';
+  var prefix = tokens[0];
+  var mode   = 'SEA'; // default SEA kalau tidak ada penanda AIR eksplisit
+  if (tokens.indexOf('LCL') !== -1) mode = 'SEA';
+  else if (tokens.indexOf('A') !== -1 || tokens.indexOf('AIR') !== -1) mode = 'AIR';
+  return 'METRO/HART-' + prefix + '/' + mode;
+}
+
+// ── Hitung estimasi tiba dari tanggal dasar + marking, sama seperti logika
+// yang dipakai tab "Barang Belum Bongkar": CONTAINER/METRO+SEA = +1 bulan,
+// METRO+AIR = +7 hari. Dipakai bareng oleh _buildTimelineTrack() & preview MD.
+function _mdCalcEstimasiTiba(tglDasar, marking) {
+  if (!tglDasar || !(tglDasar instanceof Date) || isNaN(tglDasar)) return null;
+  var peng = String(marking || '').toUpperCase();
+  var d = new Date(tglDasar.getTime());
+  if (peng.includes('CONTAINER')) { d.setMonth(d.getMonth()+1); }
+  else if (peng.includes('METRO') && peng.includes('SEA')) { d.setMonth(d.getMonth()+1); }
+  else if (peng.includes('METRO') && peng.includes('AIR')) { d.setDate(d.getDate()+7); }
+  return d;
+}
+
+function _mdNormalizePL(rawPL) {
+  var pl = String(rawPL).trim();
+  if (!pl || pl === '-') return pl;
+  var suffix = ' - ' + String(SHEET_MD).trim();
+  // Jangan tambah suffix dua kali kalau nama di MD ternyata sudah lengkap
+  if (pl.toUpperCase().endsWith(suffix.toUpperCase())) return pl;
+  return pl + suffix;
+}
+
+function processMdData(data) {
+  rawMdList = [];
+  if (!data || !data.table || !data.table.rows) {
+    mdLoadStatus.loaded = false;
+    _renderMdPreviewIfOpen();
+    return;
+  }
+
+  var COL_PL    = 1; // Kolom B
+  var COL_CTNS  = 2; // Kolom C
+  var COL_TGMUAT= 4; // Kolom E
+
+  var todayMidnight = new Date(); todayMidnight.setHours(0,0,0,0);
+
+  data.table.rows.forEach(function(row) {
+    if (!row.c) return;
+    var plRaw     = getSafeText(row.c[COL_PL]);
+    var ctnsValue = getSafeText(row.c[COL_CTNS]);
+    var tglMuat   = parseDateForCalendar(row.c[COL_TGMUAT]);
+
+    if (!plRaw || plRaw === '-' || !tglMuat) return;
+
+    var plValue = _mdNormalizePL(plRaw); // nama PL setelah digabung dengan suffix tahun/sheet
+    var mdMarking = _mdDeriveMarking(plRaw); // marking hasil deteksi dari nama PL, mis. "METRO/HART-TN/SEA"
+
+    rawMdList.push({ packingListAsli: plRaw, packingList: plValue, ctns: ctnsValue, tanggalMuat: tglMuat, marking: mdMarking });
+
+    var dateKey  = formatDateStr(tglMuat.getFullYear(), tglMuat.getMonth(), tglMuat.getDate());
+    var diffDays = Math.floor((todayMidnight - tglMuat) / 86400000);
+    var status   = diffDays > 7 ? 'red' : (diffDays >= 1 ? 'yellow' : 'normal');
+
+    if (!eventsData[dateKey]) eventsData[dateKey] = [];
+    eventsData[dateKey].push({
+      packingList: plValue,
+      koli: (ctnsValue !== '-' ? ctnsValue : '0'),
+      pengiriman: mdMarking,
+      tgNotaAsli: tglMuat,
+      status: status,
+      diffDays: diffDays,
+      infoAdmin: null,
+      tglInfo: null,
+      fotoUrl: null,
+      originalDateKey: dateKey,
+      isNew: false,
+      isMD: true // ── penanda: data ini dari sumber MD (spreadsheet terpisah) ──
+    });
+  });
+
+  // ── Info: tandai data MD sudah dimuat + notifikasi sekali per sesi ──
+  var prevLoaded = mdLoadStatus.loaded;
+  mdLoadStatus.loaded       = true;
+  mdLoadStatus.count        = rawMdList.length;
+  mdLoadStatus.lastLoadTime = new Date();
+  if (!window._mdNotifShown && rawMdList.length > 0) {
+    window._mdNotifShown = true;
+    _showInAppNotif('🔹 Data MD sudah dimuat: ' + rawMdList.length + ' PL dari sheet "' + SHEET_MD + '"', '#f59e0b');
+  }
+
+  _checkPlMdDateMismatch();
+
+  renderCalendar();
+  updateRunningText();
+  _renderMdPreviewIfOpen();
+}
+
+// ================================================================
+// VALIDASI SILANG: data saya (tab "Barang Belum Bongkar" / TG NOTA)
+// vs data MD (sheet MD / Tanggal Muat).
+// PL yang sama seharusnya punya tanggal dasar yang sama persis.
+// Kalau beda → tampilkan popup peringatan (banner in-app) supaya
+// ketahuan ada PL yang datanya tidak sinkron antara dua sumber.
+// ================================================================
+function _checkPlMdDateMismatch() {
+  if (!rawEstimasiList || !rawEstimasiList.length || !rawMdList || !rawMdList.length) return;
+
+  var normKey = function(pl) { return String(pl || '').trim().toUpperCase(); };
+  var sameDay = function(d1, d2) {
+    if (!d1 || !d2 || !(d1 instanceof Date) || !(d2 instanceof Date) || isNaN(d1) || isNaN(d2)) return true; // tidak bisa dibandingkan → jangan dianggap beda
+    return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
+  };
+  var fmtShort = function(d) {
+    return String(d.getDate()).padStart(2,'0') + ' ' + monthNames[d.getMonth()] + ' ' + d.getFullYear();
+  };
+
+  // ── Peta data saya: PL → item (dedup, entri terakhir menang kalau ada duplikat PL)
+  var sayaMap = {};
+  rawEstimasiList.forEach(function(item) {
+    var key = normKey(item.packingList);
+    if (!key || !item.tgNotaDate) return;
+    sayaMap[key] = item;
+  });
+
+  var mismatches = [];
+  rawMdList.forEach(function(mdItem) {
+    var key = normKey(mdItem.packingList);
+    var sayaItem = sayaMap[key];
+    if (!sayaItem) return; // PL belum ada di data saya → tidak dibandingkan
+    if (!sameDay(sayaItem.tgNotaDate, mdItem.tanggalMuat)) {
+      mismatches.push({ pl: mdItem.packingList, tglSaya: sayaItem.tgNotaDate, tglMd: mdItem.tanggalMuat });
+    }
+  });
+
+  if (!mismatches.length) return;
+
+  // ── Dedup notifikasi: hanya tampil ulang kalau daftar mismatch berubah
+  var mismatchKey = mismatches.map(function(m) {
+    return m.pl + '|' + fmtShort(m.tglSaya) + '|' + fmtShort(m.tglMd);
+  }).sort().join(';');
+  if (localStorage.getItem('kalender_md_mismatch_key') === mismatchKey) return;
+  localStorage.setItem('kalender_md_mismatch_key', mismatchKey);
+
+  var rows = mismatches.slice(0, 5).map(function(m) {
+    return '<div style="margin-top:5px;padding-top:5px;border-top:1px solid rgba(255,255,255,.15)">'
+      + '<b>' + m.pl + '</b><br>'
+      + '<span style="opacity:.85;font-size:10.5px">Data saya: ' + fmtShort(m.tglSaya) + ' &bull; Data MD: ' + fmtShort(m.tglMd) + '</span>'
+      + '</div>';
+  }).join('');
+  var extra = mismatches.length > 5
+    ? '<div style="margin-top:5px;opacity:.8;font-size:10.5px">+' + (mismatches.length - 5) + ' PL lainnya beda tanggal</div>'
+    : '';
+
+  var msg = '<span style="font-weight:700;font-size:13px">⚠️ ' + mismatches.length + ' PL beda tanggal (Data Saya vs MD)</span>' + rows + extra;
+  setTimeout(function() { _showInAppNotif(msg, '#dc2626'); }, 2500);
+}
+
+// Render ulang preview MD di panel admin jika sedang terbuka
+function _renderMdPreviewIfOpen() {
+  if (adminPanelTab === 'md') renderMdPreview();
+}
+
+// ================================================================
+// CEK KECOCOKAN: dipakai di popup "Rincian Barang" untuk menandai
+// item non-MD yang tanggalnya (TG NOTA ASLI) sama persis dengan
+// tanggal di sumber MD (Tanggal Muat) untuk PL yang sama.
+// ================================================================
+function _findMdMatchForPl(pl) {
+  if (!rawMdList || !rawMdList.length) return null;
+  var key = String(pl || '').trim().toUpperCase();
+  for (var i = 0; i < rawMdList.length; i++) {
+    if (String(rawMdList[i].packingList || '').trim().toUpperCase() === key) return rawMdList[i];
+  }
+  return null;
+}
+function _isSameDayAsMd(ev) {
+  if (!ev || ev.isMD) return false; // item MD sendiri tidak perlu dibandingkan ke dirinya sendiri
+  var m = _findMdMatchForPl(ev.packingList);
+  if (!m || !m.tanggalMuat || !(m.tanggalMuat instanceof Date) || isNaN(m.tanggalMuat)) return false;
+  var d1 = m.tanggalMuat, d2 = ev.tgNotaAsli;
+  if (!d2 || !(d2 instanceof Date) || isNaN(d2)) return false;
+  return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
 }
 
 // ================================================================
@@ -2883,6 +3109,17 @@ function renderCalendar() {
           koliLabel.textContent = totalKoli + ' Koli';
           cont.appendChild(koliLabel);
         }
+        // ── Penanda khusus: ada item dari sumber MD (garis dashed, beda dari badge estimasi biasa) ──
+        if (currentTab === 'estimasi') {
+          var mdCount = dayEvents.filter(function(e) { return e.isMD; }).length;
+          if (mdCount > 0) {
+            var mdLabel = document.createElement('div');
+            mdLabel.className = 'text-[10px] text-amber-700 dark:text-amber-400 font-bold text-center bg-amber-50 dark:bg-amber-900/20 border border-dashed border-amber-400 dark:border-amber-600 rounded';
+            mdLabel.textContent = mdCount + ' MD';
+            mdLabel.title = 'Data tambahan dari sumber MD (spreadsheet terpisah)';
+            cont.appendChild(mdLabel);
+          }
+        }
         cell.appendChild(cont);
       }
       grid.appendChild(cell);
@@ -2901,11 +3138,6 @@ function renderCalendar() {
 
   // Feature 13: update gudang count badge
   _updateGudangNavBadge();
-
-  // Kalau tab Gudang lagi aktif, refresh juga tampilan list Antrean Gudang
-  if (currentTab === 'gudang' && typeof renderGudangListView === 'function') {
-    renderGudangListView();
-  }
 }
 
 // ================================================================
@@ -3021,12 +3253,15 @@ function updateSidebar() {
         ? '<span class="text-[10px] font-bold px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded border border-green-300 shadow-sm">✓ Ada POan</span>'
         : '<span class="text-[10px] font-bold px-2 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-400 rounded border border-gray-200 dark:border-gray-600">Tidak Ada PO</span>';
       var dk = ev.originalDateKey || ev._dk;
-      estCont.innerHTML += '<div onclick="openModal(\'' + dk + '\', eventsData[\'' + dk + '\'])" class="cursor-pointer bg-white dark:bg-gray-800 border '
-        + (ev.isToday ? 'border-green-300 dark:border-green-600 ring-1 ring-green-200 dark:ring-green-800 shadow-md' : hasNote ? 'border-yellow-300 dark:border-yellow-600 shadow-md' : 'border-gray-200 dark:border-gray-700 shadow-sm')
+      var mdBadgeSidebar = ev.isMD
+        ? '<span class="text-[9px] font-extrabold px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-400 rounded border border-dashed border-amber-400 dark:border-amber-600">MD</span>'
+        : '';
+      estCont.innerHTML += '<div onclick="openModal(\'' + dk + '\', eventsData[\'' + dk + '\'])" class="cursor-pointer bg-white dark:bg-gray-800 '
+        + (ev.isMD ? 'border-2 border-dashed border-amber-400 dark:border-amber-600' : ('border ' + (ev.isToday ? 'border-green-300 dark:border-green-600 ring-1 ring-green-200 dark:ring-green-800 shadow-md' : hasNote ? 'border-yellow-300 dark:border-yellow-600 shadow-md' : 'border-gray-200 dark:border-gray-700 shadow-sm')))
         + ' rounded-xl p-4 transition-all hover:shadow-lg hover:-translate-y-0.5 relative overflow-hidden group mt-1">'
         + badgeNew
         + '<div class="flex justify-between items-start mb-2">'
-        + '<div><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-extrabold uppercase tracking-wider text-gray-400">Packing List</span>' + badgeTgl + '</div>'
+        + '<div><div class="flex items-center gap-2 mb-1"><span class="text-[10px] font-extrabold uppercase tracking-wider text-gray-400">Packing List</span>' + badgeTgl + mdBadgeSidebar + '</div>'
         + '<h4 class="font-bold text-blue-800 dark:text-blue-400 text-sm leading-tight group-hover:underline">' + ev.packingList + '</h4></div>'
         + '<div class="text-right pr-4"><span class="text-[10px] font-extrabold uppercase text-gray-400">Total Koli</span><p class="font-black text-blue-600 dark:text-blue-400 text-sm">' + totalKoli + '</p></div>'
         + '</div>'
@@ -3100,7 +3335,7 @@ window.openGudangCard = function(plKey, dateKey) {
   if (events.length > 0) { currentTab = 'gudang'; openModal(dateKey, events); }
 };
 
-// Dipanggil dari tombol tanggal di kartu hasil drilldown dashboard —
+// Dipanggil dari tombol "Lihat di kalender" di kartu hasil drilldown dashboard —
 // pindah kalender ke bulan yang bersangkutan lalu buka detail tanggal itu.
 function _gotoDrillDate(dateStr) {
   var p = dateStr.split('-');
@@ -3118,13 +3353,12 @@ function _gotoDrillDate(dateStr) {
   }, 300);
 }
 
-
 // ================================================================
 // MODAL DETAIL
 // ================================================================
 function openModal(dateStr, events, holidayName) {
   var cont = document.getElementById('modalContent');
-  document.getElementById('modalDateDisplay').textContent = /^\d{4}-\d{1,2}-\d{1,2}$/.test(dateStr) ? formatIndoDate(dateStr) : dateStr;
+  document.getElementById('modalDateDisplay').textContent = formatIndoDate(dateStr);
   cont.innerHTML = '';
 
   var totalKoli = events.reduce(function(a,ev) { return a + (parseInt(String(ev.koli).match(/\d+/))||0); }, 0);
@@ -3138,23 +3372,23 @@ function openModal(dateStr, events, holidayName) {
 
   events.forEach(function(ev, idx) {
     var card = document.createElement('div');
-    card.className = 'bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-4 shadow-sm relative mt-3';
+    // ── Item dari sumber MD (spreadsheet terpisah) dapat border dashed khusus, beda dari kartu estimasi biasa ──
+    card.className = ev.isMD
+      ? 'bg-amber-50/40 dark:bg-amber-900/10 border-2 border-dashed border-amber-400 dark:border-amber-600 rounded-xl p-4 shadow-sm relative mt-3'
+      : 'bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl p-4 shadow-sm relative mt-3';
 
     var plKey  = String(ev.packingList).trim();
     var hasPoan= poanData[plKey] && poanData[plKey].length > 0;
     var poanBtn= hasPoan
-      ? '<button onclick="event.stopPropagation();openPoanModal(\'' + plKey.replace(/'/g,"\\'") + '\')" class="inline-flex items-center justify-center gap-1.5 bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 px-3 py-1.5 rounded-lg border border-green-300 font-bold text-xs hover:bg-green-200 transition-colors shadow-sm w-full sm:w-auto">Cek POan</button>'
+      ? '<button onclick="openPoanModal(\'' + plKey.replace(/'/g,"\\'") + '\')" class="inline-flex items-center justify-center gap-1.5 bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 px-3 py-1.5 rounded-lg border border-green-300 font-bold text-xs hover:bg-green-200 transition-colors shadow-sm w-full sm:w-auto">Cek POan</button>'
       : '<span class="inline-flex items-center justify-center bg-gray-100 dark:bg-gray-700 text-gray-500 px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold w-full sm:w-auto">Tidak Ada PO</span>';
 
     var badgeNew  = ev.isNew ? '<span class="absolute -top-2 -left-2 bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow-md animate-pulse z-20">NEW ITEM</span>' : '';
-    var drillDateBadge = ev._drillDateLabel
-      ? '<button type="button" onclick="event.stopPropagation();_gotoDrillDate(\'' + ev._drillDateKey + '\')" class="text-[10px] font-extrabold text-white bg-indigo-500 hover:bg-indigo-600 uppercase tracking-wider mb-1.5 flex items-center gap-1 px-2.5 py-1 rounded-lg transition-colors shadow-sm"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>' + ev._drillDateLabel + ' — lihat di kalender</button>'
-      : '';
     var infoHtml  = ev.infoAdmin
       ? '<div class="col-span-2 sm:col-span-3 mt-2 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 p-3 rounded flex items-start gap-2 shadow-sm"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><div><p class="text-[10px] uppercase font-bold text-yellow-800 dark:text-yellow-500">Pesan Admin</p><p class="text-sm font-medium text-gray-800 dark:text-gray-200">' + ev.infoAdmin + '</p></div></div>'
       : '';
     var fotoHtml  = ev.fotoUrl
-      ? '<div class="col-span-2 sm:col-span-3 mt-4 border-t border-gray-100 dark:border-gray-700 pt-4"><p class="text-[10px] text-gray-400 uppercase font-bold mb-2">Lampiran Foto</p><div class="bg-gray-50 dark:bg-gray-900 p-2 rounded-lg border border-gray-200 dark:border-gray-700 inline-block"><img src="' + ev.fotoUrl + '" onclick="event.stopPropagation();showFullImage(\'' + ev.fotoUrl + '\')" alt="Foto" class="w-full max-w-[200px] h-32 object-cover rounded shadow-sm cursor-zoom-in hover:opacity-80 transition-opacity"><p class="text-[9px] text-gray-400 text-center italic mt-1">Klik untuk memperbesar</p></div></div>'
+      ? '<div class="col-span-2 sm:col-span-3 mt-4 border-t border-gray-100 dark:border-gray-700 pt-4"><p class="text-[10px] text-gray-400 uppercase font-bold mb-2">Lampiran Foto</p><div class="bg-gray-50 dark:bg-gray-900 p-2 rounded-lg border border-gray-200 dark:border-gray-700 inline-block"><img src="' + ev.fotoUrl + '" onclick="showFullImage(\'' + ev.fotoUrl + '\')" alt="Foto" class="w-full max-w-[200px] h-32 object-cover rounded shadow-sm cursor-zoom-in hover:opacity-80 transition-opacity"><p class="text-[9px] text-gray-400 text-center italic mt-1">Klik untuk memperbesar</p></div></div>'
       : '';
 
     if (currentTab === 'estimasi') {
@@ -3162,15 +3396,26 @@ function openModal(dateStr, events, holidayName) {
         ? '<span class="bg-red-500 text-white text-[10px] px-2 rounded font-bold">Lewat ' + ev.diffDays + ' Hari</span>'
         : '';
 
+      var mdBadge = ev.isMD
+        ? '<span class="inline-flex items-center gap-1 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-400 text-[10px] font-extrabold px-2 py-0.5 rounded border-2 border-dashed border-amber-400 dark:border-amber-600 mb-2">🔹 DATA MD (Sumber Terpisah)</span><br>'
+        : '';
+      var tgLabel = ev.isMD ? 'TANGGAL MUAT' : 'TG NOTA ASLI';
+      var pengirimanLabel = ev.isMD ? 'Sumber' : 'Pengiriman';
+
+      // ── Penanda: tanggal item ini (TG NOTA ASLI) sama persis dengan Tanggal Muat di sumber MD untuk PL yang sama ──
+      var mdSameBadge = _isSameDayAsMd(ev)
+        ? '<span class="inline-flex items-center gap-1 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-400 text-[9px] font-extrabold px-2 py-0.5 rounded border border-emerald-400 dark:border-emerald-600 mb-1">✅ Data MD &amp; Data Saya Sama</span>'
+        : '';
+
       card.innerHTML = badgeNew + '<span class="absolute top-4 right-4 bg-gray-100 dark:bg-gray-700 text-gray-400 text-[10px] font-bold px-2 rounded z-10">#' + (idx+1) + '</span>'
-        + drillDateBadge
+        + mdBadge
         + '<div class="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-4 pr-6 sm:pr-10 mt-3">'
         + '<div class="col-span-2 sm:col-span-3 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-100 dark:border-blue-800/50 flex justify-between items-center shadow-sm">'
-        + '<div><p class="text-[9px] text-blue-500 uppercase font-bold tracking-widest mb-0.5">TG NOTA ASLI</p><p class="text-sm font-black text-blue-800 dark:text-blue-300">' + formatIndoDate(formatDateStr(ev.tgNotaAsli.getFullYear(), ev.tgNotaAsli.getMonth(), ev.tgNotaAsli.getDate())) + '</p></div>' + badgDiff + '</div>'
+        + '<div>' + mdSameBadge + '<p class="text-[9px] text-blue-500 uppercase font-bold tracking-widest mb-0.5">' + tgLabel + '</p><p class="text-sm font-black text-blue-800 dark:text-blue-300">' + formatIndoDate(formatDateStr(ev.tgNotaAsli.getFullYear(), ev.tgNotaAsli.getMonth(), ev.tgNotaAsli.getDate())) + '</p></div>' + badgDiff + '</div>'
         + '<div><p class="text-[9px] text-gray-400 uppercase font-bold tracking-widest mb-1">Packing List</p><p class="text-sm font-bold text-gray-800 dark:text-gray-200">' + ev.packingList + '</p></div>'
         + '<div><p class="text-[9px] text-gray-400 uppercase font-bold tracking-widest mb-1">Koli</p><p class="text-sm font-bold text-indigo-700 dark:text-indigo-400">' + ev.koli + '</p></div>'
         + '<div class="col-span-2 sm:col-span-1"><p class="text-[9px] text-gray-400 uppercase font-bold tracking-widest mb-1">Status POan</p><div class="flex justify-center sm:block">' + poanBtn + '</div></div>'
-        + '<div class="col-span-2 sm:col-span-3 border-t border-gray-100 dark:border-gray-700 pt-3"><p class="text-[9px] text-gray-400 uppercase font-bold tracking-widest mb-1">Pengiriman</p><p class="text-sm font-bold text-gray-800 dark:text-gray-200">' + ev.pengiriman + '</p></div>'
+        + '<div class="col-span-2 sm:col-span-3 border-t border-gray-100 dark:border-gray-700 pt-3"><p class="text-[9px] text-gray-400 uppercase font-bold tracking-widest mb-1">' + pengirimanLabel + '</p><p class="text-sm font-bold text-gray-800 dark:text-gray-200">' + ev.pengiriman + '</p></div>'
         + infoHtml + fotoHtml
         + _buildTimelineTrack(ev, 'estimasi')
         + '</div>';
@@ -3444,8 +3689,9 @@ function _histoNavMonth(dir) {
   renderHistogram();
 }
 
-// Swipe untuk pindah bulan di tab Grafik sudah dinonaktifkan —
+// Swipe pindah bulan di histogram SUDAH DINONAKTIFKAN (permintaan user) —
 // pindah bulan sekarang hanya lewat tombol klik ‹ › (lihat _histoNavMonth).
+
 
 function renderHistogram() {
   if (histoMode === 'pengiriman') { renderHistogramPengiriman(); return; }
@@ -3560,7 +3806,6 @@ function renderHistogram() {
 }
 
 // Render chart 4 batang besar untuk mode Shipment per-bulan
-// (dipakai ulang juga oleh mode Pengiriman — lihat renderHistogramPengiriman)
 function _renderHistoChartSingleMonth(GROUPS, shipData, shipPL, isDark, drillFn) {
   drillFn = drillFn || function(key, mIdx) { return "_shipmentDrill('" + key + "'," + mIdx + ")"; };
   var maxVal = GROUPS.reduce(function(s,g){ return Math.max(s, shipData[g.key]); }, 0);
@@ -3798,7 +4043,6 @@ function renderHistogramPengiriman() {
   ];
   var isDark = document.documentElement.classList.contains('dark');
 
-  // Populate year filter
   var yearSet = new Set();
   rawGudangList.forEach(function(item) {
     var d = item.tglBongkarDate;
@@ -3830,11 +4074,9 @@ function renderHistogramPengiriman() {
     histoMonthIdx = sorted[sorted.length - 1];
   }
 
-  // Update month label di nav
   var monthLabel = document.getElementById('histoMonthLabel');
   if (monthLabel) monthLabel.textContent = monthNames[histoMonthIdx] + ' ' + filterYear;
 
-  // Update UI labels
   document.getElementById('histoTitle').innerHTML = '<svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg> Histogram Koli per Bulan by Pengiriman';
   document.getElementById('histoSubtitle').textContent = 'Koli ' + monthNames[histoMonthIdx] + ' ' + filterYear + ' — dikelompokkan berdasarkan Pengiriman (Metro / Container)';
   document.getElementById('histoTableTitle').textContent = 'Tabel Rekap Koli — ' + monthNames[histoMonthIdx] + ' ' + filterYear;
@@ -3844,7 +4086,6 @@ function renderHistogramPengiriman() {
     + '<th class="px-4 py-3 text-center border-b border-violet-100 dark:border-violet-800/50 text-gray-500 dark:text-gray-400">Jml PL</th>'
     + '</tr>';
 
-  // Hitung data BULAN AKTIF saja (bukan 12 bulan sekaligus)
   var monthData = {Metro:0, Container:0};
   var monthPL   = {Metro:new Set(), Container:new Set()};
   rawGudangList.forEach(function(item) {
@@ -3871,7 +4112,6 @@ function renderHistogramPengiriman() {
 
   var grandTotal = GROUPS.reduce(function(s,g){ return s + monthData[g.key]; }, 0);
 
-  // Summary cards — sama gaya dengan mode Shipment, klik langsung ke rincian bulan ini
   document.getElementById('histoSummaryCards').innerHTML = GROUPS.map(function(g) {
     var drillCall = g.key === 'Container' ? 'openContainerDrilldownByMonth('+histoMonthIdx+')' : 'openMetroPLByMonth('+histoMonthIdx+')';
     return '<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-3.5 flex items-center gap-3 cursor-pointer hover:shadow-md hover:border-violet-300 dark:hover:border-violet-600 transition-all group" onclick="'+drillCall+'" title="Klik untuk lihat rincian '+g.label+'">'
@@ -3882,14 +4122,12 @@ function renderHistogramPengiriman() {
       + '</div></div>';
   }).join('');
 
-  // Render chart — 2 batang besar (Metro / Container), gaya identik mode Shipment
   _renderHistoChartSingleMonth(GROUPS, monthData, monthPL, isDark, function(key, mIdx) {
     return key === 'Container' ? 'openContainerDrilldownByMonth('+mIdx+')' : 'openMetroPLByMonth('+mIdx+')';
   });
 
   document.getElementById('debugContent').textContent = _buildDebugInfo();
 
-  // Tabel
   var tbody = document.getElementById('histoTableBody');
   tbody.innerHTML = '';
   GROUPS.forEach(function(g) {
@@ -6087,8 +6325,8 @@ elTE.onclick = function() {
   elAP.classList.add('hidden');    elAP.classList.remove('flex');
   elMA.classList.remove('hidden'); elHP.classList.add('hidden');
   elGL.classList.add('hidden');    elGL.classList.remove('flex');
-  elAB.classList.add('hidden');    elAB.classList.remove('flex');
   elCZ.classList.remove('hidden');
+  if (elAB) elAB.classList.add('hidden');
   renderCalendar();
 };
 elTG.onclick = function() {
@@ -6098,9 +6336,9 @@ elTG.onclick = function() {
   elLE.classList.add('hidden');    elSE.classList.add('hidden');    elDE.classList.add('hidden');
   elAP.classList.add('hidden');    elAP.classList.remove('flex');
   elMA.classList.remove('hidden'); elHP.classList.add('hidden');
-  elAB.classList.add('hidden');    elAB.classList.remove('flex');
   elCZ.classList.add('hidden');
   elGL.classList.remove('hidden'); elGL.classList.add('flex');
+  if (elAB) elAB.classList.add('hidden');
   renderGudangListView();
 };
 elTH.onclick = function() {
@@ -6111,7 +6349,7 @@ elTH.onclick = function() {
   elDE.classList.add('hidden'); elDG.classList.add('hidden');
   elMD.classList.add('hidden'); elMA.classList.add('hidden'); elHP.classList.remove('hidden');
   elAP.classList.add('hidden');
-  elAB.classList.add('hidden'); elAB.classList.remove('flex');
+  if (elAB) elAB.classList.add('hidden');
   // Load prefix dari backend saat pertama kali buka tab histogram
   if (!_prefixGroupsLoaded) {
     loadHistoPrefixGroups(function() { renderHistogram(); });
@@ -6120,17 +6358,18 @@ elTH.onclick = function() {
   }
 };
 
-// Tab "Tentang Aplikasi" — hanya diakses lewat bottom nav mobile
 function showAboutTab() {
-  currentTab = 'about';
+  currentTab = 'tentang';
   elTE.className=TAB_INACTIVE; elTG.className=TAB_INACTIVE; elTH.className=TAB_INACTIVE_ICON; elTA.className=TAB_INACTIVE_RED;
   elLE.classList.add('hidden'); elLG.classList.add('hidden');
   elSE.classList.add('hidden'); elSG.classList.add('hidden');
   elDE.classList.add('hidden'); elDG.classList.add('hidden');
-  elMD.classList.add('hidden'); elMA.classList.add('hidden'); elHP.classList.add('hidden');
-  elGL.classList.add('hidden'); elGL.classList.remove('flex');
+  elMD.classList.add('hidden'); elHP.classList.add('hidden');
   elAP.classList.add('hidden');
-  elAB.classList.remove('hidden'); elAB.classList.add('flex');
+  elMA.classList.remove('hidden');
+  elCZ.classList.add('hidden');
+  elGL.classList.add('hidden'); elGL.classList.remove('flex');
+  if (elAB) { elAB.classList.remove('hidden'); elAB.classList.add('flex'); }
   _aboutRenderVersion();
 }
 
@@ -6161,6 +6400,7 @@ window._onUpdateStatus = function(status) {
   var dot = document.getElementById('mnavAboutUpdateDot');
   if (!box) return;
   var base = 'rounded-xl border p-3.5 text-xs font-semibold ';
+  var phaseLabel = { 'cek-versi':'Cek versi', 'download':'Download APK', 'simpan-file':'Simpan file', 'install':'Install' }[status.phase];
   if (status.state === 'checking') {
     box.className = base + 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400';
     box.textContent = 'Memeriksa update...';
@@ -6178,11 +6418,9 @@ window._onUpdateStatus = function(status) {
     if (dot) dot.classList.remove('hidden');
   } else if (status.state === 'error') {
     box.className = base + 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400';
-    var phaseLabel = { 'cek-versi':'Cek versi', 'download':'Download APK', 'simpan-file':'Simpan file', 'install':'Install' }[status.phase];
     box.textContent = (phaseLabel ? '[' + phaseLabel + '] ' : '') + (status.message || 'Gagal cek update.');
   }
 };
-
 
 document.getElementById('btnPrev').onclick    = function() { window._calSlideDir='right'; currentDate.setMonth(currentDate.getMonth()-1); renderCalendar(); };
 document.getElementById('btnNext').onclick    = function() { window._calSlideDir='left';  currentDate.setMonth(currentDate.getMonth()+1); renderCalendar(); };
@@ -6229,11 +6467,37 @@ var selectedProsesItem = null;         // item yg dipilih di proses gudang
 var bongkarStep       = 1;             // 1=pilih PL, 2=input tanggal, 3=pilih markingan
 
 // Globals for POan Tab
-var currentPoanWorkbook = null;
-var currentPoanHeaders = [];
-var currentPoanHeaderRowIdx = 1;
 var currentPoanFileName = "";
 var currentPoanIsCX = false; // true jika nama file PL mengandung kata "CX"
+var currentPoanRows = []; // baris hasil auto-detect & filter (BB/CX) yang siap dikirim ke sheet
+
+// Helper: Convert Column Letter to Index 1-based (A=1, B=2, ..., AA=27) - sama seperti Excel Reader Otomatis
+function poanColToIdx(letter) {
+  var column = 0, length = letter.length;
+  for (var i = 0; i < length; i++) {
+    column += (letter.charCodeAt(i) - 64) * Math.pow(26, length - i - 1);
+  }
+  return column;
+}
+
+// Konfigurasi kolom per jenis file — hardcode PERSIS pola "Excel Reader Otomatis"
+// (Kode & Harga tidak diambil karena tidak dipakai di sheet Check POan)
+var POAN_FILE_CONFIG = {
+  MLJ_AIR: { type: 'MLJ UDARA', defaultRow: 7,  cols: { desc: poanColToIdx('D'), qty: poanColToIdx('H'), ket: poanColToIdx('AC') } },
+  MLJ_LCL: { type: 'MLJ LCL',   defaultRow: 12, cols: { desc: poanColToIdx('D'), qty: poanColToIdx('H'), ket: poanColToIdx('AK') } },
+  XP_AIR:  { type: 'XP AIR',    defaultRow: 7,  cols: { desc: poanColToIdx('G'), qty: poanColToIdx('K'), ket: poanColToIdx('AD') } },
+  XP_LCL:  { type: 'XP LCL',    defaultRow: 7,  cols: { desc: poanColToIdx('G'), qty: poanColToIdx('K'), ket: poanColToIdx('AO') } }
+};
+
+// Deteksi jenis file dari nama file — sama persis dengan detectFileType() Excel Reader Otomatis
+function detectPoanFileType(filename) {
+  var name = filename.toUpperCase();
+  if ((name.indexOf('MLJ') !== -1 || name.indexOf('MLT') !== -1) && (name.indexOf('UDARA') !== -1 || name.indexOf(' A ') !== -1)) return POAN_FILE_CONFIG.MLJ_AIR;
+  if ((name.indexOf('MLJ') !== -1 || name.indexOf('MLT') !== -1) && name.indexOf('LCL') !== -1) return POAN_FILE_CONFIG.MLJ_LCL;
+  if (name.indexOf('XP') !== -1 && name.indexOf('AIR') !== -1) return POAN_FILE_CONFIG.XP_AIR;
+  if (name.indexOf('XP') !== -1 && name.indexOf('LCL') !== -1) return POAN_FILE_CONFIG.XP_LCL;
+  return null; // Tidak dikenali secara spesifik
+}
 
 // ── Restore session ───────────────────────────────────────────
 (function(){
@@ -6334,7 +6598,7 @@ function closeAdminPanel() { document.getElementById('adminPanelModal').classLis
 
 function switchAdminTab(tab) {
   adminPanelTab = tab;
-  ['proses','pin','pindah','tambah','poan'].forEach(function(t){
+  ['proses','pin','pindah','tambah','poan','md'].forEach(function(t){
     var btn   = document.getElementById('adminTab_'+t);
     var panel = document.getElementById('adminPanel_'+t);
     var isActive = (t === tab);
@@ -6346,6 +6610,7 @@ function switchAdminTab(tab) {
   if (tab==='pindah')     _loadBongkarData();
   if (tab==='tambah')     _initTambahFormNew();
   if (tab==='poan')       _initPoanTab();
+  if (tab==='md')         renderMdPreview();
 }
 
 // =============================================================
@@ -6725,7 +6990,41 @@ function lanjutBongkarStep3() {
   // Reset markingan selection
   document.querySelectorAll('.markinganBtn').forEach(function(b){b.classList.remove('ring-4','ring-offset-2');});
   window._bongkarMarkingan = null;
+  // Auto-deteksi Status Markingan dari sheet "Check POan"
+  var autoVal = _autoDetectMarkingan(sel);
+  var hintEl  = document.getElementById('markinganAutoHint');
+  if (autoVal) {
+    selectMarkingan(autoVal, false);
+    if (hintEl) hintEl.classList.remove('hidden');
+  } else if (hintEl) {
+    hintEl.classList.add('hidden');
+  }
   bongkarStep=3;
+}
+
+/**
+ * Deteksi otomatis Status Markingan berdasarkan data sheet "Check POan" (poanData).
+ * - Jika PL tidak punya data POan sama sekali            -> 'TIDAK ADA'
+ * - Jika ada data POan dan salah satu nilai POan mengandung "CX"     -> 'CX BBO'
+ * - Jika ada data POan dan salah satu nilai POan mengandung "BB-MD" -> 'XP LYN'
+ * - Jika ada data POan tapi tidak cocok pola di atas               -> 'ADA'
+ */
+function _autoDetectMarkingan(plList) {
+  plList = plList || [];
+  var anyData = false, hasCX = false, hasBBMD = false;
+  plList.forEach(function(pl) {
+    var items = poanData[String(pl).trim()] || [];
+    if (items.length > 0) anyData = true;
+    items.forEach(function(it) {
+      var poanVal = String(it.poan || '').toUpperCase();
+      if (poanVal.indexOf('CX') !== -1) hasCX = true;
+      if (poanVal.indexOf('BB-MD') !== -1 || poanVal.indexOf('BB MD') !== -1) hasBBMD = true;
+    });
+  });
+  if (hasCX) return 'CX BBO';
+  if (hasBBMD) return 'XP LYN';
+  if (anyData) return 'ADA';
+  return 'TIDAK ADA';
 }
 
 function backBongkarStep2() {
@@ -6734,12 +7033,16 @@ function backBongkarStep2() {
   bongkarStep=2;
 }
 
-function selectMarkingan(val) {
+function selectMarkingan(val, _isManual) {
   window._bongkarMarkingan = val;
   document.querySelectorAll('.markinganBtn').forEach(function(b){
     b.classList.toggle('ring-4', b.dataset.val===val);
     b.classList.toggle('ring-offset-2', b.dataset.val===val);
   });
+  if (_isManual !== false) {
+    var hintEl = document.getElementById('markinganAutoHint');
+    if (hintEl) hintEl.classList.add('hidden');
+  }
 }
 
 function submitBongkar() {
@@ -6748,7 +7051,7 @@ function submitBongkar() {
   var markingan= window._bongkarMarkingan||'';
   var btn      = document.getElementById('btnSubmitBongkar');
   if (!sel.length || !tgl)      { _adminToast('Data tidak lengkap!', false); return; }
-  if (!markingan)                { _adminToast('Pilih status markingan (ADA/TIDAK ADA/CX BBO)!', false); return; }
+  if (!markingan)                { _adminToast('Pilih status markingan (ADA/TIDAK ADA/CX BBO/XP LYN)!', false); return; }
   if (!_gasOK())                 { _adminToast('Butuh Google Apps Script!', false); return; }
   if (!confirm('Yakin pindahkan '+sel.length+' PL?\nTanggal: '+tgl+'\nMarkingan: '+markingan+'\n\nTindakan ini tidak bisa dibatalkan!')) return;
   btn.disabled=true; btn.textContent='Memindahkan...';
@@ -7427,6 +7730,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <button id="adminTab_pindah"  onclick="switchAdminTab('pindah')"  class="flex-1 py-2.5 rounded-lg text-xs font-extrabold transition-all text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700">📦 Pindah PL</button>
       <button id="adminTab_tambah"  onclick="switchAdminTab('tambah')"  class="flex-1 py-2.5 rounded-lg text-xs font-extrabold transition-all text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700">➕ Tambah PL</button>
       <button id="adminTab_poan"    onclick="switchAdminTab('poan')"    class="flex-1 py-2.5 rounded-lg text-xs font-extrabold transition-all text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700">📄 Tambah POan</button>
+      <button id="adminTab_md"      onclick="switchAdminTab('md')"      class="flex-1 py-2.5 rounded-lg text-xs font-extrabold transition-all text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700">🔹 Data MD</button>
       <button id="adminTab_pin"     onclick="switchAdminTab('pin')"     class="flex-1 py-2.5 rounded-lg text-xs font-extrabold transition-all text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700">🔑 PIN Code</button>
     </div>
 
@@ -7651,10 +7955,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         <div class="space-y-2">
           <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Status Markingan</label>
-          <div class="grid grid-cols-3 gap-3">
+          <p id="markinganAutoHint" class="hidden text-[10px] font-bold text-amber-600 dark:text-amber-400">⚡ Terdeteksi otomatis dari sheet Check POan — bisa diubah manual jika perlu.</p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <button onclick="selectMarkingan('ADA')" data-val="ADA" class="markinganBtn py-3 px-2 rounded-xl border border-gray-300 dark:border-gray-600 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 transition-all">ADA</button>
             <button onclick="selectMarkingan('TIDAK ADA')" data-val="TIDAK ADA" class="markinganBtn py-3 px-2 rounded-xl border border-gray-300 dark:border-gray-600 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 transition-all">TIDAK ADA</button>
             <button onclick="selectMarkingan('CX BBO')" data-val="CX BBO" class="markinganBtn py-3 px-2 rounded-xl border border-gray-300 dark:border-gray-600 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 transition-all">CX BBO</button>
+            <button onclick="selectMarkingan('XP LYN')" data-val="XP LYN" class="markinganBtn py-3 px-2 rounded-xl border border-gray-300 dark:border-gray-600 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 bg-white dark:bg-gray-800 transition-all">XP LYN</button>
           </div>
         </div>
 
@@ -7815,28 +8121,61 @@ document.addEventListener('DOMContentLoaded', function() {
           <input id="poanFileInput" type="file" accept=".xlsx,.xls" class="hidden" onchange="handlePoanFileSelect(event)">
         </div>
 
-        <!-- Mapping Options (hidden by default) -->
+        <!-- Preview Hasil Auto-Detect (hidden by default) -->
         <div id="poanMappingSection" class="hidden space-y-3 p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
-          <p class="text-xs font-bold text-gray-700 dark:text-gray-300 border-b border-gray-100 dark:border-gray-700 pb-1.5">Pemetaan Kolom Excel</p>
-          <div class="space-y-2">
-            <div>
-              <label class="block text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase mb-1">Description</label>
-              <select id="poanColDesc" class="w-full px-3 py-2 text-xs border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 font-bold"></select>
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase mb-1">Item Grup</label>
-              <select id="poanColGrup" class="w-full px-3 py-2 text-xs border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 font-bold"></select>
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase mb-1">Qty</label>
-              <select id="poanColQty" class="w-full px-3 py-2 text-xs border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 font-bold"></select>
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase mb-1">POan</label>
-              <select id="poanColPo" class="w-full px-3 py-2 text-xs border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 font-bold"></select>
-            </div>
+          <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 pb-1.5">
+            <p class="text-xs font-bold text-gray-700 dark:text-gray-300">Hasil Deteksi Otomatis</p>
+            <span id="poanDetectInfo" class="text-[10px] font-bold text-amber-600 dark:text-amber-400"></span>
+          </div>
+          <div class="max-h-64 overflow-y-auto custom-scrollbar border border-gray-100 dark:border-gray-700 rounded-lg">
+            <table class="w-full text-left text-[11px]">
+              <thead class="bg-gray-50 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400 uppercase sticky top-0">
+                <tr>
+                  <th class="px-2 py-1.5">Description</th>
+                  <th class="px-2 py-1.5">Item Grup</th>
+                  <th class="px-2 py-1.5 text-center">Qty</th>
+                  <th class="px-2 py-1.5">POan</th>
+                </tr>
+              </thead>
+              <tbody id="poanPreviewBody" class="divide-y divide-gray-100 dark:divide-gray-700 text-gray-700 dark:text-gray-200"></tbody>
+            </table>
           </div>
           <button id="btnSubmitPoan" onclick="submitPoanData()" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-extrabold rounded-xl transition-all shadow-md text-sm mt-3">Proses & Tambah ke Sheet</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════ TAB: DATA MD (sumber terpisah) ═══════════════ -->
+    <div id="adminPanel_md" class="hidden flex-1 flex flex-col overflow-hidden">
+      <div class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4 bg-gray-50 dark:bg-gray-900/50">
+        <div class="bg-amber-50 dark:bg-amber-900/20 border-2 border-dashed border-amber-400 dark:border-amber-600 rounded-xl p-3 text-xs text-amber-800 dark:text-amber-400 font-semibold">
+          🔹 Data tambahan dari spreadsheet MD (sumber terpisah). Kolom yang dibaca: B = Packing List, C = Ctns, E = Tanggal Muat. Nama PL otomatis digabung dengan suffix " - SHEET_MD" supaya sama dengan penamaan di sheet utama.
+        </div>
+
+        <!-- Status Info -->
+        <div id="mdStatusBox" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-3.5 shadow-sm">
+          <!-- diisi oleh renderMdPreview() -->
+        </div>
+
+        <div class="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 pb-1.5">
+          <p class="text-xs font-bold text-gray-700 dark:text-gray-300">Preview Data MD</p>
+          <button onclick="fetchAllData(false)" class="text-[10px] font-bold text-amber-600 dark:text-amber-400 hover:underline">↻ Muat Ulang</button>
+        </div>
+
+        <div class="max-h-80 overflow-y-auto custom-scrollbar border border-gray-100 dark:border-gray-700 rounded-lg">
+          <table class="w-full text-left text-[11px]">
+            <thead class="bg-gray-50 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400 uppercase sticky top-0">
+              <tr>
+                <th class="px-2 py-1.5">PL di Sheet MD</th>
+                <th class="px-2 py-1.5">PL Setelah Digabung</th>
+                <th class="px-2 py-1.5 text-center">Ctns</th>
+                <th class="px-2 py-1.5">Tanggal Muat</th>
+                <th class="px-2 py-1.5">Marking Terdeteksi</th>
+                <th class="px-2 py-1.5">Estimasi Tiba</th>
+              </tr>
+            </thead>
+            <tbody id="mdPreviewBody" class="divide-y divide-gray-100 dark:divide-gray-700 text-gray-700 dark:text-gray-200"></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -8202,9 +8541,12 @@ function _splRenderStep3() {
     } else if (item.source === 'estimasi' && item.estDate) {
       dateInfo = formatIndoDate(item.estDate);
     }
+    var mdBadgeSearch = (item.ev && item.ev.isMD)
+      ? '<span class="text-[9px] font-bold px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-400 rounded border border-dashed border-amber-400 dark:border-amber-600">MD</span>'
+      : '';
     html += '<button onclick="splSelectPL('+idx+')" data-idx="'+idx+'" class="w-full flex items-center justify-between px-4 py-3 hover:bg-sky-50 dark:hover:bg-sky-900/10 transition-colors text-left group">'
           + '<div class="flex-1 min-w-0 pr-3">'
-          + '<div class="flex items-center gap-2 mb-0.5">'+srcBadge+'<span class="font-bold text-sm text-gray-800 dark:text-gray-200 group-hover:text-sky-700 dark:group-hover:text-sky-400 truncate">'+item.pl+'</span></div>'
+          + '<div class="flex items-center gap-2 mb-0.5">'+srcBadge+mdBadgeSearch+'<span class="font-bold text-sm text-gray-800 dark:text-gray-200 group-hover:text-sky-700 dark:group-hover:text-sky-400 truncate">'+item.pl+'</span></div>'
           + '<span class="text-[10px] text-gray-400">'+dateInfo+' &bull; '+koliVal+' koli</span>'
           + '</div>'
           + '<svg class="w-4 h-4 text-gray-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>'
@@ -8882,14 +9224,7 @@ function _buildTimelineTrack(ev, source) {
     // ── STEP 2: Estimasi tiba
     var estDate = null;
     if (ev.tglInfo) estDate = ev.tglInfo;
-    else {
-      var peng = (ev.pengiriman || '').toUpperCase();
-      var d = new Date(ev.tgNotaAsli.getTime());
-      if (peng.includes('CONTAINER')) { d.setMonth(d.getMonth()+1); }
-      else if (peng.includes('METRO') && peng.includes('SEA')) { d.setMonth(d.getMonth()+1); }
-      else if (peng.includes('METRO') && peng.includes('AIR')) { d.setDate(d.getDate()+7); }
-      estDate = d;
-    }
+    else estDate = _mdCalcEstimasiTiba(ev.tgNotaAsli, ev.pengiriman) || ev.tgNotaAsli;
     var diffEst = estDate ? Math.floor((today - estDate) / 86400000) : 0;
     var estState = 'active';
     var estNote = 'Menunggu kedatangan';
@@ -9818,10 +10153,9 @@ function _initPoanTab() {
   document.getElementById('poanFileInput').value = '';
   document.getElementById('poanFileLabel').textContent = "Pilih file Excel Packing List (.xlsx / .xls)";
   document.getElementById('poanMappingSection').classList.add('hidden');
-  currentPoanWorkbook = null;
-  currentPoanHeaders = [];
   currentPoanFileName = "";
   currentPoanIsCX = false;
+  currentPoanRows = [];
 }
 
 function handlePoanFileSelect(e) {
@@ -9929,64 +10263,41 @@ function _processPoanFile(file) {
           return;
         }
         
-        var bestRow = null;
-        var maxCols = 0;
-        var headerValues = [];
-        
-        for (var r = 1; r <= Math.min(10, worksheet.rowCount); r++) {
-          var row = worksheet.getRow(r);
-          var colsCount = 0;
-          var tempHeaders = [];
-          
-          row.eachCell({ includeEmpty: true }, function(cell, colNumber) {
-            var val = cell.value;
-            var strVal = "";
-            if (val && typeof val === 'object') {
-              if (val.richText) {
-                strVal = val.richText.map(function(rt) { return rt.text; }).join('');
-              } else if (val.result !== undefined) {
-                strVal = String(val.result);
-              } else {
-                strVal = String(val.text || '');
-              }
-            } else if (val !== null && val !== undefined) {
-              strVal = String(val);
-            }
-            strVal = strVal.trim();
-            tempHeaders[colNumber] = strVal || ("Kolom " + colNumber);
-            if (strVal) colsCount++;
-          });
-          
-          if (colsCount > maxCols) {
-            maxCols = colsCount;
-            bestRow = r;
-            headerValues = tempHeaders;
-          }
-        }
-        
-        if (!bestRow) {
-          headerValues = [];
-          for (var c = 1; c <= 20; c++) {
-            headerValues[c] = "Kolom " + c;
-          }
-          bestRow = 1;
-        }
-        
-        currentPoanWorkbook = workbook;
-        currentPoanHeaders = headerValues;
-        currentPoanHeaderRowIdx = bestRow;
-        
         var dotIdx = file.name.lastIndexOf('.');
         var rawFileName = dotIdx !== -1 ? file.name.substring(0, dotIdx) : file.name;
         currentPoanFileName = normalizeNamaPL(rawFileName);
         currentPoanIsCX = /\bCX\b/i.test(rawFileName);
         
-        if (currentPoanIsCX) {
-          showPoanOk('✓ File Excel berhasil dibaca. Terdeteksi nama file mengandung <strong>"CX"</strong>, kolom POAN akan otomatis diisi <strong>"CX"</strong> untuk semua baris. Silakan petakan kolomnya.');
-        } else {
-          showPoanOk('✓ File Excel berhasil dibaca. Silakan petakan kolomnya.');
+        // Mesin auto-detect ala "Excel Reader Otomatis": deteksi jenis file dari nama
+        // (MLJ/XP, AIR/LCL) untuk fallback kolom, dipadukan scan header dinamis.
+        var detected = autoDetectPoanColumns(worksheet, rawFileName);
+        
+        if (detected.headerRowIdx === -1 || detected.cols.desc === -1 || detected.cols.qty === -1 || (!currentPoanIsCX && detected.cols.po === -1)) {
+          showPoanErr('❌ Gagal mendeteksi kolom secara otomatis dari file ini. Pastikan file memiliki header seperti "Description", "Qty"' + (currentPoanIsCX ? '' : ', dan "POan"') + '.');
+          return;
         }
-        renderPoanMappingOptions();
+        
+        currentPoanRows = extractPoanRows(worksheet, detected.headerRowIdx, detected.cols, currentPoanFileName, currentPoanIsCX);
+        
+        if (currentPoanRows.length === 0) {
+          showPoanErr('❌ Tidak ada data POan yang berawalan BB atau CX terdeteksi dalam file.');
+          return;
+        }
+        
+        var infoParts = [
+          'Desc: Kolom ' + getColLetter(detected.cols.desc),
+          detected.cols.grup !== -1 ? 'Grup: Kolom ' + getColLetter(detected.cols.grup) : null,
+          'Qty: Kolom ' + getColLetter(detected.cols.qty),
+          !currentPoanIsCX ? 'POan: Kolom ' + getColLetter(detected.cols.po) : null
+        ].filter(Boolean);
+        document.getElementById('poanDetectInfo').textContent = infoParts.join(' • ');
+        
+        if (currentPoanIsCX) {
+          showPoanOk('✓ File berhasil dibaca & dipetakan otomatis. Terdeteksi nama file mengandung <strong>"CX"</strong>, kolom POAN otomatis diisi <strong>"CX"</strong>.');
+        } else {
+          showPoanOk('✓ File berhasil dibaca & dipetakan otomatis (' + currentPoanRows.length + ' baris). Silakan periksa pratinjau di bawah.');
+        }
+        renderPoanPreview();
       })
       .catch(function(err) {
         showPoanErr('❌ Gagal memproses file Excel: ' + err.message + '. Pastikan file adalah .xlsx.');
@@ -9996,38 +10307,6 @@ function _processPoanFile(file) {
     showPoanErr('❌ Gagal membaca file. Coba lagi.');
   };
   reader.readAsArrayBuffer(file);
-}
-
-function renderPoanMappingOptions() {
-  var selectors = ['poanColDesc', 'poanColGrup', 'poanColQty', 'poanColPo'];
-  var keywords = {
-    poanColDesc: ['desc', 'deskripsi', 'nama', 'item', 'barang', 'product'],
-    poanColGrup: ['grup', 'group', 'kategori', 'category', 'tipe'],
-    poanColQty: ['qty', 'quantity', 'jumlah', 'pcs', 'koli', 'vol'],
-    poanColPo: ['po', 'poan', 'purchase', 'order', 'no po', 'nopo']
-  };
-  
-  selectors.forEach(function(id) {
-    var select = document.getElementById(id);
-    if (!select) return;
-    
-    select.innerHTML = '<option value="">-- Pilih Kolom --</option>';
-    
-    currentPoanHeaders.forEach(function(name, idx) {
-      if (idx === 0) return;
-      var opt = document.createElement('option');
-      opt.value = idx;
-      opt.textContent = 'Kolom ' + getColLetter(idx) + ': ' + name;
-      select.appendChild(opt);
-    });
-    
-    var bestMatch = findBestColumnMatch(currentPoanHeaders, keywords[id]);
-    if (bestMatch) {
-      select.value = bestMatch;
-    }
-  });
-  
-  document.getElementById('poanMappingSection').classList.remove('hidden');
 }
 
 function getColLetter(colIdx) {
@@ -10040,86 +10319,118 @@ function getColLetter(colIdx) {
   return letter;
 }
 
-function findBestColumnMatch(headers, keywords) {
-  for (var i = 1; i < headers.length; i++) {
-    var h = headers[i];
-    if (!h) continue;
-    var hLower = h.toLowerCase();
-    for (var k = 0; k < keywords.length; k++) {
-      if (hLower.indexOf(keywords[k]) !== -1) {
-        return i;
-      }
-    }
+// Baca nilai sel ExcelJS sebagai string (menangani richText & formula result)
+function _excelCellText(cell) {
+  var val = cell.value;
+  if (val && typeof val === 'object') {
+    if (val.richText) return val.richText.map(function(rt) { return rt.text; }).join('');
+    if (val.result !== undefined) return String(val.result);
+    return String(val.text || '');
   }
-  return "";
+  return val === null || val === undefined ? '' : String(val);
 }
 
-function submitPoanData() {
-  var colDescIdx = parseInt(document.getElementById('poanColDesc').value);
-  var colGrupIdx = parseInt(document.getElementById('poanColGrup').value);
-  var colQtyIdx  = parseInt(document.getElementById('poanColQty').value);
-  var colPoIdx   = parseInt(document.getElementById('poanColPo').value);
-  
-  if (!colDescIdx || !colGrupIdx || !colQtyIdx || (!currentPoanIsCX && !colPoIdx)) {
-    showPoanErr("❌ Semua kolom pemetaan harus dipilih!");
-    return;
-  }
-  
-  if (!_gasOK()) {
-    showPoanErr("❌ Fitur tambah POan memerlukan Google Apps Script environment.");
-    return;
-  }
-  
-  var worksheet = currentPoanWorkbook.worksheets[0];
-  var rowsToSave = [];
-  var plName = currentPoanFileName;
-  
-  for (var r = currentPoanHeaderRowIdx + 1; r <= worksheet.rowCount; r++) {
+// Mesin auto-detect — REPLIKA PERSIS "Excel Reader Otomatis": deteksi jenis file dari nama
+// (MLJ/XP, AIR/LCL) untuk kolom default (fallback), dipadukan scan header dinamis (cari kata
+// kunci di 25 baris pertama). Kode & Harga TIDAK diambil (tidak dipakai di sheet Check POan).
+// Item Grup diambil dari kolom setelah "Description BARCODE" — persis posisi "Item Group" pada
+// PL, dengan fallback dinamis kalau header-nya ketemu duluan lewat scan kata kunci.
+// POan diambil dari kolom "Keterangan"/"Marking" (sama seperti field "ket" pada Excel Reader).
+function autoDetectPoanColumns(worksheet, rawFileName) {
+  var fileConfig = detectPoanFileType(rawFileName);
+  var headerRowIdx = -1;
+  var dynamicCols = {};
+
+  var maxScan = Math.min(25, worksheet.rowCount);
+  for (var r = 1; r <= maxScan; r++) {
     var row = worksheet.getRow(r);
-    
-    var getVal = function(colIdx) {
-      var cell = row.getCell(colIdx);
-      var val = cell.value;
-      if (val && typeof val === 'object') {
-        if (val.richText) {
-          return val.richText.map(function(rt) { return rt.text; }).join('');
-        } else if (val.result !== undefined) {
-          return String(val.result);
-        } else {
-          return String(val.text || '');
-        }
+    var foundDesc = false;
+
+    row.eachCell({ includeEmpty: true }, function(cell, colNumber) {
+      var cellVal = _excelCellText(cell).trim().toLowerCase();
+      if (!cellVal) return;
+
+      if (dynamicCols.desc === undefined && cellVal.indexOf('description') !== -1) {
+        foundDesc = true;
+        dynamicCols.desc = colNumber;
       }
-      return val === null || val === undefined ? '' : String(val);
-    };
-    
-    var desc = getVal(colDescIdx).trim();
-    var grup = getVal(colGrupIdx).trim();
-    var qtyStr = getVal(colQtyIdx).trim();
-    var poanRaw = currentPoanIsCX ? '' : getVal(colPoIdx).trim();
-    
-    if (currentPoanIsCX) {
-      // Mode CX: hanya proses baris yang deskripsinya terisi
-      if (!desc) {
-        continue;
-      }
-    } else {
-      if (!desc && !grup && !qtyStr && !poanRaw) {
-        continue;
-      }
+      if (cellVal.indexOf('qty') !== -1) dynamicCols.qty = colNumber;
+      if (cellVal.indexOf('item group') !== -1 || cellVal.indexOf('itemgroup') !== -1) dynamicCols.grup = colNumber;
+      if (cellVal.indexOf('marking') !== -1) dynamicCols.ket = colNumber;
+    });
+
+    // Jika baris ini punya kolom "Description", anggap ini baris header (sama seperti Excel Reader Otomatis)
+    if (foundDesc) {
+      headerRowIdx = r;
+      break;
     }
-    
+  }
+
+  // Fallback: jika tidak ketemu header dinamis, gunakan defaultRow dari config sesuai jenis file
+  if (headerRowIdx === -1 && fileConfig) {
+    headerRowIdx = fileConfig.defaultRow;
+  } else if (headerRowIdx === -1) {
+    headerRowIdx = 7; // Asumsi umum jika tidak ada apapun (sama seperti Excel Reader Otomatis)
+  }
+
+  var descCol = dynamicCols.desc !== undefined ? dynamicCols.desc : (fileConfig ? fileConfig.cols.desc : -1);
+
+  // Item Grup: prioritas dari deteksi dinamis "Item Group", fallback ke posisi setelah
+  // "Description BARCODE" (yaitu 2 kolom setelah Description: Description -> Description BARCODE -> Item Group)
+  var grupCol = dynamicCols.grup !== undefined ? dynamicCols.grup : (descCol !== -1 ? descCol + 2 : -1);
+
+  var finalCols = {
+    desc: descCol,
+    grup: grupCol,
+    qty:  dynamicCols.qty !== undefined ? dynamicCols.qty : (fileConfig ? fileConfig.cols.qty : -1),
+    po:   dynamicCols.ket !== undefined ? dynamicCols.ket : (fileConfig ? fileConfig.cols.ket : -1)
+  };
+
+  return { headerRowIdx: headerRowIdx, cols: finalCols };
+}
+
+// Ekstraksi otomatis baris data: baca semua baris setelah header, POan diambil dari kolom
+// Keterangan/Marking (dengan fallback scan DECOY/BB/BB- di seluruh baris — sama seperti Excel
+// Reader Otomatis), lalu filter hanya yang nilainya berawalan BB atau CX.
+function extractPoanRows(worksheet, headerRowIdx, cols, plName, isCX) {
+  var rowsToSave = [];
+
+  for (var r = headerRowIdx + 1; r <= worksheet.rowCount; r++) {
+    var row = worksheet.getRow(r);
+
+    var desc = cols.desc !== -1 ? _excelCellText(row.getCell(cols.desc)).trim() : '';
+    var grup = cols.grup !== -1 ? _excelCellText(row.getCell(cols.grup)).trim() : '';
+    var qtyStr = cols.qty !== -1 ? _excelCellText(row.getCell(cols.qty)).trim() : '';
+    var poanRaw = (!isCX && cols.po !== -1) ? _excelCellText(row.getCell(cols.po)).trim() : '';
+
+    // Jika kolom Keterangan/Marking kosong atau tidak ditemukan, pindai seluruh sel di baris ini
+    // untuk mencari DECOY/BB/BB- (persis logika "ket" pada Excel Reader Otomatis)
+    if (!isCX && !poanRaw) {
+      row.eachCell({ includeEmpty: false }, function(cell) {
+        if (poanRaw) return;
+        var cellTxt = _excelCellText(cell).trim().toUpperCase();
+        if (cellTxt === 'DECOY' || cellTxt.indexOf('BB') === 0) {
+          poanRaw = cellTxt;
+        }
+      });
+    }
+
+    if (isCX) {
+      // Mode CX: hanya proses baris yang deskripsinya terisi
+      if (!desc) continue;
+    } else {
+      if (!desc && !grup && !qtyStr && !poanRaw) continue;
+    }
+
     var qty = parseInt(qtyStr.replace(/[^0-9\-]/g, '')) || 0;
-    
+
     // Jika nama file PL mengandung "CX", POAN otomatis diisi "CX" untuk baris yang terisi deskripsi
-    var poan = currentPoanIsCX ? 'CX' : poanRaw;
-    
+    var poan = isCX ? 'CX' : poanRaw;
     var poanUpper = poan.toUpperCase();
     var startsWithBbOrCx = poanUpper.indexOf('BB') === 0 || poanUpper.indexOf('CX') === 0;
-    
-    if (!startsWithBbOrCx) {
-      continue;
-    }
-    
+
+    if (!startsWithBbOrCx) continue;
+
     rowsToSave.push({
       packingList: plName,
       description: desc,
@@ -10128,11 +10439,80 @@ function submitPoanData() {
       poan: poan
     });
   }
-  
-  if (rowsToSave.length === 0) {
-    showPoanErr("❌ Tidak ada data POan yang berawalan BB atau CX dalam file.");
+
+  return rowsToSave;
+}
+
+function renderPoanPreview() {
+  var tbody = document.getElementById('poanPreviewBody');
+  tbody.innerHTML = currentPoanRows.map(function(item) {
+    return '<tr>'
+      + '<td class="px-2 py-1.5 max-w-[160px] truncate" title="' + item.description + '">' + item.description + '</td>'
+      + '<td class="px-2 py-1.5">' + (item.itemGrup || '-') + '</td>'
+      + '<td class="px-2 py-1.5 text-center font-bold">' + item.qty + '</td>'
+      + '<td class="px-2 py-1.5 font-bold text-amber-700 dark:text-amber-400">' + item.poan + '</td>'
+      + '</tr>';
+  }).join('');
+  document.getElementById('poanMappingSection').classList.remove('hidden');
+}
+
+// ================================================================
+// TAB ADMIN: PREVIEW DATA MD
+// ================================================================
+function renderMdPreview() {
+  var statusBox = document.getElementById('mdStatusBox');
+  var tbody     = document.getElementById('mdPreviewBody');
+  if (!statusBox || !tbody) return;
+
+  var isMdConfigured = MD_SPREADSHEET_ID && MD_SPREADSHEET_ID.indexOf('ISI_') !== 0
+                     && SHEET_MD && SHEET_MD.indexOf('ISI_') !== 0;
+
+  if (!isMdConfigured) {
+    statusBox.innerHTML = '<div class="flex items-center gap-2 text-red-600 dark:text-red-400"><span class="text-lg">⚠️</span><div><p class="text-xs font-extrabold">Belum dikonfigurasi</p><p class="text-[10px] text-gray-500 dark:text-gray-400">Isi MD_SPREADSHEET_ID dan SHEET_MD di kode terlebih dahulu.</p></div></div>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-gray-400 text-xs">Belum ada data — konfigurasi belum diisi.</td></tr>';
     return;
   }
+
+  if (!mdLoadStatus.loaded) {
+    statusBox.innerHTML = '<div class="flex items-center gap-2 text-gray-500"><span class="text-lg">⏳</span><div><p class="text-xs font-extrabold">Belum dimuat</p><p class="text-[10px] text-gray-400">Data belum berhasil diambil dari sheet "' + SHEET_MD + '". Coba klik "Muat Ulang".</p></div></div>';
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-gray-400 text-xs">Belum ada data.</td></tr>';
+    return;
+  }
+
+  var waktu = mdLoadStatus.lastLoadTime ? mdLoadStatus.lastLoadTime.toLocaleString('id-ID') : '-';
+  statusBox.innerHTML = '<div class="flex items-center gap-2 text-green-700 dark:text-green-400"><span class="text-lg">✅</span><div><p class="text-xs font-extrabold">Data MD sudah ada</p><p class="text-[10px] text-gray-500 dark:text-gray-400">' + mdLoadStatus.count + ' PL dimuat dari sheet "' + SHEET_MD + '" &bull; terakhir dimuat ' + waktu + '</p></div></div>';
+
+  if (rawMdList.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-gray-400 text-xs">Sheet MD kosong / tidak ada baris valid.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rawMdList.map(function(item) {
+    var estDate = _mdCalcEstimasiTiba(item.tanggalMuat, item.marking);
+    var estStr  = estDate ? (formatIndoDateShort(estDate) + ' ' + estDate.getFullYear()) : '-';
+    return '<tr>'
+      + '<td class="px-2 py-1.5">' + item.packingListAsli + '</td>'
+      + '<td class="px-2 py-1.5 font-bold text-amber-700 dark:text-amber-400">' + item.packingList + '</td>'
+      + '<td class="px-2 py-1.5 text-center font-bold">' + item.ctns + '</td>'
+      + '<td class="px-2 py-1.5">' + formatIndoDateShort(item.tanggalMuat) + ' ' + item.tanggalMuat.getFullYear() + '</td>'
+      + '<td class="px-2 py-1.5 font-bold text-blue-700 dark:text-blue-400">' + (item.marking || '-') + '</td>'
+      + '<td class="px-2 py-1.5 font-bold text-green-700 dark:text-green-400">' + estStr + '</td>'
+      + '</tr>';
+  }).join('');
+}
+
+function submitPoanData() {
+  if (!currentPoanRows || currentPoanRows.length === 0) {
+    showPoanErr("❌ Tidak ada data hasil deteksi otomatis untuk disimpan.");
+    return;
+  }
+  
+  if (!_gasOK()) {
+    showPoanErr("❌ Fitur tambah POan memerlukan Google Apps Script environment.");
+    return;
+  }
+  
+  var rowsToSave = currentPoanRows;
   
   var btn = document.getElementById('btnSubmitPoan');
   btn.disabled = true;
@@ -10151,10 +10531,9 @@ function submitPoanData() {
         document.getElementById('poanFileInput').value = '';
         document.getElementById('poanFileLabel').textContent = "Pilih file Excel Packing List (.xlsx / .xls)";
         document.getElementById('poanMappingSection').classList.add('hidden');
-        currentPoanWorkbook = null;
-        currentPoanHeaders = [];
         currentPoanFileName = "";
         currentPoanIsCX = false;
+        currentPoanRows = [];
       } else {
         showPoanErr('❌ ' + res.message);
       }
