@@ -43,21 +43,6 @@ html,body{height:100%;margin:0;background:#f3f4f6;transition:background-color .3
    touch-action:pan-y  → browser tahu dari awal bahwa horizontal = JS,
    tidak perlu tunggu LOCK_THRESH 8px → tidak ada native horizontal scroll
    yang keburu mulai sebelum e.preventDefault() dipanggil. */
-/* ── Mode Kalender Penuh (tab Estimasi) ── */
-body.fullcal-mode #runningTextBar,
-body.fullcal-mode #dashEstimasiContainer,
-body.fullcal-mode #calendarSubtitle {
-  display: none !important;
-}
-body.fullcal-mode #calendarGrid > div {
-  min-height: 130px !important;
-}
-@media (min-width: 640px) {
-  body.fullcal-mode #calendarGrid > div {
-    min-height: 170px !important;
-  }
-}
-
 #calendarSwipeZone{
   overflow-x:hidden;
   touch-action:pan-y;
@@ -604,7 +589,7 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
 <div class="kalender-main-card w-full max-w-[1600px] mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 flex flex-col overflow-hidden transition-colors duration-200" style="min-height:calc(100vh - 2rem)">
 
   <!-- Running Text -->
-  <div id="runningTextBar" class="bg-red-600 dark:bg-red-700 text-white text-xs font-bold flex items-center overflow-hidden flex-shrink-0 z-20 shadow-sm border-b border-red-700 dark:border-red-900">
+  <div class="bg-red-600 dark:bg-red-700 text-white text-xs font-bold flex items-center overflow-hidden flex-shrink-0 z-20 shadow-sm border-b border-red-700 dark:border-red-900">
     <div class="px-3 py-1.5 bg-red-700 dark:bg-red-800 z-10 shadow-md whitespace-nowrap flex items-center gap-1 uppercase tracking-wider">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       Pusat Informasi
@@ -674,10 +659,6 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
       <button onclick="openWelcomeModal()" class="p-2 bg-white/10 hover:bg-white/20 border border-white/30 rounded-lg transition-colors focus:outline-none flex items-center justify-center shadow-sm" title="Panduan">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       </button>
-      <button id="btnFullCalToggle" onclick="toggleFullCalMode()" class="p-2 bg-white/10 hover:bg-white/20 border border-white/30 rounded-lg transition-colors focus:outline-none flex items-center justify-center shadow-sm" title="Mode Kalender Penuh">
-        <svg id="fullCalIconExpand" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
-        <svg id="fullCalIconCollapse" class="hidden w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9V4.5M9 9H4.5M9 9L3.5 3.5M15 9V4.5M15 9h4.5M15 9l5.5-5.5M9 15v4.5M9 15H4.5M9 15l-5.5 5.5M15 15v4.5M15 15h4.5M15 15l5.5 5.5"/></svg>
-      </button>
       <button id="themeToggle" class="p-2 bg-white/10 hover:bg-white/20 border border-white/30 rounded-lg transition-colors focus:outline-none flex items-center justify-center shadow-sm" title="Tema">
         <svg id="themeToggleLightIcon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"/></svg>
         <svg id="themeToggleDarkIcon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
@@ -721,6 +702,12 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
       </button>
       <button id="tabHistogram" class="flex-1 sm:flex-none whitespace-nowrap px-4 sm:px-6 py-2.5 rounded-lg text-xs sm:text-sm font-extrabold transition-all relative z-10 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-300/50 dark:hover:bg-gray-700 flex items-center gap-1.5">
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>Data Histogram
+      </button>
+      <div class="w-px bg-gray-300 dark:bg-gray-600 mx-1 self-stretch rounded-full flex-shrink-0"></div>
+      <button id="tabAdminView" class="flex-1 sm:flex-none whitespace-nowrap px-4 sm:px-6 py-2.5 rounded-lg text-xs sm:text-sm font-extrabold transition-all relative z-10 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 flex items-center gap-1.5" title="Monitoring status proses bongkar per PL">
+        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span class="hidden sm:inline">Admin View</span><span class="sm:hidden">Admin</span>
+        <span id="adminViewWarnBadge" class="hidden ml-1 text-[9px] font-black bg-red-500 text-white px-1.5 py-0.5 rounded-full"></span>
       </button>
     </div>
     <div id="liveIndicator" class="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-1.5 opacity-50 transition-all duration-300 hidden sm:flex">
@@ -831,14 +818,14 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
           <button onclick="_histoNavMonth(-1)" class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-violet-100 dark:hover:bg-violet-900/40 hover:text-violet-600 dark:hover:text-violet-400 transition-all text-gray-600 dark:text-gray-300 font-black text-lg" title="Bulan sebelumnya">‹</button>
           <div class="text-center">
             <span id="histoMonthLabel" class="text-sm font-extrabold text-gray-800 dark:text-gray-100"></span>
-            <p class="text-[10px] text-gray-400 font-bold mt-0.5">Klik ‹ › untuk pindah bulan</p>
+            <p class="text-[10px] text-gray-400 font-bold mt-0.5">Geser atau klik ‹ › untuk pindah bulan</p>
           </div>
           <button onclick="_histoNavMonth(1)" class="w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-violet-100 dark:hover:bg-violet-900/40 hover:text-violet-600 dark:hover:text-violet-400 transition-all text-gray-600 dark:text-gray-300 font-black text-lg" title="Bulan berikutnya">›</button>
         </div>
       </div>
       <div id="histoSummaryCards" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6"></div>
       <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-4 sm:p-6 overflow-x-auto">
-        <div id="histoChartArea" class="w-full sm:min-w-[700px]"></div>
+        <div id="histoChartArea" class="min-w-[700px]"></div>
       </div>
       <div class="mt-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="px-5 py-3.5 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
@@ -1060,11 +1047,12 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
       <!-- Filters -->
       <div class="px-5 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 flex-shrink-0">
         <div class="flex flex-wrap items-center gap-3">
-          <!-- Sumber data (disembunyikan di build APK — hanya Estimasi yang dipakai) -->
-          <div class="hidden items-center gap-2">
+          <!-- Sumber data -->
+          <div class="flex items-center gap-2">
             <label class="text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sumber:</label>
             <select id="listPLSource" onchange="_populateListPLYearMonth();renderListPL();" class="text-xs font-bold border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-indigo-400 focus:outline-none shadow-sm">
               <option value="estimasi">📅 Estimasi Kedatangan</option>
+              <option value="gudang">📦 Barang di Gudang</option>
             </select>
           </div>
           <!-- Tahun -->
@@ -1148,6 +1136,29 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
         <div id="dayHdr-5" class="py-3 text-center text-xs sm:text-sm font-bold text-gray-600 dark:text-gray-400 transition-all">Jum</div>
         <div id="dayHdr-6" class="py-3 text-center text-xs sm:text-sm font-bold text-gray-600 dark:text-gray-400 transition-all">Sab</div>
       </div>
+
+      <!-- GUDANG LIST PANEL (mengganti grid kalender pada tab Barang di Gudang) -->
+      <div id="gudangListPanel" class="hidden flex-col flex-grow bg-white dark:bg-gray-800 transition-colors duration-200 min-h-0">
+        <div class="sticky top-0 z-10 bg-gradient-to-r from-indigo-600 to-indigo-500 dark:from-indigo-900 dark:to-indigo-800 text-white px-4 py-3 flex items-center justify-between flex-shrink-0 shadow-md">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center">
+              <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-sm">Antrean Status Antrean Gudang</h3>
+              <p id="glBadgeInfo" class="text-indigo-200 text-[10px] font-semibold mt-0.5">Daftar barang sedang proses / belum turun toko</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span id="glCountBadge" class="text-[9px] font-extrabold bg-white/20 border border-white/30 text-white px-2 py-0.5 rounded-lg">0</span>
+          </div>
+        </div>
+        <div id="gudangListBody" class="divide-y divide-gray-100 dark:divide-gray-700 overflow-y-auto flex-1"></div>
+        <div id="gudangListEmpty" class="hidden py-14 text-center text-gray-400 dark:text-gray-500 text-sm font-bold">
+          <div class="text-4xl mb-2">📭</div>Tidak ada antrean gudang
+        </div>
+      </div>
+
       <div id="calendarGrid" class="grid grid-cols-7 gap-px bg-gray-200 dark:bg-gray-700 flex-grow transition-colors duration-200"></div>
       <div id="legendaEstimasi" class="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 p-3 sm:p-4 flex flex-wrap justify-center gap-x-6 gap-y-2 text-[10px] sm:text-xs text-gray-600 dark:text-gray-400 font-medium transition-colors duration-200">
         <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500 border border-red-600"></span><span>Lewat &gt; 1 Minggu</span></div>
@@ -1206,40 +1217,6 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
         <div id="mplFooter" class="px-4 py-2 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-[10px] text-gray-500 dark:text-gray-400 font-bold"></div>
       </div>
 
-    </div>
-
-    <!-- Tab Gudang: tampilan list "Antrean Gudang" (bukan kalender) -->
-    <div id="gudangListView" class="hidden flex-col flex-grow overflow-y-auto overflow-x-hidden custom-scrollbar p-3 sm:p-4 space-y-3 bg-gray-50/50 dark:bg-gray-900/50 transition-colors duration-200"></div>
-
-    <!-- Tab Tentang Aplikasi -->
-    <div id="aboutPanel" class="hidden flex-col flex-grow overflow-y-auto bg-gray-50 dark:bg-gray-900 transition-colors duration-200 custom-scrollbar">
-      <div class="p-4 sm:p-6 max-w-lg mx-auto w-full space-y-4">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-6 text-center">
-          <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-sm">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-          </div>
-          <h3 class="font-extrabold text-gray-800 dark:text-gray-100 text-lg">Kalender Estimasi Barang</h3>
-          <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Aplikasi Android — dibungkus dari web app</p>
-          <div class="inline-flex items-center gap-1.5 mt-3 px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-            Versi Terpasang <span id="aboutCurrentVersion" class="text-blue-600 dark:text-blue-400">v—</span>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm p-5">
-          <div class="flex items-center justify-between mb-3">
-            <h4 class="font-extrabold text-gray-800 dark:text-gray-100 text-sm">Update Aplikasi</h4>
-            <button id="aboutCheckUpdateBtn" onclick="_aboutCheckUpdateNow()" class="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-extrabold px-3.5 py-2 rounded-lg transition-colors shadow-sm">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              Cek Update
-            </button>
-          </div>
-          <div id="aboutUpdateStatus" class="rounded-xl border p-3.5 text-xs font-semibold border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400">
-            Belum dicek pada sesi ini.
-          </div>
-        </div>
-
-        <p class="text-center text-[10px] text-gray-400 dark:text-gray-600">Sumber data: Google Sheets · Update: GitHub Releases</p>
-      </div>
     </div>
 
     <!-- Sidebar Overlay Backdrop -->
@@ -1311,7 +1288,7 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
 <div id="detailModal" class="fixed inset-0 bg-gray-900/70 dark:bg-gray-900/80 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4 z-50 fade-in">
   <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh] border dark:border-gray-700">
     <div class="flex justify-between items-start p-4 sm:p-5 border-b border-gray-100 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-900/80">
-      <div class="pr-4"><h3 class="text-lg sm:text-xl font-bold text-gray-800 dark:text-white">Rincian Barang</h3><p id="modalDateDisplay" class="text-sm text-blue-600 dark:text-blue-400 font-bold mt-1">Tanggal</p></div>
+      <div class="pr-4"><h3 class="text-lg sm:text-xl font-bold text-gray-800 dark:text-white">Rincian Barang</h3><p id="modalDateDisplay" class="text-sm text-blue-600 dark:text-blue-400 font-bold mt-1">Tanggal</p><div id="modalSourceTabs" class="hidden flex gap-1.5 mt-2.5"><button id="mdTabGd" onclick="_setModalSourceTab('gd')" class="px-3 py-1.5 text-[11px] font-extrabold rounded-lg border-2 transition-all"></button><button id="mdTabMd" onclick="_setModalSourceTab('md')" class="px-3 py-1.5 text-[11px] font-extrabold rounded-lg border-2 transition-all"></button></div></div>
       <div class="flex flex-col items-end gap-2">
         <button id="btnCloseModal" class="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-full transition-colors focus:outline-none"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
         <div id="modalSummary"></div>
@@ -2653,27 +2630,54 @@ function processMdData(data) {
     return;
   }
 
-  var COL_PL    = 1; // Kolom B
-  var COL_CTNS  = 2; // Kolom C
-  var COL_TGMUAT= 4; // Kolom E
+  var COL_PL        = 1;  // Kolom B
+  var COL_CTNS      = 2;  // Kolom C
+  var COL_TGMUAT    = 4;  // Kolom E
+  var COL_TGBONGKAR = 9;  // Kolom J — dipakai utk step "Masuk Gudang"
+  var COL_TURUNTOKO = 12; // Kolom M — dipakai utk step "Turun ke Toko"
 
   var todayMidnight = new Date(); todayMidnight.setHours(0,0,0,0);
 
+  // ── Set PL dari Data Saya (sheet utama) untuk dedup — kalau PL yang sama
+  // sudah ada di Data Saya, item MD tidak usah ditampilkan lagi (hindari
+  // dobel "DATA MD (Sumber Terpisah)" di Rincian Barang) ──
+  var normKeyMd = function(pl) { return String(pl || '').trim().toUpperCase(); };
+  var sayaPlSet = {};
+  (rawEstimasiList || []).forEach(function(item) {
+    var key = normKeyMd(item.packingList);
+    if (key) sayaPlSet[key] = true;
+  });
+
   data.table.rows.forEach(function(row) {
     if (!row.c) return;
-    var plRaw     = getSafeText(row.c[COL_PL]);
-    var ctnsValue = getSafeText(row.c[COL_CTNS]);
-    var tglMuat   = parseDateForCalendar(row.c[COL_TGMUAT]);
+    var plRaw       = getSafeText(row.c[COL_PL]);
+    var ctnsValue   = getSafeText(row.c[COL_CTNS]);
+    var tglMuat     = parseDateForCalendar(row.c[COL_TGMUAT]);
+    var tglBongkar  = parseDateForCalendar(row.c[COL_TGBONGKAR]);   // J: Tanggal Bongkar
+    var tglTurunToko= parseDateForCalendar(row.c[COL_TURUNTOKO]);   // M: Turun Toko
 
     if (!plRaw || plRaw === '-' || !tglMuat) return;
 
     var plValue = _mdNormalizePL(plRaw); // nama PL setelah digabung dengan suffix tahun/sheet
     var mdMarking = _mdDeriveMarking(plRaw); // marking hasil deteksi dari nama PL, mis. "METRO/HART-TN/SEA"
 
-    rawMdList.push({ packingListAsli: plRaw, packingList: plValue, ctns: ctnsValue, tanggalMuat: tglMuat, marking: mdMarking });
+    rawMdList.push({ packingListAsli: plRaw, packingList: plValue, ctns: ctnsValue, tanggalMuat: tglMuat, marking: mdMarking, tglBongkar: tglBongkar, tglTurunToko: tglTurunToko });
 
-    var dateKey  = formatDateStr(tglMuat.getFullYear(), tglMuat.getMonth(), tglMuat.getDate());
-    var diffDays = Math.floor((todayMidnight - tglMuat) / 86400000);
+    // ── PL sudah ada di Data Saya → sudah terwakili dari sheet utama,
+    // tidak usah ditampilkan lagi sebagai entri terpisah dari MD.
+    // Tetap disimpan di rawMdList supaya masih kelihatan di preview Admin.
+    if (sayaPlSet[normKeyMd(plValue)]) return;
+
+    // ── Kalau sudah Masuk Gudang (kolom J terisi) berarti sudah datang —
+    // tidak perlu lagi tampil di kalender "Estimasi Kedatangan".
+    // Tetap disimpan di rawMdList supaya masih kelihatan di preview Admin.
+    if (tglBongkar) return;
+
+    // ── Kalender pakai ESTIMASI TIBA (tglMuat + offset marking), bukan
+    // tanggal muat/nota langsung — konsisten dengan processEstimasiData() ──
+    var estDate  = _mdCalcEstimasiTiba(tglMuat, mdMarking) || tglMuat;
+    var dateKey  = formatDateStr(estDate.getFullYear(), estDate.getMonth(), estDate.getDate());
+    var diffDays = Math.floor((todayMidnight - estDate) / 86400000);
     var status   = diffDays > 7 ? 'red' : (diffDays >= 1 ? 'yellow' : 'normal');
 
     if (!eventsData[dateKey]) eventsData[dateKey] = [];
@@ -2689,7 +2693,9 @@ function processMdData(data) {
       fotoUrl: null,
       originalDateKey: dateKey,
       isNew: false,
-      isMD: true // ── penanda: data ini dari sumber MD (spreadsheet terpisah) ──
+      isMD: true, // ── penanda: data ini dari sumber MD (spreadsheet terpisah) ──
+      tgBongkar: tglBongkar,       // J — "Masuk Gudang"
+      tgTurunToko: tglTurunToko    // M — "Turun ke Toko"
     });
   });
 
@@ -2865,22 +2871,6 @@ function _applyAdaptiveHeader(month) {
   if (!hdr.className.includes('bg-gradient-to-r')) hdr.className += ' bg-gradient-to-r';
   hdr.className += ' ' + grad;
 }
-
-// Mode Kalender Penuh: sembunyikan banner & kartu dashboard, perbesar kotak tanggal.
-// Hanya relevan/tersedia di tab Estimasi.
-function toggleFullCalMode() {
-  var isOn = document.body.classList.toggle('fullcal-mode');
-  localStorage.setItem('kalender_fullcal_mode', isOn ? '1' : '0');
-  document.getElementById('fullCalIconExpand').classList.toggle('hidden', isOn);
-  document.getElementById('fullCalIconCollapse').classList.toggle('hidden', !isOn);
-}
-document.addEventListener('DOMContentLoaded', function() {
-  if (localStorage.getItem('kalender_fullcal_mode') === '1') {
-    document.body.classList.add('fullcal-mode');
-    document.getElementById('fullCalIconExpand').classList.add('hidden');
-    document.getElementById('fullCalIconCollapse').classList.remove('hidden');
-  }
-});
 
 function renderCalendar() {
   var grid       = document.getElementById('calendarGrid');
@@ -3097,27 +3087,56 @@ function renderCalendar() {
         } else {
           bCls = getGudangStatusBadgeClass(dayEvents[0].status);
         }
-        var plLabel       = document.createElement('div');
-        plLabel.className = 'text-[10px] font-bold px-1 py-0.5 rounded border text-center ' + bCls;
-        plLabel.textContent = dayEvents.length + ' PL';
-        cont.appendChild(plLabel);
-
-        var totalKoli = dayEvents.reduce(function(acc, ev) { return acc + (parseInt(String(ev.koli).match(/\d+/)) || 0); }, 0);
-        if (totalKoli > 0) {
-          var koliLabel = document.createElement('div');
-          koliLabel.className = 'text-[10px] text-indigo-800 dark:text-indigo-300 font-bold text-center bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-800/50 rounded';
-          koliLabel.textContent = totalKoli + ' Koli';
-          cont.appendChild(koliLabel);
-        }
-        // ── Penanda khusus: ada item dari sumber MD (garis dashed, beda dari badge estimasi biasa) ──
+        // ── Pisahkan data MD dan non-MD pada tab estimasi ──
         if (currentTab === 'estimasi') {
-          var mdCount = dayEvents.filter(function(e) { return e.isMD; }).length;
-          if (mdCount > 0) {
-            var mdLabel = document.createElement('div');
-            mdLabel.className = 'text-[10px] text-amber-700 dark:text-amber-400 font-bold text-center bg-amber-50 dark:bg-amber-900/20 border border-dashed border-amber-400 dark:border-amber-600 rounded';
-            mdLabel.textContent = mdCount + ' MD';
-            mdLabel.title = 'Data tambahan dari sumber MD (spreadsheet terpisah)';
-            cont.appendChild(mdLabel);
+          var mdEvents = dayEvents.filter(function(e) { return e.isMD; });
+          var nonMdEvents = dayEvents.filter(function(e) { return !e.isMD; });
+
+          // Badge PL non-MD
+          if (nonMdEvents.length > 0) {
+            var plLabel = document.createElement('div');
+            plLabel.className = 'text-[10px] font-bold px-1 py-0.5 rounded border text-center ' + bCls;
+            plLabel.textContent = nonMdEvents.length + ' PL';
+            cont.appendChild(plLabel);
+
+            var totalKoli = nonMdEvents.reduce(function(acc, ev) { return acc + (parseInt(String(ev.koli).match(/\d+/)) || 0); }, 0);
+            if (totalKoli > 0) {
+              var koliLabel = document.createElement('div');
+              koliLabel.className = 'text-[10px] text-indigo-800 dark:text-indigo-300 font-bold text-center bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-800/50 rounded';
+              koliLabel.textContent = totalKoli + ' Koli';
+              cont.appendChild(koliLabel);
+            }
+          }
+
+          // Badge MD terpisah
+          if (mdEvents.length > 0) {
+            var mdPlLabel = document.createElement('div');
+            mdPlLabel.className = 'text-[10px] text-amber-700 dark:text-amber-400 font-bold text-center bg-amber-50 dark:bg-amber-900/20 border border-dashed border-amber-400 dark:border-amber-600 rounded px-1 py-0.5';
+            mdPlLabel.textContent = 'MD ' + mdEvents.length + ' PL';
+            mdPlLabel.title = 'Data tambahan dari sumber MD (spreadsheet terpisah)';
+            cont.appendChild(mdPlLabel);
+
+            var mdKoli = mdEvents.reduce(function(acc, ev) { return acc + (parseInt(String(ev.koli).match(/\d+/)) || 0); }, 0);
+            if (mdKoli > 0) {
+              var mdKoliLabel = document.createElement('div');
+              mdKoliLabel.className = 'text-[10px] text-amber-800 dark:text-amber-300 font-bold text-center bg-amber-50 dark:bg-amber-900/20 border border-dashed border-amber-400 dark:border-amber-600 rounded';
+              mdKoliLabel.textContent = mdKoli + ' Koli';
+              cont.appendChild(mdKoliLabel);
+            }
+          }
+        } else {
+          // Tab gudang: tampilkan badge biasa tanpa pemisahan MD
+          var plLabel = document.createElement('div');
+          plLabel.className = 'text-[10px] font-bold px-1 py-0.5 rounded border text-center ' + bCls;
+          plLabel.textContent = dayEvents.length + ' PL';
+          cont.appendChild(plLabel);
+
+          var totalKoli = dayEvents.reduce(function(acc, ev) { return acc + (parseInt(String(ev.koli).match(/\d+/)) || 0); }, 0);
+          if (totalKoli > 0) {
+            var koliLabel = document.createElement('div');
+            koliLabel.className = 'text-[10px] text-indigo-800 dark:text-indigo-300 font-bold text-center bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-200 dark:border-indigo-800/50 rounded';
+            koliLabel.textContent = totalKoli + ' Koli';
+            cont.appendChild(koliLabel);
           }
         }
         cell.appendChild(cont);
@@ -3327,7 +3346,49 @@ function updateSidebar() {
         + '</div>';
     });
   }
+
+  // Sinkronkan panel list utama (tab Barang di Gudang) dengan isi sidebar antrean
+  syncGudangListPanel();
 }
+
+// ================================================================
+// PANEL LIST ANTREAN GUDANG (tampilan utama tab "Barang di Gudang")
+// ================================================================
+function syncGudangListPanel() {
+  var body = document.getElementById('gudangListBody');
+  if (!body) return;
+  var src  = document.getElementById('sidebarGudangContent');
+  body.innerHTML = (src && src.innerHTML) || '';
+  // Tambahkan padding & spasi agar serasi dengan layout utama
+  body.className = "p-3 sm:p-4 overflow-y-auto flex-1 bg-gray-50/50 dark:bg-gray-900/50 space-y-3 custom-scrollbar";
+  var cnt  = body.querySelectorAll('[onclick*="openGudangCard"]').length;
+  var badge = document.getElementById('glCountBadge');
+  if (badge) badge.textContent = cnt + ' antrean';
+  var empty = document.getElementById('gudangListEmpty');
+  if (empty) empty.classList.toggle('hidden', cnt > 0);
+}
+
+// Tampilkan/sembunyikan tampilan list mengganti grid kalender
+function setGudangListView(show) {
+  var calGrid    = document.getElementById('calendarGrid');
+  var calHeaders = document.getElementById('calDayHeaders');
+  var le = document.getElementById('legendaEstimasi');
+  var lg = document.getElementById('legendaGudang');
+  var lp = document.getElementById('gudangListPanel');
+  if (calGrid)    calGrid.style.display = show ? 'none' : '';
+  if (calHeaders) calHeaders.style.display = show ? 'none' : '';
+  if (show) {
+    if (le) le.style.display = 'none';
+    if (lg) lg.style.display = 'none';
+    if (lp) { lp.classList.remove('hidden'); lp.classList.add('flex'); }
+  } else {
+    if (le) le.style.display = '';
+    if (lg) lg.style.display = '';
+    if (lp) { lp.classList.add('hidden'); lp.classList.remove('flex'); }
+  }
+}
+
+function renderGudangList() { updateSidebar(); syncGudangListPanel(); }
 
 window.openGudangCard = function(plKey, dateKey) {
   if (!gudangData[dateKey]) return;
@@ -3335,28 +3396,33 @@ window.openGudangCard = function(plKey, dateKey) {
   if (events.length > 0) { currentTab = 'gudang'; openModal(dateKey, events); }
 };
 
-// Dipanggil dari tombol "Lihat di kalender" di kartu hasil drilldown dashboard —
-// pindah kalender ke bulan yang bersangkutan lalu buka detail tanggal itu.
-function _gotoDrillDate(dateStr) {
-  var p = dateStr.split('-');
-  currentDate = new Date(+p[0], +p[1]-1, 1);
-  document.getElementById('detailModal').classList.add('hidden');
-  if (typeof closeContainerModal === 'function') closeContainerModal();
-  else { var cdm = document.getElementById('containerDrillModal'); if (cdm) cdm.classList.add('hidden'); }
-  currentTab = 'estimasi';
-  if (typeof elTE !== 'undefined' && elTE) elTE.click();
-  else renderCalendar();
-  setTimeout(function() {
-    var dayEvents = eventsData[dateStr] || [];
-    var holiday = (typeof holidays !== 'undefined') ? holidays[dateStr] : null;
-    openModal(dateStr, dayEvents, holiday);
-  }, 300);
-}
-
 // ================================================================
 // MODAL DETAIL
 // ================================================================
-function openModal(dateStr, events, holidayName) {
+// ── Tab sumber pada modal Rincian Barang (tab Estimasi) ──
+// GD = data Non-MD (data sendiri), MD = data dari sumber MD terpisah
+var _modalTabCtx = null;
+var _modalSourceTab = 'gd';
+function _setModalSourceTab(tab) {
+  _modalSourceTab = (tab === 'md') ? 'md' : 'gd';
+  if (_modalTabCtx) openModal(_modalTabCtx.dateStr, _modalTabCtx.events, _modalTabCtx.holidayName, true);
+}
+
+function openModal(dateStr, events, holidayName, preserveSourceTab) {
+  var sourceEvents = Array.isArray(events) ? events.slice() : [];
+  _modalTabCtx = { dateStr: dateStr, events: sourceEvents, holidayName: holidayName };
+  var gdEvents = sourceEvents.filter(function(e) { return !e.isMD; });
+  var mdEvents = sourceEvents.filter(function(e) { return Boolean(e.isMD); });
+  // Saat membuka tanggal baru, pilih GD jika tersedia; jika tidak, pilih MD.
+  if (currentTab === 'estimasi' && !preserveSourceTab) {
+    _modalSourceTab = gdEvents.length ? 'gd' : 'md';
+  }
+  // Filter kartu hanya di modal Estimasi; modal Gudang tetap menampilkan seluruh daftar.
+  if (currentTab === 'estimasi') {
+    events = (_modalSourceTab === 'md') ? mdEvents : gdEvents;
+  } else {
+    events = sourceEvents;
+  }
   var cont = document.getElementById('modalContent');
   document.getElementById('modalDateDisplay').textContent = formatIndoDate(dateStr);
   cont.innerHTML = '';
@@ -3368,6 +3434,25 @@ function openModal(dateStr, events, holidayName) {
 
   if (holidayName) {
     cont.innerHTML += '<div class="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-3 rounded mb-2"><h4 class="text-xs font-bold text-red-700 dark:text-red-400 uppercase">Hari Libur Nasional</h4><p class="text-sm text-red-600 dark:text-red-500">' + holidayName + '</p></div>';
+  }
+  // ── Tab GD / MD pada Rincian Barang (tab Estimasi Kedatangan) ──
+  var tabsEl = document.getElementById('modalSourceTabs');
+  if (currentTab === 'estimasi' && (gdEvents.length > 0 || mdEvents.length > 0)) {
+    tabsEl.classList.remove('hidden');
+    tabsEl.classList.add('flex');
+    var gdKoli = gdEvents.reduce(function(a,e){ return a + (parseInt(String(e.koli).match(/\d+/))||0); }, 0);
+    var mdKoli = mdEvents.reduce(function(a,e){ return a + (parseInt(String(e.koli).match(/\d+/))||0); }, 0);
+    document.getElementById('mdTabGd').textContent = 'GD ' + gdEvents.length + ' PL · ' + gdKoli + ' Koli';
+    document.getElementById('mdTabGd').className = _modalSourceTab === 'gd'
+      ? 'px-3 py-1.5 text-[11px] font-extrabold rounded-lg border-2 transition-all bg-indigo-600 text-white border-indigo-600 shadow'
+      : 'px-3 py-1.5 text-[11px] font-extrabold rounded-lg border-2 transition-all bg-white dark:bg-gray-800 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-900/30';
+    document.getElementById('mdTabMd').textContent = 'MD ' + mdEvents.length + ' PL · ' + mdKoli + ' Koli';
+    document.getElementById('mdTabMd').className = _modalSourceTab === 'md'
+      ? 'px-3 py-1.5 text-[11px] font-extrabold rounded-lg border-2 transition-all bg-amber-600 text-white border-amber-600 shadow'
+      : 'px-3 py-1.5 text-[11px] font-extrabold rounded-lg border-2 transition-all bg-white dark:bg-gray-800 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/30';
+  } else {
+    tabsEl.classList.add('hidden');
+    tabsEl.classList.remove('flex');
   }
 
   events.forEach(function(ev, idx) {
@@ -3668,7 +3753,7 @@ function switchHistoMode(mode) {
   // Tampilkan/sembunyikan month nav
   var nav = document.getElementById('histoMonthNav');
   if (nav) {
-    if (mode === 'shipment' || mode === 'bongkar' || mode === 'pengiriman') {
+    if (mode === 'shipment' || mode === 'bongkar') {
       nav.classList.remove('hidden');
       nav.classList.add('flex');
     } else {
@@ -3689,9 +3774,29 @@ function _histoNavMonth(dir) {
   renderHistogram();
 }
 
-// Swipe pindah bulan di histogram SUDAH DINONAKTIFKAN (permintaan user) —
-// pindah bulan sekarang hanya lewat tombol klik ‹ › (lihat _histoNavMonth).
-
+// Inisialisasi swipe pada chart area untuk pindah bulan (mode shipment/bongkar)
+(function() {
+  var _sx = 0, _sy = 0, _sActive = false;
+  document.addEventListener('DOMContentLoaded', function() {
+    var area = document.getElementById('histoChartArea');
+    if (!area) return;
+    area.addEventListener('touchstart', function(e) {
+      if (e.touches.length !== 1) return;
+      _sx = e.touches[0].clientX;
+      _sy = e.touches[0].clientY;
+      _sActive = true;
+    }, {passive: true});
+    area.addEventListener('touchend', function(e) {
+      if (!_sActive) return;
+      _sActive = false;
+      if (histoMode !== 'shipment' && histoMode !== 'bongkar') return;
+      var dx = e.changedTouches[0].clientX - _sx;
+      var dy = e.changedTouches[0].clientY - _sy;
+      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+      _histoNavMonth(dx < 0 ? 1 : -1);
+    }, {passive: true});
+  });
+})();
 
 function renderHistogram() {
   if (histoMode === 'pengiriman') { renderHistogramPengiriman(); return; }
@@ -3806,8 +3911,7 @@ function renderHistogram() {
 }
 
 // Render chart 4 batang besar untuk mode Shipment per-bulan
-function _renderHistoChartSingleMonth(GROUPS, shipData, shipPL, isDark, drillFn) {
-  drillFn = drillFn || function(key, mIdx) { return "_shipmentDrill('" + key + "'," + mIdx + ")"; };
+function _renderHistoChartSingleMonth(GROUPS, shipData, shipPL, isDark) {
   var maxVal = GROUPS.reduce(function(s,g){ return Math.max(s, shipData[g.key]); }, 0);
   if (maxVal === 0) maxVal = 100;
 
@@ -3849,7 +3953,7 @@ function _renderHistoChartSingleMonth(GROUPS, shipData, shipPL, isDark, drillFn)
         inner += '<text class="histo-bar-label" x="'+(x+BAR_W/2)+'" y="'+(ty+fs/2)+'" text-anchor="middle" font-size="'+fs+'" font-weight="900" fill="white" font-family="sans-serif">'+v.toLocaleString('id-ID')+'</text>';
       }
       inner += '<title>'+g.label+': '+v.toLocaleString('id-ID')+' koli — klik untuk lihat rincian</title>';
-      svgBars += '<g class="bar-clickable" onclick="'+drillFn(g.key, histoMonthIdx)+'" role="button" aria-label="'+g.label+' '+v+'">'+inner+'</g>';
+      svgBars += '<g class="bar-clickable" onclick="_shipmentDrill(\''+g.key+'\','+histoMonthIdx+')" role="button" aria-label="'+g.label+' '+v+'">'+inner+'</g>';
     } else {
       svgBars += '<text x="'+(x+BAR_W/2)+'" y="'+(PAD_T+CHART_H-8)+'" text-anchor="middle" font-size="10" fill="'+mc+'" font-family="sans-serif">0</text>';
     }
@@ -4042,112 +4146,116 @@ function renderHistogramPengiriman() {
     {key:'Container', label:'Container', color:'#f97316', colorDark:'#fb923c'}
   ];
   var isDark = document.documentElement.classList.contains('dark');
-
   var yearSet = new Set();
   rawGudangList.forEach(function(item) {
     var d = item.tglBongkarDate;
     if (d instanceof Date && !isNaN(d)) yearSet.add(String(d.getFullYear()));
   });
+
   var ys         = document.getElementById('histoYearFilter');
   var curYearVal = ys.value;
   var sortedYears = Array.from(yearSet).sort();
   var latestY    = sortedYears[sortedYears.length - 1];
+  // Only keep years as options (no 'Semua/all') — mixing years into 12-month slots produces wrong totals
   ys.innerHTML = '';
   sortedYears.forEach(function(y) {
     var o = document.createElement('option');
     o.value = y; o.textContent = y;
     ys.appendChild(o);
   });
-  if (yearSet.has(curYearVal)) { ys.value = curYearVal; } else { ys.value = latestY || ''; }
-  ys.onchange = renderHistogramPengiriman;
-
-  var filterYear = ys.value;
-
-  // Pastikan histoMonthIdx valid untuk tahun aktif
-  var validMonths = new Set();
-  rawGudangList.forEach(function(item) {
-    var d = item.tglBongkarDate;
-    if (d instanceof Date && !isNaN(d) && String(d.getFullYear()) === filterYear) validMonths.add(d.getMonth());
-  });
-  if (validMonths.size > 0 && !validMonths.has(histoMonthIdx)) {
-    var sorted = Array.from(validMonths).sort(function(a,b){return a-b;});
-    histoMonthIdx = sorted[sorted.length - 1];
+  // Keep current selection if valid, otherwise default to latest year
+  if (yearSet.has(curYearVal)) {
+    ys.value = curYearVal;
+  } else {
+    ys.value = latestY || '';
   }
+  ys.onchange = renderHistogramPengiriman; // FIX: panggil mode Pengiriman, bukan Shipment
 
-  var monthLabel = document.getElementById('histoMonthLabel');
-  if (monthLabel) monthLabel.textContent = monthNames[histoMonthIdx] + ' ' + filterYear;
-
+  // Update UI labels
   document.getElementById('histoTitle').innerHTML = '<svg class="w-5 h-5 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg> Histogram Koli per Bulan by Pengiriman';
-  document.getElementById('histoSubtitle').textContent = 'Koli ' + monthNames[histoMonthIdx] + ' ' + filterYear + ' — dikelompokkan berdasarkan Pengiriman (Metro / Container)';
-  document.getElementById('histoTableTitle').textContent = 'Tabel Rekap Koli — ' + monthNames[histoMonthIdx] + ' ' + filterYear;
+  document.getElementById('histoSubtitle').textContent = 'Dikelompokkan berdasarkan Pengiriman (Metro / Container) — Sheet Barang Sudah Bongkar';
+  document.getElementById('histoTableTitle').textContent = 'Tabel Rekap Koli per Bulan by Pengiriman';
   document.getElementById('histoTableHead').innerHTML = '<tr class="bg-violet-50 dark:bg-violet-900/20 text-[10px] uppercase font-extrabold tracking-wider">'
-    + '<th class="px-4 py-3 text-left border-b border-violet-100 dark:border-violet-800/50 text-violet-800 dark:text-violet-300">Pengiriman</th>'
-    + '<th class="px-4 py-3 text-center border-b border-violet-100 dark:border-violet-800/50 text-gray-600 dark:text-gray-400">Total Koli</th>'
-    + '<th class="px-4 py-3 text-center border-b border-violet-100 dark:border-violet-800/50 text-gray-500 dark:text-gray-400">Jml PL</th>'
+    + '<th class="px-4 py-3 text-left border-b border-violet-100 dark:border-violet-800/50 text-violet-800 dark:text-violet-300">Bulan</th>'
+    + '<th class="px-4 py-3 text-center border-b border-violet-100 dark:border-violet-800/50" style="color:#3b82f6">Metro</th>'
+    + '<th class="px-4 py-3 text-center border-b border-violet-100 dark:border-violet-800/50" style="color:#f97316">Container</th>'
+    + '<th class="px-4 py-3 text-center border-b border-violet-100 dark:border-violet-800/50 text-gray-600 dark:text-gray-400">TOTAL</th>'
     + '</tr>';
 
-  var monthData = {Metro:0, Container:0};
-  var monthPL   = {Metro:new Set(), Container:new Set()};
+  var filterYear = ys.value;
+  var bulanData  = Array.from({length:12}, function() { return {Metro:0,Container:0}; });
+
   rawGudangList.forEach(function(item) {
     var d = item.tglBongkarDate;
     if (!(d instanceof Date) || isNaN(d)) return;
-    if (String(d.getFullYear()) !== filterYear) return;
-    if (d.getMonth() !== histoMonthIdx) return;
+    // Filter tahun wajib cocok — tidak boleh loncat antar tahun
+    if (!filterYear || String(d.getFullYear()) !== filterYear) return;
     var koli = parseInt(String(item.koli||'0').match(/\d+/))||0;
     if (koli === 0) return;
+    var mIdx = d.getMonth();
     var peng = String(item.pengiriman||'').toUpperCase().trim();
+    // Deteksi Metro/Container dari kolom Pengiriman DULU,
+    // jika tidak dikenal → fallback deteksi dari prefix Packing List
     var isMetro     = peng.includes('METRO');
     var isContainer = /^C\d+/.test(peng) || peng.includes('CONTAINER');
     if (!isMetro && !isContainer) {
+      // Fallback: PL dengan prefix Metro (dari getHistoGroups) → Metro
       var pl = String(item.packingList||'').toUpperCase().trim();
       var _metroGroups = getHistoGroups();
       if (_metroGroups.some(function(g){ return pl.startsWith(g.prefix); })) {
         isMetro = true;
       }
     }
-    var plName = String(item.packingList||'').trim();
-    if (isMetro)          { monthData.Metro     += koli; monthPL.Metro.add(plName); }
-    else if (isContainer) { monthData.Container += koli; monthPL.Container.add(plName); }
+    if (isMetro)          { bulanData[mIdx].Metro     += koli; }
+    else if (isContainer) { bulanData[mIdx].Container += koli; }
   });
 
-  var grandTotal = GROUPS.reduce(function(s,g){ return s + monthData[g.key]; }, 0);
-
+  // Summary cards
+  var totals = {Metro:0, Container:0};
+  bulanData.forEach(function(m){ totals.Metro+=m.Metro; totals.Container+=m.Container; });
   document.getElementById('histoSummaryCards').innerHTML = GROUPS.map(function(g) {
-    var drillCall = g.key === 'Container' ? 'openContainerDrilldownByMonth('+histoMonthIdx+')' : 'openMetroPLByMonth('+histoMonthIdx+')';
-    return '<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-3.5 flex items-center gap-3 cursor-pointer hover:shadow-md hover:border-violet-300 dark:hover:border-violet-600 transition-all group" onclick="'+drillCall+'" title="Klik untuk lihat rincian '+g.label+'">'
-      + '<div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm text-white shadow-sm flex-shrink-0" style="background:' + (isDark?g.colorDark:g.color) + '">' + g.label + '</div>'
-      + '<div><p class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">Koli ' + g.label + '</p>'
-      + '<p class="text-xl font-black" style="color:' + (isDark?g.colorDark:g.color) + '">' + monthData[g.key].toLocaleString('id-ID') + '</p>'
-      + '<p class="text-[9px] text-violet-400 font-bold mt-0.5 group-hover:underline flex items-center gap-0.5"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>Lihat Rincian</p>'
-      + '</div></div>';
+    var isContainer = g.key === 'Container';
+    var isMetro     = g.key === 'Metro';
+    var clickAttr   = isContainer ? ' onclick="openContainerDrilldown()" title="Klik untuk lihat rincian per container"'
+                    : isMetro     ? ' onclick="openMetroDrilldown(null)" title="Klik untuk lihat rincian Metro"' : '';
+    var accentClr   = isContainer ? 'orange' : isMetro ? 'blue' : '';
+    var extraCls    = (isContainer||isMetro) ? ' cursor-pointer hover:shadow-md hover:border-'+accentClr+'-300 dark:hover:border-'+accentClr+'-600 transition-all group' : '';
+    var arrowClr    = isContainer ? 'text-orange-400' : 'text-blue-400';
+    var clickHint   = (isContainer||isMetro)
+      ? '<p class="text-[9px] '+arrowClr+' font-bold mt-0.5 group-hover:underline flex items-center gap-0.5"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>Lihat Rincian</p>'
+      : '';
+    return '<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-3.5 flex items-center gap-3' + extraCls + '"' + clickAttr + '>'
+      + '<div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-[10px] text-white shadow-sm flex-shrink-0 text-center leading-tight" style="background:' + (isDark?g.colorDark:g.color) + '">' + g.label + '</div>'
+      + '<div><p class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">Total Koli (' + g.label + ')</p>'
+      + '<p class="text-xl font-black" style="color:' + (isDark?g.colorDark:g.color) + '">' + totals[g.key].toLocaleString('id-ID') + '</p>'
+      + clickHint + '</div></div>';
   }).join('');
 
-  _renderHistoChartSingleMonth(GROUPS, monthData, monthPL, isDark, function(key, mIdx) {
-    return key === 'Container' ? 'openContainerDrilldownByMonth('+mIdx+')' : 'openMetroPLByMonth('+mIdx+')';
-  });
-
+  _renderHistoChart(GROUPS, bulanData, isDark);
+  // Update debug panel
   document.getElementById('debugContent').textContent = _buildDebugInfo();
 
   var tbody = document.getElementById('histoTableBody');
   tbody.innerHTML = '';
-  GROUPS.forEach(function(g) {
+  var grand = {Metro:0,Container:0,total:0};
+  monthNames.forEach(function(name, mIdx) {
+    var d    = bulanData[mIdx];
+    var rowT = d.Metro + d.Container;
+    grand.Metro+=d.Metro; grand.Container+=d.Container; grand.total+=rowT;
     var tr = document.createElement('tr');
-    tr.className = monthData[g.key] === 0 ? 'opacity-30 dark:opacity-20' : 'hover:bg-violet-50 dark:hover:bg-violet-900/10 transition-colors cursor-pointer';
-    if (monthData[g.key] > 0) {
-      tr.onclick = function() {
-        if (g.key === 'Container') openContainerDrilldownByMonth(histoMonthIdx);
-        else openMetroPLByMonth(histoMonthIdx);
-      };
-    }
-    tr.innerHTML = '<td class="px-4 py-2.5 font-bold text-gray-700 dark:text-gray-300 whitespace-nowrap flex items-center gap-2"><span class="inline-block w-3 h-3 rounded-sm" style="background:'+(isDark?g.colorDark:g.color)+'"></span>'+g.label+'</td>'
-      + '<td class="px-4 py-2.5 text-center font-black" style="color:'+(isDark?g.colorDark:g.color)+'">'+(monthData[g.key]>0?monthData[g.key].toLocaleString('id-ID'):'—')+'</td>'
-      + '<td class="px-4 py-2.5 text-center text-gray-500 dark:text-gray-400 font-medium">'+(monthPL[g.key].size>0?monthPL[g.key].size+' PL':'—')+'</td>';
+    tr.className = rowT===0 ? 'opacity-30 dark:opacity-20' : 'hover:bg-violet-50 dark:hover:bg-violet-900/10 transition-colors';
+    tr.innerHTML = '<td class="px-4 py-2.5 font-bold text-gray-700 dark:text-gray-300 whitespace-nowrap">'+name+'</td>'
+      + '<td class="px-4 py-2.5 text-center font-black" style="color:#3b82f6">'+(d.Metro>0?d.Metro:'—')+'</td>'
+      + '<td class="px-4 py-2.5 text-center font-black" style="color:#f97316">'+(d.Container>0?d.Container:'—')+'</td>'
+      + '<td class="px-4 py-2.5 text-center font-black text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-700/30">'+(rowT>0?rowT:'—')+'</td>';
     tbody.appendChild(tr);
   });
   var trT = document.createElement('tr');
   trT.className = 'bg-violet-50 dark:bg-violet-900/20 border-t-2 border-violet-200 dark:border-violet-700';
   trT.innerHTML = '<td class="px-4 py-3 font-extrabold text-violet-800 dark:text-violet-300 text-xs uppercase">TOTAL</td>'
-    + '<td class="px-4 py-3 text-center font-black text-sm text-gray-800 dark:text-gray-100 bg-violet-100 dark:bg-violet-900/40" colspan="2">'+grandTotal.toLocaleString('id-ID')+'</td>';
+    + '<td class="px-4 py-3 text-center font-black text-sm" style="color:#3b82f6">'+grand.Metro+'</td>'
+    + '<td class="px-4 py-3 text-center font-black text-sm" style="color:#f97316">'+grand.Container+'</td>'
+    + '<td class="px-4 py-3 text-center font-black text-sm text-gray-800 dark:text-gray-100 bg-violet-100 dark:bg-violet-900/40">'+grand.total+'</td>';
   tbody.appendChild(trT);
 }
 
@@ -5083,17 +5191,12 @@ window.openDashDrilldown = function(type) {
     var html = '<div class="flex gap-2 mb-4"><span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold px-3 py-1 rounded-full border">' + items.length + ' PL</span>'
       + '<span class="bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-xs font-bold px-3 py-1 rounded-full border border-indigo-200">' + totalKoliDrill + ' Koli</span></div>';
     html += '<div class="space-y-2">';
-    var isEstimasiType = (type === 'terlambat' || type === 'minggu' || type === 'koli' || type === 'container');
     items.forEach(function(it, idx) {
       var hasPoan = poanData[String(it.packingList).trim()] && poanData[String(it.packingList).trim()].length > 0;
       var poanBadge = hasPoan
         ? '<span class="text-[9px] font-bold px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded border border-green-300">Ada POan</span>'
         : '';
-      var cardAttr = isEstimasiType
-        ? ' onclick="_gotoDrillDate(\'' + it.dateStr + '\')" class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-3 shadow-sm cursor-pointer hover:border-indigo-400 hover:shadow-md transition-all"'
-        : ' class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-3 shadow-sm"';
-      var footerHint = isEstimasiType ? '<span class="text-indigo-500 font-extrabold">Lihat di kalender →</span>' : '';
-      html += '<div' + cardAttr + '>'
+      html += '<div class="bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700 p-3 shadow-sm">'
         + '<div class="flex justify-between items-start">'
         + '<div class="min-w-0 pr-2"><span class="text-[9px] text-gray-400 font-bold uppercase">#'+(idx+1)+'</span>'
         + '<p class="font-bold text-sm text-gray-800 dark:text-gray-200 truncate">' + it.packingList + '</p>'
@@ -5101,7 +5204,7 @@ window.openDashDrilldown = function(type) {
         + '<div class="text-right flex-shrink-0">'
         + '<p class="text-sm font-black text-indigo-600 dark:text-indigo-400">' + (parseInt(String(it.koli).match(/\d+/))||0) + ' Koli</p>'
         + poanBadge + '</div></div>'
-        + '<p class="text-[10px] font-bold ' + it.extraColor + ' mt-1.5 border-t border-gray-100 dark:border-gray-700 pt-1.5 flex items-center justify-between"><span>' + it.extra + '</span>' + footerHint + '</p>'
+        + '<p class="text-[10px] font-bold ' + it.extraColor + ' mt-1.5 border-t border-gray-100 dark:border-gray-700 pt-1.5">' + it.extra + '</p>'
         + '</div>';
     });
     html += '</div>';
@@ -5762,9 +5865,13 @@ function avDeleteHoliday(key) {
 var _listPLMonthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 
 function openListPLModal() {
-  // Sumber di build APK dikunci ke Estimasi saja (opsi Gudang dihapus)
+  // Set default sumber sesuai tab aktif
   var src = document.getElementById('listPLSource');
-  src.value = 'estimasi';
+  if (currentTab === 'gudang' || currentTab === 'histogram') {
+    src.value = 'gudang';
+  } else {
+    src.value = 'estimasi';
+  }
   _populateListPLYearMonth();
   renderListPL();
   document.getElementById('listPLModal').classList.remove('hidden');
@@ -6295,7 +6402,7 @@ var TAB_INACTIVE_ICON = TAB_INACTIVE + ' flex items-center gap-1.5';
 var elTE = document.getElementById('tabEstimasi');
 var elTG = document.getElementById('tabGudang');
 var elTH = document.getElementById('tabHistogram');
-var elTA = document.createElement('div'); // dummy: tombol Admin View sudah dihapus di build APK
+var elTA = document.getElementById('tabAdminView');
 var elAP = document.getElementById('adminViewPanel');
 var elLE = document.getElementById('legendaEstimasi');
 var elLG = document.getElementById('legendaGudang');
@@ -6306,16 +6413,6 @@ var elDG = document.getElementById('dashGudangContainer');
 var elMD = document.getElementById('miniDashboardWrapper');
 var elMA = document.getElementById('mainContentArea');
 var elHP = document.getElementById('histogramPanel');
-var elCZ = document.getElementById('calendarSwipeZone');
-var elGL = document.getElementById('gudangListView');
-var elAB = document.getElementById('aboutPanel');
-
-// Render tampilan list "Antrean Gudang" (dipakai tab Gudang, pengganti kalender)
-function renderGudangListView() {
-  if (typeof updateSidebar === 'function') updateSidebar(); // pastikan sidebarGudangContent ter-update
-  var src = document.getElementById('sidebarGudangContent');
-  elGL.innerHTML = src ? src.innerHTML : '';
-}
 
 elTE.onclick = function() {
   currentTab='estimasi';
@@ -6324,22 +6421,19 @@ elTE.onclick = function() {
   elLG.classList.add('hidden');    elSG.classList.add('hidden');    elDG.classList.add('hidden');
   elAP.classList.add('hidden');    elAP.classList.remove('flex');
   elMA.classList.remove('hidden'); elHP.classList.add('hidden');
-  elGL.classList.add('hidden');    elGL.classList.remove('flex');
-  elCZ.classList.remove('hidden');
-  if (elAB) elAB.classList.add('hidden');
+  setGudangListView(false); // kembalikan grid kalender
   renderCalendar();
 };
 elTG.onclick = function() {
   currentTab='gudang';
   elTG.className=TAB_ACTIVE_INDIGO; elTE.className=TAB_INACTIVE; elTH.className=TAB_INACTIVE_ICON; elTA.className=TAB_INACTIVE_RED;
-  elLG.classList.remove('hidden'); elSG.classList.remove('hidden'); elDG.classList.remove('hidden');
+  elLG.classList.remove('hidden'); elSG.classList.remove('hidden'); elDG.classList.add('hidden');
   elLE.classList.add('hidden');    elSE.classList.add('hidden');    elDE.classList.add('hidden');
   elAP.classList.add('hidden');    elAP.classList.remove('flex');
   elMA.classList.remove('hidden'); elHP.classList.add('hidden');
-  elCZ.classList.add('hidden');
-  elGL.classList.remove('hidden'); elGL.classList.add('flex');
-  if (elAB) elAB.classList.add('hidden');
-  renderGudangListView();
+  // Tampilkan list antrean gudang, sembunyikan kalender
+  setGudangListView(true);
+  renderGudangList();
 };
 elTH.onclick = function() {
   currentTab='histogram';
@@ -6349,7 +6443,6 @@ elTH.onclick = function() {
   elDE.classList.add('hidden'); elDG.classList.add('hidden');
   elMD.classList.add('hidden'); elMA.classList.add('hidden'); elHP.classList.remove('hidden');
   elAP.classList.add('hidden');
-  if (elAB) elAB.classList.add('hidden');
   // Load prefix dari backend saat pertama kali buka tab histogram
   if (!_prefixGroupsLoaded) {
     loadHistoPrefixGroups(function() { renderHistogram(); });
@@ -6358,68 +6451,15 @@ elTH.onclick = function() {
   }
 };
 
-function showAboutTab() {
-  currentTab = 'tentang';
-  elTE.className=TAB_INACTIVE; elTG.className=TAB_INACTIVE; elTH.className=TAB_INACTIVE_ICON; elTA.className=TAB_INACTIVE_RED;
+elTA.onclick = function() {
+  currentTab='adminview';
+  elTA.className=TAB_ACTIVE_RED; elTE.className=TAB_INACTIVE; elTG.className=TAB_INACTIVE; elTH.className=TAB_INACTIVE_ICON;
   elLE.classList.add('hidden'); elLG.classList.add('hidden');
   elSE.classList.add('hidden'); elSG.classList.add('hidden');
   elDE.classList.add('hidden'); elDG.classList.add('hidden');
-  elMD.classList.add('hidden'); elHP.classList.add('hidden');
-  elAP.classList.add('hidden');
-  elMA.classList.remove('hidden');
-  elCZ.classList.add('hidden');
-  elGL.classList.add('hidden'); elGL.classList.remove('flex');
-  if (elAB) { elAB.classList.remove('hidden'); elAB.classList.add('flex'); }
-  _aboutRenderVersion();
-}
-
-function _aboutRenderVersion() {
-  var v = window.APP_CURRENT_VERSION || 'dev';
-  var el = document.getElementById('aboutCurrentVersion');
-  if (el) el.textContent = 'v' + String(v).replace(/^v/i, '');
-}
-
-function _aboutCheckUpdateNow() {
-  var btn = document.getElementById('aboutCheckUpdateBtn');
-  if (btn) btn.disabled = true;
-  if (typeof window.checkForAppUpdate === 'function') {
-    window.checkForAppUpdate().then(function() {
-      if (btn) btn.disabled = false;
-    }).catch(function() {
-      if (btn) btn.disabled = false;
-    });
-  } else if (btn) {
-    btn.disabled = false;
-  }
-}
-
-// Dipanggil dari update-checker.js setiap kali status cek update berubah,
-// baik otomatis saat app dibuka maupun manual lewat tombol "Cek Update".
-window._onUpdateStatus = function(status) {
-  var box = document.getElementById('aboutUpdateStatus');
-  var dot = document.getElementById('mnavAboutUpdateDot');
-  if (!box) return;
-  var base = 'rounded-xl border p-3.5 text-xs font-semibold ';
-  var phaseLabel = { 'cek-versi':'Cek versi', 'download':'Download APK', 'simpan-file':'Simpan file', 'install':'Install' }[status.phase];
-  if (status.state === 'checking') {
-    box.className = base + 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 text-gray-500 dark:text-gray-400';
-    box.textContent = 'Memeriksa update...';
-  } else if (status.state === 'up-to-date') {
-    box.className = base + 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400';
-    box.textContent = '✓ Sudah pakai versi terbaru.';
-    if (dot) dot.classList.add('hidden');
-  } else if (status.state === 'downloading') {
-    box.className = base + 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400';
-    box.textContent = 'Update ' + status.latestVersion + ' ditemukan, sedang download...';
-  } else if (status.state === 'update-ready') {
-    box.className = base + 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400';
-    box.innerHTML = '✓ Update ' + status.latestVersion + ' siap diinstall.'
-      + '<button onclick="window._installDownloadedUpdate &amp;&amp; window._installDownloadedUpdate()" class="mt-2 w-full py-2 rounded-lg bg-green-600 hover:bg-green-700 text-white text-xs font-extrabold transition-colors">Install Sekarang</button>';
-    if (dot) dot.classList.remove('hidden');
-  } else if (status.state === 'error') {
-    box.className = base + 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400';
-    box.textContent = (phaseLabel ? '[' + phaseLabel + '] ' : '') + (status.message || 'Gagal cek update.');
-  }
+  elMD.classList.add('hidden'); elMA.classList.add('hidden'); elHP.classList.add('hidden');
+  elAP.classList.remove('hidden'); elAP.classList.add('flex');
+  if (!_avDataLoaded) loadAdminViewData();
 };
 
 document.getElementById('btnPrev').onclick    = function() { window._calSlideDir='right'; currentDate.setMonth(currentDate.getMonth()-1); renderCalendar(); };
@@ -8149,7 +8189,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div id="adminPanel_md" class="hidden flex-1 flex flex-col overflow-hidden">
       <div class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4 bg-gray-50 dark:bg-gray-900/50">
         <div class="bg-amber-50 dark:bg-amber-900/20 border-2 border-dashed border-amber-400 dark:border-amber-600 rounded-xl p-3 text-xs text-amber-800 dark:text-amber-400 font-semibold">
-          🔹 Data tambahan dari spreadsheet MD (sumber terpisah). Kolom yang dibaca: B = Packing List, C = Ctns, E = Tanggal Muat. Nama PL otomatis digabung dengan suffix " - SHEET_MD" supaya sama dengan penamaan di sheet utama.
+          🔹 Data tambahan dari spreadsheet MD (sumber terpisah). Kolom yang dibaca: B = Packing List, C = Ctns, E = Tanggal Muat, J = Tanggal Bongkar (Masuk Gudang), M = Turun Toko (Turun ke Toko). Nama PL otomatis digabung dengan suffix " - SHEET_MD" supaya sama dengan penamaan di sheet utama. PL yang kolom J-nya sudah terisi (sudah Masuk Gudang) otomatis disembunyikan dari kalender "Estimasi Kedatangan" karena dianggap sudah datang.
         </div>
 
         <!-- Status Info -->
@@ -8172,6 +8212,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 <th class="px-2 py-1.5">Tanggal Muat</th>
                 <th class="px-2 py-1.5">Marking Terdeteksi</th>
                 <th class="px-2 py-1.5">Estimasi Tiba</th>
+                <th class="px-2 py-1.5">Masuk Gudang</th>
+                <th class="px-2 py-1.5">Turun ke Toko</th>
+                <th class="px-2 py-1.5">Tampil di Kalender?</th>
               </tr>
             </thead>
             <tbody id="mdPreviewBody" class="divide-y divide-gray-100 dark:divide-gray-700 text-gray-700 dark:text-gray-200"></tbody>
@@ -8208,11 +8251,17 @@ document.addEventListener('DOMContentLoaded', function() {
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
     <span>Grafik</span>
   </div>
-  <div class="mnav-item" id="mnav-tentang" onclick="mobileNavClick('tentang')">
+  <div class="mnav-item" id="mnav-adminview" onclick="mobileNavClick('adminview')">
     <div class="mnav-active-bar"></div>
-    <span id="mnavAboutUpdateDot" class="mnav-dot hidden" style="background:#22c55e"></span>
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-    <span>Tentang</span>
+    <span id="mnavAdminViewWarnDot" class="mnav-dot hidden" style="background:#ef4444"></span>
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    <span>Admin View</span>
+  </div>
+  <div class="mnav-item" id="mnav-admin" onclick="openAdminLogin()">
+    <div class="mnav-active-bar"></div>
+    <span id="mnavAdminDot" class="mnav-dot hidden"></span>
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+    <span>Admin</span>
   </div>
 </nav>
 
@@ -8736,8 +8785,7 @@ function mobileNavClick(tab) {
   else if (tab === 'gudang')     document.getElementById('tabGudang').click();
   else if (tab === 'histogram')  document.getElementById('tabHistogram').click();
   else if (tab === 'listpl')     { _closeMobileListPL(); openListPLModal(); }
-  else if (tab === 'adminview')  { var _btnAV = document.getElementById('tabAdminView'); if (_btnAV) _btnAV.click(); }
-  else if (tab === 'tentang')    showAboutTab();
+  else if (tab === 'adminview')  document.getElementById('tabAdminView').click();
 }
 
 // ── Mobile List PL Panel ──
@@ -8775,12 +8823,15 @@ function _closeMobileListPL() {
   // Restore calendar elements
   var calGrid = document.getElementById('calendarGrid');
   var calHeaders = document.getElementById('calDayHeaders');
-  if (calGrid) calGrid.style.display = '';
-  if (calHeaders) calHeaders.style.display = '';
   // Restore current tab legend
   if (currentTab === 'gudang') {
-    var lg = document.getElementById('legendaGudang'); if(lg) lg.style.display = '';
+    // keep calendar grid & headers hidden on gudang list tab
+    if (calGrid) calGrid.style.display = 'none';
+    if (calHeaders) calHeaders.style.display = 'none';
+    var lg = document.getElementById('legendaGudang'); if(lg) lg.style.display = 'none';
   } else {
+    if (calGrid) calGrid.style.display = '';
+    if (calHeaders) calHeaders.style.display = '';
     var le = document.getElementById('legendaEstimasi'); if(le) le.style.display = '';
   }
 }
@@ -9254,25 +9305,47 @@ function _buildTimelineTrack(ev, source) {
       });
     }
 
-    // ── STEP 4: Menuju gudang (future)
-    steps.push({
-      key: 'gudang',
-      label: 'Masuk Gudang',
-      sublabel: 'Proses bongkar & check',
-      date: null,
-      state: 'future',
-      note: 'Menunggu'
-    });
+    // ── STEP 4: Masuk Gudang — utk item MD pakai Tanggal Bongkar (kolom J)
+    if (ev.isMD && ev.tgBongkar) {
+      steps.push({
+        key: 'gudang',
+        label: 'Masuk Gudang',
+        sublabel: 'Proses bongkar & check',
+        date: fmtD(ev.tgBongkar),
+        state: 'done',
+        note: 'Selesai'
+      });
+    } else {
+      steps.push({
+        key: 'gudang',
+        label: 'Masuk Gudang',
+        sublabel: 'Proses bongkar & check',
+        date: null,
+        state: 'future',
+        note: 'Menunggu'
+      });
+    }
 
-    // ── STEP 5: Turun toko (future)
-    steps.push({
-      key: 'toko',
-      label: 'Turun ke Toko',
-      sublabel: 'Selesai',
-      date: null,
-      state: 'future',
-      note: 'Menunggu'
-    });
+    // ── STEP 5: Turun ke Toko — utk item MD pakai kolom Turun Toko (kolom M)
+    if (ev.isMD && ev.tgTurunToko) {
+      steps.push({
+        key: 'toko',
+        label: 'Turun ke Toko',
+        sublabel: 'Selesai',
+        date: fmtD(ev.tgTurunToko),
+        state: 'done',
+        note: 'Selesai'
+      });
+    } else {
+      steps.push({
+        key: 'toko',
+        label: 'Turun ke Toko',
+        sublabel: 'Selesai',
+        date: null,
+        state: 'future',
+        note: 'Menunggu'
+      });
+    }
 
   } else {
     // ──── SOURCE = GUDANG ────
@@ -10142,8 +10215,297 @@ function _updateSidebarBadge() {
   }
 }
 </script>
+<!-- ══════════════════════════════════════════════════
+     GEMINI AI PANEL — ANALISA BARANG SUDAH BONGKAR
+══════════════════════════════════════════════════ -->
+
+<!-- Overlay -->
+<div id="geminiOverlay"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9000;backdrop-filter:blur(3px)"
+     onclick="tutupGeminiPanel()"></div>
+
+<!-- Panel -->
+<div id="geminiPanel"
+     style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+            width:min(96vw,780px);max-height:88vh;overflow-y:auto;
+            background:#fff;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,0.25);
+            z-index:9001;font-family:'Segoe UI',sans-serif;color:#1f2937">
+
+  <!-- Header -->
+  <div style="background:linear-gradient(135deg,#7c3aed 0%,#4f46e5 100%);
+              padding:18px 22px;border-radius:16px 16px 0 0;
+              display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:26px">🤖</span>
+      <div>
+        <div style="color:#fff;font-weight:700;font-size:16px">Analisa AI — Gemini</div>
+        <div style="color:rgba(255,255,255,0.75);font-size:12px">Data Barang Sudah Bongkar · TGL BONGKAR, START, FINISH, PINDAH KE STORE</div>
+      </div>
+    </div>
+    <button onclick="tutupGeminiPanel()"
+            style="background:rgba(255,255,255,0.15);border:none;color:#fff;
+                   width:34px;height:34px;border-radius:50%;font-size:18px;
+                   cursor:pointer;line-height:1;transition:background .2s"
+            onmouseover="this.style.background='rgba(255,255,255,0.3)'"
+            onmouseout="this.style.background='rgba(255,255,255,0.15)'">✕</button>
+  </div>
+
+  <!-- Body -->
+  <div style="padding:20px 22px">
+
+    <!-- Filter Row -->
+    <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+      <div style="flex:1;min-width:110px">
+        <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">📅 BULAN</label>
+        <select id="gemBulan" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;background:#fff;color:#1f2937">
+          <option value="">Semua Bulan</option>
+          <option value="1">Januari</option><option value="2">Februari</option>
+          <option value="3">Maret</option><option value="4">April</option>
+          <option value="5">Mei</option><option value="6">Juni</option>
+          <option value="7">Juli</option><option value="8">Agustus</option>
+          <option value="9">September</option><option value="10">Oktober</option>
+          <option value="11">November</option><option value="12">Desember</option>
+        </select>
+      </div>
+      <div style="flex:1;min-width:90px">
+        <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">📆 TAHUN</label>
+        <select id="gemTahun" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;background:#fff;color:#1f2937">
+          <option value="">Semua Tahun</option>
+          <option value="2026">2026</option>
+          <option value="2025">2025</option>
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+        </select>
+      </div>
+      <div style="flex:2;min-width:200px">
+        <label style="font-size:11px;font-weight:700;color:#6b7280;display:block;margin-bottom:4px">🎯 TIPE ANALISA</label>
+        <select id="gemTipe" style="width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;background:#fff;color:#1f2937">
+          <option value="ringkasan">📊 Ringkasan Eksekutif</option>
+          <option value="efisiensi">⚡ Analisa Efisiensi</option>
+          <option value="tren">📈 Tren &amp; Pola</option>
+          <option value="sla">🎯 Kepatuhan SLA</option>
+          <option value="vendor">🏷️ Perbandingan Vendor/Prefix</option>
+          <option value="koli">📦 Analisa Volume Koli</option>
+          <option value="harikerja">🗓️ Pola Hari &amp; Jadwal</option>
+          <option value="bottleneck">🚧 Analisa Bottleneck</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Tombol Mulai -->
+    <button id="gemBtn" onclick="jalankanGemini()"
+            style="width:100%;padding:11px;background:linear-gradient(135deg,#7c3aed,#4f46e5);
+                   color:#fff;border:none;border-radius:9px;font-weight:700;font-size:14px;
+                   cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
+                   transition:opacity .2s;margin-bottom:16px"
+            onmouseover="this.style.opacity='0.88'"
+            onmouseout="this.style.opacity='1'">
+      <span>✨</span> Mulai Analisa
+    </button>
+
+    <!-- Loading -->
+    <div id="gemLoading" style="display:none;text-align:center;padding:32px 0">
+      <div style="display:inline-block;width:42px;height:42px;
+                  border:4px solid #e5e7eb;border-top-color:#7c3aed;
+                  border-radius:50%;animation:gemSpin 0.85s linear infinite"></div>
+      <div id="gemLoadingMsg" style="margin-top:14px;color:#6b7280;font-size:13px">
+        🔍 Mengambil data dari spreadsheet...
+      </div>
+    </div>
+
+    <!-- Hasil -->
+    <div id="gemHasil" style="display:none">
+      <div id="gemInfoBar"
+           style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;
+                  padding:10px 14px;margin-bottom:14px;font-size:12px;color:#166534;
+                  display:flex;align-items:center;gap:8px">
+        ✅ <span id="gemInfoTxt"></span>
+      </div>
+      <div id="gemKonten"
+           style="background:#fafafa;border:1px solid #e5e7eb;border-radius:10px;
+                  padding:16px 18px;font-size:13.5px;line-height:1.8;
+                  white-space:pre-wrap;word-break:break-word;max-height:420px;overflow-y:auto;
+                  color:#1f2937;animation:gemFadeIn .35s ease-out"></div>
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <button onclick="salinHasilGemini()"
+                style="padding:8px 16px;background:#fff;border:1px solid #d1d5db;
+                       border-radius:7px;font-size:12px;font-weight:700;color:#374151;
+                       cursor:pointer;transition:background .15s"
+                onmouseover="this.style.background='#f9fafb'"
+                onmouseout="this.style.background='#fff'">
+          📋 Salin Hasil
+        </button>
+        <button onclick="geminiAnalisaUlang()"
+                style="padding:8px 16px;background:#fff;border:1px solid #d1d5db;
+                       border-radius:7px;font-size:12px;font-weight:700;color:#374151;
+                       cursor:pointer;transition:background .15s"
+                onmouseover="this.style.background='#f9fafb'"
+                onmouseout="this.style.background='#fff'">
+          🔄 Analisa Ulang
+        </button>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div id="gemError"
+         style="display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;
+                padding:12px 16px;color:#dc2626;font-size:13px">
+      <strong>❌ Error:</strong> <span id="gemErrorTxt"></span>
+    </div>
+
+  </div>
+</div>
+
+<!-- CSS Gemini -->
+<style>
+@keyframes gemSpin  { to { transform:rotate(360deg); } }
+@keyframes gemFadeIn{ from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+html.dark #geminiPanel   { background:#1e1e2e; color:#e2e8f0; }
+html.dark #gemKonten     { background:#12121a; border-color:#374151; color:#e2e8f0; }
+html.dark #gemBulan,
+html.dark #gemTahun,
+html.dark #gemTipe       { background:#1f2937; border-color:#374151; color:#e2e8f0; }
+html.dark #gemInfoBar    { background:#052e16; border-color:#166534; color:#86efac; }
+</style>
 
 <script>
+// ════════════════════════════════════════════════════
+// GEMINI AI PANEL — Script
+// ════════════════════════════════════════════════════
+
+function bukaGeminiPanel() {
+  document.getElementById('geminiOverlay').style.display = 'block';
+  document.getElementById('geminiPanel').style.display   = 'block';
+  _gemReset();
+  // Set bulan & tahun dari kalender aktif secara otomatis
+  var bln = (typeof currentDate !== 'undefined') ? (currentDate.getMonth() + 1) : '';
+  var thn = (typeof currentDate !== 'undefined') ? currentDate.getFullYear() : '';
+  document.getElementById('gemBulan').value  = String(bln);
+  document.getElementById('gemTahun').value  = String(thn);
+}
+
+function tutupGeminiPanel() {
+  document.getElementById('geminiOverlay').style.display = 'none';
+  document.getElementById('geminiPanel').style.display   = 'none';
+}
+
+function _gemReset() {
+  document.getElementById('gemLoading').style.display = 'none';
+  document.getElementById('gemHasil').style.display   = 'none';
+  document.getElementById('gemError').style.display   = 'none';
+  var btn = document.getElementById('gemBtn');
+  btn.disabled = false;
+  btn.innerHTML = '<span>✨</span> Mulai Analisa';
+}
+
+function geminiAnalisaUlang() {
+  document.getElementById('gemHasil').style.display = 'none';
+  document.getElementById('gemError').style.display = 'none';
+}
+
+function jalankanGemini() {
+  var bulan = document.getElementById('gemBulan').value;
+  var tahun = document.getElementById('gemTahun').value;
+  var tipe  = document.getElementById('gemTipe').value;
+
+  // Cek apakah di environment GAS
+  if (typeof google === 'undefined' || typeof google.script === 'undefined') {
+    document.getElementById('gemError').style.display = 'block';
+    document.getElementById('gemErrorTxt').textContent = 'Halaman ini harus dijalankan dari Google Apps Script (bukan preview lokal).';
+    return;
+  }
+
+  document.getElementById('gemLoading').style.display = 'block';
+  document.getElementById('gemHasil').style.display   = 'none';
+  document.getElementById('gemError').style.display   = 'none';
+  var btn = document.getElementById('gemBtn');
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Sedang Analisa...';
+
+  // Pesan loading bergantian
+  var pesanMap = {
+    ringkasan  : ['🔍 Mengambil data Packing List...','📊 Menghitung rata-rata durasi bongkar...','🤖 Mengirim ke AI...','✍️ AI sedang merangkum eksekutif...','⏳ Hampir selesai...'],
+    efisiensi  : ['🔍 Mengambil data Packing List...','⚡ Menghitung efisiensi per PL...','🤖 Mengirim ke AI...','✍️ AI sedang menganalisa efisiensi...','⏳ Hampir selesai...'],
+    tren       : ['🔍 Mengambil data Packing List...','📈 Menghitung pola tren waktu...','🤖 Mengirim ke AI...','✍️ AI sedang menganalisa tren...','⏳ Hampir selesai...'],
+    sla        : ['🔍 Mengambil data Packing List...','🎯 Menghitung kepatuhan SLA...','🤖 Mengirim ke AI...','✍️ AI sedang mengevaluasi SLA...','⏳ Hampir selesai...'],
+    vendor     : ['🔍 Mengambil data Packing List...','🏷️ Mengelompokkan per prefix PL...','🤖 Mengirim ke AI...','✍️ AI sedang membandingkan vendor...','⏳ Hampir selesai...'],
+    koli       : ['🔍 Mengambil data Packing List...','📦 Menghitung distribusi koli...','🤖 Mengirim ke AI...','✍️ AI sedang menganalisa volume...','⏳ Hampir selesai...'],
+    harikerja  : ['🔍 Mengambil data Packing List...','🗓️ Memetakan pola hari bongkar...','🤖 Mengirim ke AI...','✍️ AI sedang menganalisa jadwal...','⏳ Hampir selesai...'],
+    bottleneck : ['🔍 Mengambil data Packing List...','🚧 Mengidentifikasi titik hambatan...','🤖 Mengirim ke AI...','✍️ AI sedang menganalisa bottleneck...','⏳ Hampir selesai...']
+  };
+  var pesanList = pesanMap[tipe] || ['🔍 Mengambil data...','🤖 Mengirim ke AI...','✍️ AI sedang menganalisa...','⏳ Hampir selesai...','⏳ Mohon tunggu...'];
+  var pidx = 0;
+  var timerPesan = setInterval(function() {
+    pidx = (pidx + 1) % pesanList.length;
+    var el = document.getElementById('gemLoadingMsg');
+    if (el) el.textContent = pesanList[pidx];
+  }, 2400);
+
+  google.script.run
+    .withSuccessHandler(function(res) {
+      clearInterval(timerPesan);
+      document.getElementById('gemLoading').style.display = 'none';
+      btn.disabled = false;
+      btn.innerHTML = '<span>✨</span> Mulai Analisa';
+
+      if (!res || !res.success) {
+        document.getElementById('gemError').style.display  = 'block';
+        document.getElementById('gemErrorTxt').textContent = (res && res.message) ? res.message : 'Terjadi kesalahan tidak diketahui.';
+        return;
+      }
+
+      document.getElementById('gemHasil').style.display = 'block';
+      document.getElementById('gemInfoTxt').textContent  =
+        'Analisa selesai · ' + res.jumlahData + ' Packing List · Periode: ' + res.periode;
+      document.getElementById('gemKonten').textContent   = res.analisa;
+    })
+    .withFailureHandler(function(e) {
+      clearInterval(timerPesan);
+      document.getElementById('gemLoading').style.display = 'none';
+      btn.disabled = false;
+      btn.innerHTML = '<span>✨</span> Mulai Analisa';
+      document.getElementById('gemError').style.display  = 'block';
+      document.getElementById('gemErrorTxt').textContent = (e && e.message) ? e.message : 'Gagal memanggil server.';
+    })
+    .analisaGemini(bulan || null, tahun || null, tipe);
+}
+
+function salinHasilGemini() {
+  var teks = document.getElementById('gemKonten').textContent;
+  if (!teks) return;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(teks).then(function() {
+      _gemToast('✅ Hasil analisa berhasil disalin!');
+    }).catch(function() {
+      _gemFallbackCopy(teks);
+    });
+  } else {
+    _gemFallbackCopy(teks);
+  }
+}
+
+function _gemFallbackCopy(teks) {
+  var ta = document.createElement('textarea');
+  ta.value = teks;
+  ta.style.position = 'fixed';
+  ta.style.opacity  = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); _gemToast('✅ Berhasil disalin!'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+function _gemToast(pesan) {
+  var el = document.createElement('div');
+  el.textContent = pesan;
+  el.style.cssText = 'position:fixed;bottom:28px;left:50%;transform:translateX(-50%);'
+    + 'background:#1f2937;color:#fff;padding:10px 22px;border-radius:50px;font-size:13px;'
+    + 'font-weight:700;z-index:99999;animation:gemFadeIn .3s ease-out;pointer-events:none;'
+    + 'white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.3)';
+  document.body.appendChild(el);
+  setTimeout(function() { el.remove(); }, 2600);
+}
+
 // =============================================================
 // LOGIKA TAMBAH POan (UPLOAD & BACA PL EXCEL)
 // =============================================================
@@ -10469,13 +10831,13 @@ function renderMdPreview() {
 
   if (!isMdConfigured) {
     statusBox.innerHTML = '<div class="flex items-center gap-2 text-red-600 dark:text-red-400"><span class="text-lg">⚠️</span><div><p class="text-xs font-extrabold">Belum dikonfigurasi</p><p class="text-[10px] text-gray-500 dark:text-gray-400">Isi MD_SPREADSHEET_ID dan SHEET_MD di kode terlebih dahulu.</p></div></div>';
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-gray-400 text-xs">Belum ada data — konfigurasi belum diisi.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" class="text-center py-6 text-gray-400 text-xs">Belum ada data — konfigurasi belum diisi.</td></tr>';
     return;
   }
 
   if (!mdLoadStatus.loaded) {
     statusBox.innerHTML = '<div class="flex items-center gap-2 text-gray-500"><span class="text-lg">⏳</span><div><p class="text-xs font-extrabold">Belum dimuat</p><p class="text-[10px] text-gray-400">Data belum berhasil diambil dari sheet "' + SHEET_MD + '". Coba klik "Muat Ulang".</p></div></div>';
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-gray-400 text-xs">Belum ada data.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" class="text-center py-6 text-gray-400 text-xs">Belum ada data.</td></tr>';
     return;
   }
 
@@ -10483,13 +10845,28 @@ function renderMdPreview() {
   statusBox.innerHTML = '<div class="flex items-center gap-2 text-green-700 dark:text-green-400"><span class="text-lg">✅</span><div><p class="text-xs font-extrabold">Data MD sudah ada</p><p class="text-[10px] text-gray-500 dark:text-gray-400">' + mdLoadStatus.count + ' PL dimuat dari sheet "' + SHEET_MD + '" &bull; terakhir dimuat ' + waktu + '</p></div></div>';
 
   if (rawMdList.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-gray-400 text-xs">Sheet MD kosong / tidak ada baris valid.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" class="text-center py-6 text-gray-400 text-xs">Sheet MD kosong / tidak ada baris valid.</td></tr>';
     return;
   }
+
+  var normKeyMdPv = function(pl) { return String(pl || '').trim().toUpperCase(); };
+  var sayaPlSetPv = {};
+  (rawEstimasiList || []).forEach(function(it) {
+    var k = normKeyMdPv(it.packingList);
+    if (k) sayaPlSetPv[k] = true;
+  });
 
   tbody.innerHTML = rawMdList.map(function(item) {
     var estDate = _mdCalcEstimasiTiba(item.tanggalMuat, item.marking);
     var estStr  = estDate ? (formatIndoDateShort(estDate) + ' ' + estDate.getFullYear()) : '-';
+    var bongkarStr = item.tglBongkar   ? (formatIndoDateShort(item.tglBongkar)   + ' ' + item.tglBongkar.getFullYear())   : '-';
+    var tokoStr    = item.tglTurunToko ? (formatIndoDateShort(item.tglTurunToko) + ' ' + item.tglTurunToko.getFullYear()) : '-';
+    var isDup      = !!sayaPlSetPv[normKeyMdPv(item.packingList)];
+    var statusStr  = isDup
+      ? '<span class="text-gray-400 font-bold">✕ Sudah ada di Data Saya</span>'
+      : (item.tglBongkar
+          ? '<span class="text-gray-400 font-bold">✕ Sudah Masuk Gudang</span>'
+          : '<span class="text-green-700 dark:text-green-400 font-bold">✓ Tampil</span>');
     return '<tr>'
       + '<td class="px-2 py-1.5">' + item.packingListAsli + '</td>'
       + '<td class="px-2 py-1.5 font-bold text-amber-700 dark:text-amber-400">' + item.packingList + '</td>'
@@ -10497,6 +10874,9 @@ function renderMdPreview() {
       + '<td class="px-2 py-1.5">' + formatIndoDateShort(item.tanggalMuat) + ' ' + item.tanggalMuat.getFullYear() + '</td>'
       + '<td class="px-2 py-1.5 font-bold text-blue-700 dark:text-blue-400">' + (item.marking || '-') + '</td>'
       + '<td class="px-2 py-1.5 font-bold text-green-700 dark:text-green-400">' + estStr + '</td>'
+      + '<td class="px-2 py-1.5 font-bold text-purple-700 dark:text-purple-400">' + bongkarStr + '</td>'
+      + '<td class="px-2 py-1.5 font-bold text-teal-700 dark:text-teal-400">' + tokoStr + '</td>'
+      + '<td class="px-2 py-1.5">' + statusStr + '</td>'
       + '</tr>';
   }).join('');
 }
@@ -10618,6 +10998,8 @@ if (!navigator.onLine) {
 // Tutup panel saat tekan ESC
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
+    var panel = document.getElementById('geminiPanel');
+    if (panel && panel.style.display !== 'none') tutupGeminiPanel();
   }
 });
 </script>
