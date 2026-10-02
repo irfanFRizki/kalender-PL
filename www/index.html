@@ -6546,16 +6546,18 @@ elTE.onclick = function() {
   elLE.classList.remove('hidden'); elSE.classList.remove('hidden'); elDE.classList.remove('hidden');
   elLG.classList.add('hidden');    elSG.classList.add('hidden');    elDG.classList.add('hidden');
   elAP.classList.add('hidden');    elAP.classList.remove('flex');
+  elAB.classList.add('hidden');
   elMA.classList.remove('hidden'); elHP.classList.add('hidden');
   setGudangListView(false); // kembalikan grid kalender
   renderCalendar();
 };
 elTG.onclick = function() {
   currentTab='gudang';
-  elTG.className=TAB_ACTIVE_INDIGO; elTE.className=TAB_INACTIVE; elTH.className=TAB_INACTIVE_ICON; elTA.className=TAB_INACTIVE_RED;
+  elTG.className=TAB_ACTIVE_INDIGO; elTE.className=TAB_INACTIVE; elTH.className=TAB_INACTIVE_ICON; elTA.className=TAB_INACTIVE_RED; elTAB.className=TAB_INACTIVE_ICON;
   elLG.classList.remove('hidden'); elSG.classList.remove('hidden'); elDG.classList.add('hidden');
   elLE.classList.add('hidden');    elSE.classList.add('hidden');    elDE.classList.add('hidden');
   elAP.classList.add('hidden');    elAP.classList.remove('flex');
+  elAB.classList.add('hidden');
   elMA.classList.remove('hidden'); elHP.classList.add('hidden');
   // Tampilkan list antrean gudang, sembunyikan kalender
   setGudangListView(true);
@@ -6563,12 +6565,13 @@ elTG.onclick = function() {
 };
 elTH.onclick = function() {
   currentTab='histogram';
-  elTH.className=TAB_ACTIVE_VIOLET; elTE.className=TAB_INACTIVE; elTG.className=TAB_INACTIVE; elTA.className=TAB_INACTIVE_RED;
+  elTH.className=TAB_ACTIVE_VIOLET; elTE.className=TAB_INACTIVE; elTG.className=TAB_INACTIVE; elTA.className=TAB_INACTIVE_RED; elTAB.className=TAB_INACTIVE_ICON;
   elLE.classList.add('hidden'); elLG.classList.add('hidden');
   elSE.classList.add('hidden'); elSG.classList.add('hidden');
   elDE.classList.add('hidden'); elDG.classList.add('hidden');
   elMD.classList.add('hidden'); elMA.classList.add('hidden'); elHP.classList.remove('hidden');
   elAP.classList.add('hidden');
+  elAB.classList.add('hidden');
   // Load prefix dari backend saat pertama kali buka tab histogram
   if (!_prefixGroupsLoaded) {
     loadHistoPrefixGroups(function() { renderHistogram(); });
