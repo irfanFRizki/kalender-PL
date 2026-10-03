@@ -1,6 +1,6 @@
 {
   "name": "kalender-app",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Aplikasi Android (Capacitor) untuk Kalender Estimasi Barang, sumber data Google Sheets",
   "main": "index.js",
   "scripts": {
