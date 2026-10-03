@@ -5672,9 +5672,9 @@ function loadAdminViewData() {
   document.getElementById('avTable').classList.add('hidden');
   document.getElementById('avLoadingBadge').classList.remove('hidden');
 
-  if (typeof google !== 'undefined' && google.script && google.script.run) {
-    google.script.run
-      .withSuccessHandler(function(res) {
+  if (_gasOK()) {
+    _callGAS('getAdminViewData', {})
+      .then(function(res) {
         document.getElementById('avLoadingBadge').classList.add('hidden');
         document.getElementById('avLoading').classList.add('hidden');
         if (!res || !res.success) {
@@ -5688,12 +5688,11 @@ function loadAdminViewData() {
         _avPopulateTahunFilter();
         renderAdminView();
       })
-      .withFailureHandler(function(err) {
+      .catch(function(err) {
         document.getElementById('avLoadingBadge').classList.add('hidden');
         document.getElementById('avLoading').classList.remove('hidden');
         document.getElementById('avLoading').querySelector('p').textContent = 'Error: ' + err.message;
-      })
-      .getAdminViewData();
+      });
   } else {
     document.getElementById('avLoadingBadge').classList.add('hidden');
     document.getElementById('avLoading').classList.add('hidden');
@@ -6750,8 +6749,31 @@ function _updateAdminBtn(on) {
 }
 
 // ── GAS check ─────────────────────────────────────────────────
+// Admin backend URL (GAS Web App deployment)
+const GAS_ADMIN_URL = 'https://script.google.com/macros/s/AKfycbzttaz9IxoUugf9CbUQScFmaHyXn4KoRphVc2SfoqTkN0TgSXeGe05tFTcepQTXS8Sirg/exec';
+
 function _gasOK() {
-  return typeof google !== 'undefined' && google.script && google.script.run;
+  return !!GAS_ADMIN_URL || (typeof google !== 'undefined' && google.script && google.script.run);
+}
+
+// Fetch-based GAS caller (Capacitor-safe; fallback google.script.run bila ada)
+function _callGAS(method, params) {
+  return new Promise(function(resolve, reject) {
+    if (typeof google !== 'undefined' && google.script && google.script.run) {
+      google.script.run
+        .withSuccessHandler(resolve)
+        .withFailureHandler(reject)[method](params || {});
+    } else {
+      fetch(GAS_ADMIN_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({method: method, params: params || {}})
+      })
+      .then(function(r) { return r.json(); })
+      .then(resolve)
+      .catch(reject);
+    }
+  });
 }
 
 // ── Toast helper ──────────────────────────────────────────────
@@ -6789,8 +6811,8 @@ function doAdminLogin() {
   if (pin.length !== 6 || !/^\d+$/.test(pin)) { err.textContent='PIN harus berupa 6 digit angka.'; err.classList.remove('hidden'); return; }
   if (!_gasOK()) { err.textContent='⚠ Fitur admin memerlukan Google Apps Script.'; err.classList.remove('hidden'); return; }
   btn.disabled=true; btn.innerHTML='<svg class="animate-spin w-4 h-4 inline mr-1" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>Memverifikasi...';
-  google.script.run
-    .withSuccessHandler(function(res){
+  _callGAS('verifyAdminPin', {pin: pin})
+    .then(function(res){
       btn.disabled=false; btn.innerHTML='Masuk';
       if (res.success) {
         adminSession = {username:res.username, loginTime:Date.now()};
@@ -6800,8 +6822,7 @@ function doAdminLogin() {
         setTimeout(openAdminPanel, 100);
       } else { err.textContent=res.message||'Login gagal.'; err.classList.remove('hidden'); document.getElementById('adminPinInput').value=''; }
     })
-    .withFailureHandler(function(e){ btn.disabled=false; btn.innerHTML='Masuk'; err.textContent='Error: '+(e.message||e); err.classList.remove('hidden'); })
-    .verifyAdminPin(pin);
+    .catch(function(e){ btn.disabled=false; btn.innerHTML='Masuk'; err.textContent='Error: '+(e.message||e); err.classList.remove('hidden'); });
 }
 function adminLogout() { adminSession=null; localStorage.removeItem('adminSession_v2'); _updateAdminBtn(false); closeAdminPanel(); }
 
@@ -6883,8 +6904,8 @@ function submitTambahPL() {
   var finalMarking = marking === 'CONTAINER' ? contCode : marking;
   btn.disabled=true; btn.textContent='Menyimpan...';
 
-  google.script.run
-    .withSuccessHandler(function(res){
+  _callGAS('addNewPLBelumBongkar', {pl:pl, koli:parseInt(koli), marking:finalMarking, tgNota:tgNota})
+    .then(function(res){
       btn.disabled=false;
       btn.innerHTML='<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>Tambah PL ke Sheet';
       if (res.success) {
@@ -6897,12 +6918,11 @@ function submitTambahPL() {
         setTimeout(function(){ fetchAllData(false); }, 1500);
       } else { err.textContent=res.message; err.classList.remove('hidden'); }
     })
-    .withFailureHandler(function(e){
+    .catch(function(e){
       btn.disabled=false;
       btn.innerHTML='<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>Tambah PL ke Sheet';
       err.textContent='Error: '+(e.message||e); err.classList.remove('hidden');
-    })
-    .addNewPLBelumBongkar({pl:pl, koli:parseInt(koli), marking:finalMarking, tgNota:tgNota});
+    });
 }
 
 // =============================================================
@@ -7076,8 +7096,8 @@ function submitTambahPLNew() {
   
   btn.disabled = true; btn.textContent = 'Menyimpan...';
   
-  google.script.run
-    .withSuccessHandler(function(res) {
+  _callGAS('addNewPLBelumBongkar', {pl: finalPLName, koli: parseInt(koli), marking: finalMarking, tgNota: tgNota})
+    .then(function(res) {
       btn.disabled = false; btn.textContent = '➕ Tambah PL ke Sheet';
       if (res.success) {
         ok.textContent = '✓ ' + res.message; ok.classList.remove('hidden');
@@ -7091,11 +7111,10 @@ function submitTambahPLNew() {
         err.textContent = res.message; err.classList.remove('hidden');
       }
     })
-    .withFailureHandler(function(e) {
+    .catch(function(e) {
       btn.disabled = false; btn.textContent = '➕ Tambah PL ke Sheet';
       err.textContent = 'Error: ' + (e.message || e); err.classList.remove('hidden');
-    })
-    .addNewPLBelumBongkar({pl: finalPLName, koli: parseInt(koli), marking: finalMarking, tgNota: tgNota});
+    });
 }
 
 // =============================================================
@@ -7113,14 +7132,13 @@ function _loadBongkarData() {
   bongkarStep = 1;
   if (!_gasOK()) { list.innerHTML='<p class="text-xs text-center text-gray-400 py-6">⚠ Butuh Google Apps Script.</p>'; return; }
   list.innerHTML='<div class="flex justify-center items-center py-8 gap-2 text-gray-400 text-xs"><svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>Memuat data...</div>';
-  google.script.run
-    .withSuccessHandler(function(res){
+  _callGAS('getPLListBelumBongkar', {})
+    .then(function(res){
       if (!res.success) { list.innerHTML='<p class="text-xs text-center text-red-500 py-6">'+res.message+'</p>'; return; }
       bongkarList = res.data || [];
       _renderBongkarList();
     })
-    .withFailureHandler(function(e){ list.innerHTML='<p class="text-xs text-center text-red-500 py-6">Error: '+(e.message||e)+'</p>'; })
-    .getPLListBelumBongkar();
+    .catch(function(e){ list.innerHTML='<p class="text-xs text-center text-red-500 py-6">Error: '+(e.message||e)+'</p>'; });
 }
 
 function _renderBongkarList() {
@@ -7277,8 +7295,8 @@ function submitBongkar() {
   if (!_gasOK())                 { _adminToast('Butuh Google Apps Script!', false); return; }
   if (!confirm('Yakin pindahkan '+sel.length+' PL?\nTanggal: '+tgl+'\nMarkingan: '+markingan+'\n\nTindakan ini tidak bisa dibatalkan!')) return;
   btn.disabled=true; btn.textContent='Memindahkan...';
-  google.script.run
-    .withSuccessHandler(function(res){
+  _callGAS('pindahPLkeSudahBongkar', {pl: sel.join(','), tglBongkar: tgl, markingan: markingan})
+    .then(function(res){
       btn.disabled=false; btn.textContent='✅ Konfirmasi Bongkar';
       if (res.success) {
         _adminToast(res.message, true);
@@ -7290,8 +7308,7 @@ function submitBongkar() {
         _adminToast(res.message, false);
       }
     })
-    .withFailureHandler(function(e){ btn.disabled=false; btn.textContent='✅ Konfirmasi Bongkar'; _adminToast('Error: '+(e.message||e), false); })
-    .pindahPLkeSudahBongkar({pl: sel.join(','), tglBongkar: tgl, markingan: markingan});
+    .catch(function(e){ btn.disabled=false; btn.textContent='✅ Konfirmasi Bongkar'; _adminToast('Error: '+(e.message||e), false); });
 }
 
 // =============================================================
@@ -7318,8 +7335,8 @@ var PROSES_BADGE_CLASS = {
  */
 function _fetchProsesCount(status) {
   if (!_gasOK()) return;
-  google.script.run
-    .withSuccessHandler(function(res){
+  _callGAS('getSudahBongkarByStatus', {status: status})
+    .then(function(res){
       if (!res || !res.success) return;
       var count = (res.data||[]).length;
       var span  = document.getElementById('prosesCount_'+status);
@@ -7334,8 +7351,7 @@ function _fetchProsesCount(status) {
       // Simpan ke cache agar tidak double-fetch saat tombol diklik
       prosesDataCache[status] = res.data || [];
     })
-    .withFailureHandler(function(){}) // silent fail untuk count
-    .getSudahBongkarByStatus(status);
+    .catch(function(){}); // silent fail untuk count
 }
 
 /**
@@ -7379,8 +7395,8 @@ function _loadProsesData(status) {
   }
   document.getElementById('prosesItemList').innerHTML='<div class="flex justify-center items-center py-8 gap-2 text-gray-400 text-xs"><svg class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>Memuat...</div>';
 
-  google.script.run
-    .withSuccessHandler(function(res){
+  _callGAS('getSudahBongkarByStatus', {status: status})
+    .then(function(res){
       if (!res.success) { document.getElementById('prosesItemList').innerHTML='<p class="text-xs text-center text-red-500 py-6">'+res.message+'</p>'; return; }
       var data = res.data||[];
       prosesDataCache[status] = data;
@@ -7412,8 +7428,7 @@ function _loadProsesData(status) {
       }
       document.getElementById('prosesItemList').innerHTML=html;
     })
-    .withFailureHandler(function(e){ document.getElementById('prosesItemList').innerHTML='<p class="text-xs text-center text-red-500 py-6">Error: '+(e.message||e)+'</p>'; })
-    .getSudahBongkarByStatus(status);
+    .catch(function(e){ document.getElementById('prosesItemList').innerHTML='<p class="text-xs text-center text-red-500 py-6">Error: '+(e.message||e)+'</p>'; });
 }
 
 function selectProsesItem(idx) {
@@ -7553,8 +7568,8 @@ function submitProses() {
 
   if (!_gasOK()) { err.textContent='⚠ Butuh Google Apps Script.'; err.classList.remove('hidden'); return; }
   btn.disabled=true; btn.textContent='Menyimpan...';
-  google.script.run
-    .withSuccessHandler(function(res){
+  _callGAS('updateProsesSudahBongkar', {action: prosesSubTab, params: paramsPayload})
+    .then(function(res){
       btn.disabled=false; btn.textContent='Simpan Update';
       if (res.success) {
         ok.textContent='✓ '+selectedProsesItem.pl+' — '+res.message; ok.classList.remove('hidden');
@@ -7568,8 +7583,7 @@ function submitProses() {
         }, 1500);
       } else { err.textContent=res.message; err.classList.remove('hidden'); }
     })
-    .withFailureHandler(function(e){ btn.disabled=false; btn.textContent='Simpan Update'; err.textContent='Error: '+(e.message||e); err.classList.remove('hidden'); })
-    .updateProsesSudahBongkar(prosesSubTab, paramsPayload);
+    .catch(function(e){ btn.disabled=false; btn.textContent='Simpan Update'; err.textContent='Error: '+(e.message||e); err.classList.remove('hidden'); });
 }
 
 // =============================================================
@@ -7647,8 +7661,8 @@ function loadUserPins() {
     return;
   }
   
-  google.script.run
-    .withSuccessHandler(function(res) {
+  _callGAS('getAdminUsers', {})
+    .then(function(res) {
       if (res.success) {
         var users = res.users || [];
         if (users.length === 0) {
@@ -7677,10 +7691,9 @@ function loadUserPins() {
         area.innerHTML = '<div class="text-center py-4 text-xs text-red-500">❌ ' + escapeHtml(res.message) + '</div>';
       }
     })
-    .withFailureHandler(function(e) {
+    .catch(function(e) {
       area.innerHTML = '<div class="text-center py-4 text-xs text-red-500">❌ Error: ' + escapeHtml(e.message || e) + '</div>';
-    })
-    .getAdminUsers();
+    });
 }
 
 function saveUserPin() {
@@ -7706,8 +7719,8 @@ function saveUserPin() {
   okEl.textContent = '⏳ Menyimpan...';
   okEl.classList.remove('hidden');
   
-  google.script.run
-    .withSuccessHandler(function(res) {
+  _callGAS('saveAdminUserPin', {username: username, pin: pin})
+    .then(function(res) {
       okEl.classList.add('hidden');
       if (res.success) {
         okEl.textContent = '✓ ' + res.message;
@@ -7720,12 +7733,11 @@ function saveUserPin() {
         errEl.classList.remove('hidden');
       }
     })
-    .withFailureHandler(function(e) {
+    .catch(function(e) {
       okEl.classList.add('hidden');
       errEl.textContent = '❌ Error: ' + (e.message || e);
       errEl.classList.remove('hidden');
-    })
-    .saveAdminUserPin(username, pin);
+    });
 }
 
 function deleteUserPin(username) {
@@ -7737,8 +7749,8 @@ function deleteUserPin(username) {
   errEl.classList.add('hidden');
   okEl.classList.add('hidden');
   
-  google.script.run
-    .withSuccessHandler(function(res) {
+  _callGAS('deleteAdminUserPin', {username: username})
+    .then(function(res) {
       if (res.success) {
         okEl.textContent = '✓ ' + res.message;
         okEl.classList.remove('hidden');
@@ -7749,11 +7761,10 @@ function deleteUserPin(username) {
         errEl.classList.remove('hidden');
       }
     })
-    .withFailureHandler(function(e) {
+    .catch(function(e) {
       errEl.textContent = '❌ Error: ' + (e.message || e);
       errEl.classList.remove('hidden');
-    })
-    .deleteAdminUserPin(username);
+    });
 }
 
 function clearPinForm() {
@@ -7774,14 +7785,14 @@ function escapeHtml(text) {
 
 function loadTelegramSettings() {
   if (!_gasOK()) return;
-  google.script.run
-    .withSuccessHandler(function(res) {
+  _callGAS('getTelegramSettings', {})
+    .then(function(res) {
       if (res.success) {
         document.getElementById('telegramTokenInput').value = res.botToken || '';
         document.getElementById('telegramChatIdInput').value = res.chatId || '';
       }
     })
-    .getTelegramSettings();
+    .catch(function(e) { console.error('getTelegramSettings failed:', e); });;
 }
 
 function saveTelegramSettings() {
@@ -7796,8 +7807,8 @@ function saveTelegramSettings() {
   okEl.textContent = '⏳ Menyimpan pengaturan Telegram...';
   okEl.classList.remove('hidden');
   
-  google.script.run
-    .withSuccessHandler(function(res) {
+  _callGAS('saveTelegramSettings', {botToken: token, chatId: chatId})
+    .then(function(res) {
       okEl.classList.add('hidden');
       if (res.success) {
         okEl.textContent = '✓ ' + res.message;
@@ -7808,12 +7819,11 @@ function saveTelegramSettings() {
         errEl.classList.remove('hidden');
       }
     })
-    .withFailureHandler(function(e) {
+    .catch(function(e) {
       okEl.classList.add('hidden');
       errEl.textContent = '❌ Error: ' + (e.message || e);
       errEl.classList.remove('hidden');
-    })
-    .saveTelegramSettings(token, chatId);
+    });
 }
 
 function submitChangeAdminPin() {
@@ -7839,8 +7849,8 @@ function submitChangeAdminPin() {
   okEl.textContent = '⏳ Memproses perubahan PIN...';
   okEl.classList.remove('hidden');
   
-  google.script.run
-    .withSuccessHandler(function(res) {
+  _callGAS('changeAdminPin', {oldPin: oldPin, newPin: newPin})
+    .then(function(res) {
       okEl.classList.add('hidden');
       if (res.success) {
         okEl.textContent = '✓ ' + res.message;
@@ -7853,12 +7863,11 @@ function submitChangeAdminPin() {
         errEl.classList.remove('hidden');
       }
     })
-    .withFailureHandler(function(e) {
+    .catch(function(e) {
       okEl.classList.add('hidden');
       errEl.textContent = '❌ Error: ' + (e.message || e);
       errEl.classList.remove('hidden');
-    })
-    .changeAdminPin(oldPin, newPin);
+    });
 }
 
 function clearAdminPinForm() {
@@ -11092,8 +11101,8 @@ function submitPoanData() {
     + '<svg class="animate-spin h-4 w-4 text-amber-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>'
     + '<span>Sedang mengirim & menyimpan ' + rowsToSave.length + ' data ke sheet Check POan...</span></div>');
   
-  google.script.run
-    .withSuccessHandler(function(res) {
+  _callGAS('saveCheckPOan', rowsToSave)
+    .then(function(res) {
       btn.disabled = false;
       btn.textContent = "Proses & Tambah ke Sheet";
       if (res.success) {
@@ -11108,12 +11117,11 @@ function submitPoanData() {
         showPoanErr('❌ ' + res.message);
       }
     })
-    .withFailureHandler(function(err) {
+    .catch(function(err) {
       btn.disabled = false;
       btn.textContent = "Proses & Tambah ke Sheet";
       showPoanErr("❌ Gagal menyimpan data: " + (err.message || err));
-    })
-    .saveCheckPOan(rowsToSave);
+    });
 }
 
 // =============================================================
