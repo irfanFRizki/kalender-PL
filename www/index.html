@@ -6726,7 +6726,7 @@ function detectPoanFileType(filename) {
     var s = localStorage.getItem('adminSession_v2');
     if (s) {
       var o = JSON.parse(s);
-      if (o && o.email && o.loginTime && (Date.now()-o.loginTime < 8*3600*1000)) {
+      if (o && (o.username || o.email) && o.loginTime && (Date.now()-o.loginTime < 8*3600*1000)) {
         adminSession = o;
         _updateAdminBtn(true);
       } else { localStorage.removeItem('adminSession_v2'); }
@@ -6740,7 +6740,7 @@ function _updateAdminBtn(on) {
   if (on) {
     dot && dot.classList.remove('hidden');
     btn && btn.classList.add('bg-green-500/30');
-    btn && btn.setAttribute('title','Panel Admin — '+((adminSession&&adminSession.email)||''));
+    btn && btn.setAttribute('title','Panel Admin — '+((adminSession&&(adminSession.username||adminSession.email))||''));
   } else {
     dot && dot.classList.add('hidden');
     btn && btn.classList.remove('bg-green-500/30');
@@ -6766,7 +6766,8 @@ function _callGAS(method, params) {
     } else {
       fetch(GAS_ADMIN_URL, {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+        // text/plain = "simple request" → tanpa preflight OPTIONS (GAS tidak mendukung preflight)
+        headers: {'Content-Type': 'text/plain;charset=utf-8'},
         body: JSON.stringify({method: method, params: params || {}})
       })
       .then(function(r) { return r.json(); })
