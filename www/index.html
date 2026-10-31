@@ -3617,6 +3617,13 @@ function openModal(dateStr, events, holidayName, preserveSourceTab) {
         + '<div class="flex-1"><p class="text-[9px] text-gray-500 uppercase font-bold tracking-widest mb-1">PL STE TOKO</p><p class="text-sm font-bold text-gray-800 dark:text-gray-200">' + ev.plSteToko + '</p></div>'
         + '<div class="flex-1 border-t sm:border-t-0 sm:border-l border-gray-200 dark:border-gray-700 pt-3 sm:pt-0 sm:pl-5"><p class="text-[9px] text-orange-500 uppercase font-bold tracking-widest mb-1">PINDAH KE STORE</p><p class="text-sm font-black text-blue-600 dark:text-blue-400">' + ev.pindahKeStore + '</p></div>'
         + '</div>'
+        + '<div class="col-span-2 sm:col-span-3 mt-3 flex flex-wrap gap-2 border-t border-gray-100 dark:border-gray-700 pt-3">'
+        + '<button type="button" onclick="openBongkarFromModal(\'' + plKey.replace(/'/g,"\\'") + '\')" class="flex-1 px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg">↪ Pindah PL</button>'
+        + '<button type="button" onclick="openProsesFromModal(\'' + plKey.replace(/'/g,"\\'") + '\',\'belum_bongkar\')" class="flex-1 px-3 py-2 bg-gray-500 text-white text-xs font-bold rounded-lg">📦 Belum Bongkar</button>'
+        + '<button type="button" onclick="openProsesFromModal(\'' + plKey.replace(/'/g,"\\'") + '\',\'proses_check\')" class="flex-1 px-3 py-2 bg-blue-500 text-white text-xs font-bold rounded-lg">🔍 Proses Check</button>'
+        + '<button type="button" onclick="openProsesFromModal(\'' + plKey.replace(/'/g,"\\'") + '\',\'proses_receipt\')" class="flex-1 px-3 py-2 bg-yellow-500 text-white text-xs font-bold rounded-lg">📝 Proses Receipt</button>'
+        + '<button type="button" onclick="openProsesFromModal(\'' + plKey.replace(/'/g,"\\'") + '\',\'belum_turun\')" class="flex-1 px-3 py-2 bg-red-500 text-white text-xs font-bold rounded-lg">⏳ Belum Turun</button>'
+        + '</div>'
         + infoHtml + fotoHtml
         + _buildTimelineTrack(ev, 'gudang')
         + '</div>';
@@ -3624,6 +3631,40 @@ function openModal(dateStr, events, holidayName, preserveSourceTab) {
     cont.appendChild(card);
   });
   document.getElementById('detailModal').classList.remove('hidden');
+}
+
+// Buka alur admin dari kartu GD, dengan PL terpilih otomatis.
+function openBongkarFromModal(pl) {
+  if (!adminSession) { _adminToast('Silakan login sebagai admin terlebih dahulu.', false); return; }
+  window._bongkarSelected = [String(pl || '').trim()];
+  openAdminPanel();
+  switchAdminTab('pindah');
+  var now = new Date();
+  document.getElementById('bongkarDD').value = String(now.getDate()).padStart(2,'0');
+  document.getElementById('bongkarMM').value = String(now.getMonth()+1).padStart(2,'0');
+  document.getElementById('bongkarYYYY').value = now.getFullYear();
+  document.getElementById('bongkarSelSummary').textContent = '1 PL dipilih: ' + pl;
+  document.getElementById('bongkarStep1').classList.add('hidden');
+  document.getElementById('bongkarStep2').classList.remove('hidden');
+  document.getElementById('bongkarStep3').classList.add('hidden');
+  bongkarStep = 2;
+}
+
+function openProsesFromModal(pl, status) {
+  if (!adminSession) { _adminToast('Silakan login sebagai admin terlebih dahulu.', false); return; }
+  prosesSubTab = status;
+  openAdminPanel();
+  switchAdminTab('proses'); // memuat ulang data status terpilih
+  var expectedPL = String(pl || '').trim().toUpperCase();
+  var attempts = 0;
+  (function selectWhenLoaded() {
+    if (prosesSubTab !== status) return;
+    var data = prosesDataCache[status] || [];
+    var idx = data.findIndex(function(item) { return String(item.pl || '').trim().toUpperCase() === expectedPL; });
+    if (idx >= 0 && document.getElementById('prosesRow_' + idx)) { selectProsesItem(idx); return; }
+    if (attempts++ < 40) { setTimeout(selectWhenLoaded, 250); return; }
+    _adminToast(pl + ' tidak ditemukan pada status ' + PROSES_CONFIG[status].label + '.', false);
+  })();
 }
 
 // Salin item MD ke sheet GD (Data Saya) via modal: nama PL & tanggal terisi dari MD, bisa diedit.
