@@ -235,6 +235,9 @@ html.dark .fab-child-btn{background:#1f2937;box-shadow:0 3px 12px rgba(0,0,0,.4)
 }
 html.dark .fab-child-label{background:#f1f5f9;color:#1e293b}
 
+/* Modal turunan / nested: selalu tampil di atas modal induk */
+#copyMdToGdModal{z-index:250!important}
+
 /* ── Floating Sidebar Overlay ── */
 #sidebarOverlay{
   position:fixed;inset:0;z-index:89;
@@ -292,6 +295,8 @@ html.dark #desktopSidebar.sidebar-open{box-shadow:-10px 0 48px rgba(0,0,0,.55)!i
   #welcomeModal{z-index:150!important}
   #imageModal{z-index:155!important}
   #listPLModal{z-index:150!important}
+  /* Modal turunan (buka dari dalam Rincian Barang) harus di atas modal induk */
+  #copyMdToGdModal{z-index:250!important}
   /* 6. Hide top tab bar - replaced by bottom nav */
   #desktopTabBar{display:none!important}
   /* FAB visible */
@@ -1571,7 +1576,7 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
 </div>
 
 <!-- Modal salin MD ke GD -->
-<div id="copyMdToGdModal" class="fixed inset-0 bg-gray-900/70 dark:bg-gray-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-[115] fade-in" onclick="closeCopyMdToGdModal()">
+<div id="copyMdToGdModal" class="fixed inset-0 bg-gray-900/70 dark:bg-gray-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-[250] fade-in" style="z-index:250" onclick="closeCopyMdToGdModal()">
   <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border dark:border-gray-700" onclick="event.stopPropagation()">
     <div class="p-5 bg-gradient-to-r from-amber-500 to-orange-500 text-white">
       <h3 class="font-extrabold text-lg">Salin MD ke GD</h3>
