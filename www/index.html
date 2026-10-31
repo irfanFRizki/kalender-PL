@@ -1570,6 +1570,24 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
   </div>
 </div>
 
+<!-- Modal salin MD ke GD -->
+<div id="copyMdToGdModal" class="fixed inset-0 bg-gray-900/70 dark:bg-gray-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4 z-[115] fade-in" onclick="closeCopyMdToGdModal()">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full overflow-hidden border dark:border-gray-700" onclick="event.stopPropagation()">
+    <div class="p-5 bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+      <h3 class="font-extrabold text-lg">Salin MD ke GD</h3>
+      <p class="text-amber-50 text-xs mt-1">Periksa dan edit nama Packing List serta tanggal sebelum menambahkan.</p>
+    </div>
+    <div class="p-5 space-y-4">
+      <div><label for="copyMdGdPl" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Nama Packing List</label><input id="copyMdGdPl" type="text" class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-3 py-2" autocomplete="off"></div>
+      <div><label for="copyMdGdDate" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">Tanggal muat (DD/MM/YYYY)</label><input id="copyMdGdDate" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" class="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 px-3 py-2" autocomplete="off"></div>
+    </div>
+    <div class="flex justify-end gap-2 px-5 pb-5">
+      <button type="button" onclick="closeCopyMdToGdModal()" class="px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-sm font-bold">Batal</button>
+      <button type="button" onclick="submitCopyMdToGd()" class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold">Tambahkan ke GD</button>
+    </div>
+  </div>
+</div>
+
 <!-- Modal Foto Fullscreen -->
 <div id="imageModal" class="fixed inset-0 bg-black/90 z-[70] hidden flex items-center justify-center fade-in p-4" onclick="closeFullImage()">
   <button onclick="closeFullImage()" class="absolute top-4 right-4 text-white hover:text-gray-300 p-2 focus:outline-none"><svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
@@ -3603,36 +3621,41 @@ function openModal(dateStr, events, holidayName, preserveSourceTab) {
   document.getElementById('detailModal').classList.remove('hidden');
 }
 
-// Salin item MD ke sheet GD (Data Saya), dengan nama PL dan tanggal muat yang dapat diedit.
-function copyMdToGdFromModal(index) {
-  var ev = (window._modalMdEvents || [])[index];
-  if (!ev) return;
-  var pl = window.prompt('Nama Packing List untuk ditambahkan ke GD:', ev.packingList || '');
-  if (pl === null) return;
-  pl = pl.trim().toUpperCase();
+// Salin item MD ke sheet GD (Data Saya) via modal: nama PL & tanggal terisi dari MD, bisa diedit.
+var _copyMdToGdCtx = null;
+function openCopyMdToGdModal(plVal, dateStr, koli, marking, idx) {
+  _copyMdToGdCtx = { pl: String(plVal || '').trim().toUpperCase(), dateStr: dateStr, koli: koli, marking: marking, index: idx };
+  var plInput = document.getElementById('copyMdGdPl');
+  var dateInput = document.getElementById('copyMdGdDate');
+  if (plInput) plInput.value = _copyMdToGdCtx.pl;
+  if (dateInput) dateInput.value = _copyMdToGdCtx.dateStr || '';
+  document.getElementById('copyMdToGdModal').classList.remove('hidden');
+}
+function closeCopyMdToGdModal() {
+  document.getElementById('copyMdToGdModal').classList.add('hidden');
+  _copyMdToGdCtx = null;
+}
+function submitCopyMdToGd() {
+  if (!_copyMdToGdCtx) return;
+  var plInput = document.getElementById('copyMdGdPl');
+  var dateInput = document.getElementById('copyMdGdDate');
+  var pl = String((plInput ? plInput.value : _copyMdToGdCtx.pl) || '').trim().toUpperCase();
   if (!pl) { alert('Nama Packing List harus diisi.'); return; }
-  var koli = parseInt(String(ev.koli || '0').replace(/[^0-9]/g, ''), 10);
-  if (!koli || koli <= 0) { alert('Jumlah koli tidak valid pada data MD.'); return; }
-  var d = ev.tgNotaAsli;
-  if (!(d instanceof Date) || isNaN(d.getTime())) { alert('Tanggal muat tidak valid.'); return; }
-  var defaultTgNota = ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth()+1)).slice(-2) + '/' + d.getFullYear();
-  var tgNotaInput = window.prompt('Tanggal muat (DD/MM/YYYY):', defaultTgNota);
-  if (tgNotaInput === null) return;
-  tgNotaInput = tgNotaInput.trim();
-  if (!tgNotaInput) { alert('Tanggal muat harus diisi.'); return; }
-  var tgNotaParts = tgNotaInput.split('/');
+  var tgNota = String((dateInput ? dateInput.value : _copyMdToGdCtx.dateStr) || '').trim();
+  if (!tgNota) { alert('Tanggal muat harus diisi.'); return; }
+  var tgNotaParts = tgNota.split('/');
   if (tgNotaParts.length !== 3 || tgNotaParts[0].length !== 2 || tgNotaParts[1].length !== 2 || tgNotaParts[2].length !== 4) {
     alert('Format tanggal harus DD/MM/YYYY (contoh: 31/10/2026).');
     return;
   }
-  var tgNota = tgNotaInput;
-  var marking = String(ev.pengiriman || '').trim();
-  if (!marking) { alert('Marking/pengiriman tidak tersedia pada data MD.'); return; }
+  var koli = _copyMdToGdCtx.koli;
+  var marking = _copyMdToGdCtx.marking;
   if (!_gasOK()) { alert('Google Apps Script tidak tersedia.'); return; }
   if (!window.confirm('Tambahkan ' + pl + ' (' + koli + ' koli, tgl ' + tgNota + ') ke GD dan spreadsheet?')) return;
   _callGAS('addNewPLBelumBongkar', {pl: pl, koli: koli, marking: marking, tgNota: tgNota})
     .then(function(res) {
       if (res && res.success) {
+        closeCopyMdToGdModal();
         alert('Berhasil ditambahkan ke GD/spreadsheet: ' + pl);
         fetchAllData(false);
       } else {
@@ -3640,6 +3663,20 @@ function copyMdToGdFromModal(index) {
       }
     })
     .catch(function(e) { alert('Gagal menyimpan: ' + (e && e.message ? e.message : e)); });
+}
+function copyMdToGdFromModal(index) {
+  var ev = (window._modalMdEvents || [])[index];
+  if (!ev) return;
+  var plDefault = String(ev.packingList || '').trim().toUpperCase();
+  if (!plDefault) { alert('Nama Packing List pada data MD kosong.'); return; }
+  var koli = parseInt(String(ev.koli || '0').replace(/[^0-9]/g, ''), 10);
+  if (!koli || koli <= 0) { alert('Jumlah koli tidak valid pada data MD.'); return; }
+  var d = ev.tgNotaAsli;
+  if (!(d instanceof Date) || isNaN(d.getTime())) { alert('Tanggal muat tidak valid.'); return; }
+  var defaultTgNota = ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth()+1)).slice(-2) + '/' + d.getFullYear();
+  var marking = String(ev.pengiriman || '').trim();
+  if (!marking) { alert('Marking/pengiriman tidak tersedia pada data MD.'); return; }
+  openCopyMdToGdModal(plDefault, defaultTgNota, koli, marking, index);
 }
 
 // ================================================================
