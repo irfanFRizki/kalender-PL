@@ -811,6 +811,11 @@ html.dark .cell-circle-ring.ring-thick.ring-blue  {border-color:rgba(129,140,248
             class="px-4 py-2 text-xs font-extrabold rounded-xl border-2 transition-all shadow-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-violet-400 hover:text-violet-600">
             📅 Histogram Koli per Bulan by TGL BONGKAR
           </button>
+          <button id="btnHistoLynXp" onclick="switchHistoMode('lynxp')"
+            class="px-4 py-2 text-xs font-extrabold rounded-xl border-2 transition-all shadow-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-amber-400 hover:text-amber-600"
+            title="Koli dengan MARKINGAN = XP LYN (kolom J, sheet Barang Sudah Bongkar)">
+            🎯 KOLI LYN XP
+          </button>
           <!-- REMOVED: List PL button histogram panel — per user request
           <button onclick="openListPLModal()"
             class="px-4 py-2 text-xs font-extrabold rounded-xl border-2 transition-all shadow-sm bg-indigo-50 dark:bg-indigo-900/20 border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-400 hover:border-indigo-500 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 flex items-center gap-1.5"
@@ -3915,16 +3920,19 @@ function switchHistoMode(mode) {
   var btnS = document.getElementById('btnHistoShipment');
   var btnP = document.getElementById('btnHistoPengiriman');
   var btnB = document.getElementById('btnHistoBongkar');
+  var btnL = document.getElementById('btnHistoLynXp');
   var ACTIVE   = 'px-4 py-2 text-xs font-extrabold rounded-xl border-2 transition-all shadow-sm bg-violet-600 border-violet-600 text-white';
   var INACTIVE = 'px-4 py-2 text-xs font-extrabold rounded-xl border-2 transition-all shadow-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-violet-400 hover:text-violet-600';
   if (btnS) btnS.className = (mode === 'shipment')   ? ACTIVE : INACTIVE;
   if (btnP) btnP.className = (mode === 'pengiriman') ? ACTIVE : INACTIVE;
   if (btnB) btnB.className = (mode === 'bongkar')    ? ACTIVE : INACTIVE;
+  var INACTIVE_L = 'px-4 py-2 text-xs font-extrabold rounded-xl border-2 transition-all shadow-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:border-amber-400 hover:text-amber-600';
+  if (btnL) btnL.className = (mode === 'lynxp')     ? 'px-4 py-2 text-xs font-extrabold rounded-xl border-2 transition-all shadow-sm bg-amber-600 border-amber-600 text-white' : INACTIVE_L;
 
   // Tampilkan/sembunyikan month nav
   var nav = document.getElementById('histoMonthNav');
   if (nav) {
-    if (mode === 'shipment' || mode === 'bongkar') {
+    if (mode === 'shipment' || mode === 'bongkar' || mode === 'lynxp') {
       nav.classList.remove('hidden');
       nav.classList.add('flex');
     } else {
@@ -3960,7 +3968,7 @@ function _histoNavMonth(dir) {
     area.addEventListener('touchend', function(e) {
       if (!_sActive) return;
       _sActive = false;
-      if (histoMode !== 'shipment' && histoMode !== 'bongkar') return;
+      if (histoMode !== 'shipment' && histoMode !== 'bongkar' && histoMode !== 'lynxp') return;
       var dx = e.changedTouches[0].clientX - _sx;
       var dy = e.changedTouches[0].clientY - _sy;
       if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
@@ -3972,6 +3980,7 @@ function _histoNavMonth(dir) {
 function renderHistogram() {
   if (histoMode === 'pengiriman') { renderHistogramPengiriman(); return; }
   if (histoMode === 'bongkar')    { renderHistogramBongkar(); return; }
+  if (histoMode === 'lynxp')      { renderHistogramLynXp(); return; }
 
   // ── Mode: Shipment (per bulan, 1 bulan tampil) ──
   // Pastikan month nav tampil
@@ -4588,21 +4597,24 @@ function _koli(item) { return parseInt(String(item.koli||'0').match(/\d+/))||0; 
 
 // ── modal helpers ────────────────────────────────────────────────
 function _setModalTheme(type) {
-  // type: 'orange'(container) | 'blue'(metro) | 'violet'(shipment) | 'indigo'(bongkar)
+  // type: 'orange'(container) | 'blue'(metro) | 'violet'(shipment) | 'indigo'(bongkar) | 'amber'(lynxp)
   var hdr  = document.getElementById('cdModalHeader');
   var icon = document.getElementById('cdModalIcon');
   var svgPath =
     type === 'blue'   ? 'M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0'
   : type === 'violet' ? 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4'
   : type === 'indigo' ? 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'
+  : type === 'amber'  ? 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'
                       : 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4';
   var bg = type === 'blue'   ? 'bg-blue-50 dark:bg-blue-900/20'
          : type === 'violet' ? 'bg-violet-50 dark:bg-violet-900/20'
          : type === 'indigo' ? 'bg-indigo-50 dark:bg-indigo-900/20'
+         : type === 'amber'  ? 'bg-amber-50 dark:bg-amber-900/20'
          : 'bg-orange-50 dark:bg-orange-900/20';
   var iconBg = type === 'blue'   ? 'bg-blue-500'
              : type === 'violet' ? 'bg-violet-600'
              : type === 'indigo' ? 'bg-indigo-500'
+             : type === 'amber'  ? 'bg-amber-500'
              : 'bg-orange-500';
   hdr.className  = hdr.className.replace(/bg-\w+-50\s*|dark:bg-\w+-900\/20\s*/g,'').trim() + ' ' + bg;
   icon.className = icon.className.replace(/bg-\w+-\d+/, iconBg);
@@ -4712,6 +4724,255 @@ function closeContainerModal() {
   _drillStack  = [];
   _drillMIdx   = null;
   _drillYear   = null;
+}
+
+function _isXpLyn(item) {
+  var mk = String((item && item.markingan) || '').toUpperCase().replace(/\s+/g, ' ').trim();
+  return mk === 'XP LYN';
+}
+// ── KOLI LYN XP: histogram koli dgn MARKINGAN = XP LYN (kolom J) ─
+function renderHistogramLynXp() {
+  var isDark = document.documentElement.classList.contains('dark');
+  var COLOR   = isDark ? '#f59e0b' : '#d97706'; // amber
+
+  // Populate year filter (dari baris XP LYN; fallback ke semua tahun agar UI tidak kosong)
+  var yearSet = new Set();
+  rawGudangList.forEach(function(item) {
+    if (!_isXpLyn(item)) return;
+    var d = item.tglBongkarDate;
+    if (d instanceof Date && !isNaN(d)) yearSet.add(String(d.getFullYear()));
+  });
+  if (yearSet.size === 0) {
+    rawGudangList.forEach(function(item) {
+      var d = item.tglBongkarDate;
+      if (d instanceof Date && !isNaN(d)) yearSet.add(String(d.getFullYear()));
+    });
+  }
+  var ys = document.getElementById('histoYearFilter');
+  var curYearVal = ys.value;
+  var sortedYears = Array.from(yearSet).sort();
+  var latestY = sortedYears[sortedYears.length - 1];
+  ys.innerHTML = '';
+  sortedYears.forEach(function(y) {
+    var o = document.createElement('option'); o.value = y; o.textContent = y; ys.appendChild(o);
+  });
+  if (yearSet.has(curYearVal)) { ys.value = curYearVal; } else { ys.value = latestY || ''; }
+  ys.onchange = renderHistogramLynXp;
+
+  var filterYear = ys.value;
+
+  // Pastikan histoMonthIdx valid
+  var validMonths = new Set();
+  rawGudangList.forEach(function(item) {
+    if (!_isXpLyn(item)) return;
+    var d = item.tglBongkarDate;
+    if (d instanceof Date && !isNaN(d) && String(d.getFullYear()) === filterYear) validMonths.add(d.getMonth());
+  });
+  if (validMonths.size > 0 && !validMonths.has(histoMonthIdx)) {
+    histoMonthIdx = Array.from(validMonths).sort(function(a,b){return a-b;})[validMonths.size-1];
+  }
+
+  // Update month label
+  var monthLabel = document.getElementById('histoMonthLabel');
+  if (monthLabel) monthLabel.textContent = monthNames[histoMonthIdx] + ' ' + filterYear;
+
+  // Update UI labels
+  document.getElementById('histoTitle').innerHTML = '<svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg> KOLI LYN XP';
+  document.getElementById('histoSubtitle').textContent = 'Koli dengan MARKINGAN = XP LYN (kolom J, sheet Barang Sudah Bongkar) — ' + monthNames[histoMonthIdx] + ' ' + filterYear;
+  document.getElementById('histoTableTitle').textContent = 'Tabel Rekap KOLI LYN XP Harian — ' + monthNames[histoMonthIdx] + ' ' + filterYear;
+  document.getElementById('histoTableHead').innerHTML = '<tr class="bg-amber-50 dark:bg-amber-900/20 text-[10px] uppercase font-extrabold tracking-wider">'
+    + '<th class="px-4 py-3 text-left border-b border-amber-100 dark:border-amber-800/50 text-amber-800 dark:text-amber-300">Tanggal</th>'
+    + '<th class="px-4 py-3 text-center border-b border-amber-100 dark:border-amber-800/50 text-gray-600 dark:text-gray-400">Total Koli</th>'
+    + '<th class="px-4 py-3 text-center border-b border-amber-100 dark:border-amber-800/50 text-gray-500 dark:text-gray-400">Jml PL</th>'
+    + '</tr>';
+
+  // Hitung koli per hari untuk XP LYN
+  var dayData = {};
+  var dayPL   = {};
+  var grandKoli = 0, grandPL = new Set();
+  rawGudangList.forEach(function(item) {
+    if (!_isXpLyn(item)) return;
+    var d = item.tglBongkarDate;
+    if (!(d instanceof Date) || isNaN(d)) return;
+    if (String(d.getFullYear()) !== filterYear) return;
+    if (d.getMonth() !== histoMonthIdx) return;
+    var koli = parseInt(String(item.koli||'0').match(/\d+/))||0;
+    if (koli === 0) return;
+    var day = d.getDate();
+    dayData[day] = (dayData[day]||0) + koli;
+    if (!dayPL[day]) dayPL[day] = new Set();
+    dayPL[day].add(String(item.packingList||'').trim());
+    grandKoli += koli;
+    grandPL.add(String(item.packingList||'').trim());
+  });
+
+  // Summary cards
+  var daysWithData = Object.keys(dayData).length;
+  var avgKoli = daysWithData > 0 ? Math.round(grandKoli / daysWithData) : 0;
+  var peakDay = 0, peakVal = 0;
+  for (var d in dayData) { if (dayData[d] > peakVal) { peakVal = dayData[d]; peakDay = parseInt(d); } }
+  document.getElementById('histoSummaryCards').innerHTML = [
+    {icon:'🎯', label:'Total Koli LYN XP', val:grandKoli.toLocaleString('id-ID'), color:COLOR, sub:grandPL.size+' PL total', clickDay:0},
+    {icon:'📅', label:'Hari Aktif', val:daysWithData, color:'#10b981', sub:'hari ada LYN XP', clickDay:0},
+    {icon:'📊', label:'Rata-rata/Hari', val:avgKoli.toLocaleString('id-ID'), color:'#f59e0b', sub:'koli per hari aktif', clickDay:0},
+    {icon:'🏆', label:'Puncak', val:peakDay > 0 ? peakDay+' '+monthNames[histoMonthIdx].substring(0,3) : '—', color:'#ef4444', sub:peakDay>0?(peakVal.toLocaleString('id-ID')+' koli'):'—', clickDay:peakDay}
+  ].map(function(c) {
+    var clickable = c.clickDay > 0;
+    var extra = clickable
+      ? ' cursor-pointer hover:shadow-md hover:border-red-300 dark:hover:border-red-600 transition-all group" onclick="_lynxpDrill('+c.clickDay+','+histoMonthIdx+')" title="Klik untuk lihat rincian hari puncak"'
+      : '';
+    return '<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-3.5 flex items-center gap-3'+extra+'">'
+      + '<div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style="background:'+c.color+'22">'+c.icon+'</div>'
+      + '<div><p class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">'+c.label+'</p>'
+      + '<p class="text-xl font-black" style="color:'+c.color+'">'+c.val+'</p>'
+      + '<p class="text-[9px] text-gray-400 font-bold mt-0.5">'+c.sub+(clickable?' <span style="color:#ef4444">· klik rincian →</span>':'')+'</p>'
+      + '</div></div>';
+  }).join('');
+
+  // Render chart
+  var days = Object.keys(dayData).map(Number).sort(function(a,b){return a-b;});
+  var maxVal = days.length ? Math.max.apply(null, days.map(function(d){return dayData[d]||0;})) : 0;
+  if (!isFinite(maxVal) || maxVal <= 0) maxVal = 100;
+
+  var CHART_H = 280, PAD_L = 55, PAD_T = 24, PAD_B = 50;
+  var totalDays = days.length > 0 ? days.length : 1;
+  var MAX_W = 450;
+  var BAR_W = Math.max(8, Math.min(18, Math.floor((MAX_W - PAD_L - 20) / totalDays * 0.72)));
+  var GAP   = Math.max(2, Math.floor((MAX_W - PAD_L - 20 - totalDays * BAR_W) / Math.max(1, totalDays - 1)));
+  var totalW = PAD_L + totalDays * (BAR_W + GAP) - GAP + 20;
+  var svgBars = '', svgLabels = '', svgY = '';
+
+  for (var s = 0; s <= 5; s++) {
+    var gval = Math.round(maxVal * s / 5);
+    var yy = PAD_T + CHART_H - (s / 5) * CHART_H;
+    var gc = isDark ? '#374151' : '#e5e7eb', tc = isDark ? '#6b7280' : '#9ca3af';
+    svgY += '<line x1="'+(PAD_L-6)+'" y1="'+yy+'" x2="'+totalW+'" y2="'+yy+'" stroke="'+gc+'" stroke-width="1" stroke-dasharray="'+(s===0?'0':'4,3')+'"/>';
+    svgY += '<text x="'+(PAD_L-10)+'" y="'+(yy+4)+'" text-anchor="end" font-size="10" fill="'+tc+'" font-family="sans-serif">'+gval+'</text>';
+  }
+
+  days.forEach(function(day, gi) {
+    var v = dayData[day] || 0;
+    var barH = v > 0 ? Math.max(20, (v / maxVal) * CHART_H) : 0;
+    var x = PAD_L + gi * (BAR_W + GAP);
+    var y = PAD_T + CHART_H - barH;
+    var mc = isDark ? '#9ca3af' : '#6b7280';
+    svgLabels += '<text x="'+(x+BAR_W/2)+'" y="'+(PAD_T+CHART_H+16)+'" text-anchor="middle" font-size="9" font-weight="700" fill="'+mc+'" font-family="sans-serif">'+day+'</text>';
+    if (barH > 0) {
+      var inner = '';
+      inner += '<rect class="histo-bar-rect" x="'+x+'" y="'+y+'" width="'+BAR_W+'" height="'+barH+'" fill="'+COLOR+'" rx="4" ry="4" opacity="0.90" style="cursor:pointer"/>';
+      var fs = v >= 1000 ? 7 : 8;
+      if (barH >= 30) {
+        inner += '<text class="histo-bar-label" x="'+(x+BAR_W/2)+'" y="'+(y+barH/2+fs/2)+'" text-anchor="middle" font-size="'+fs+'" font-weight="900" fill="white" font-family="sans-serif">'+v.toLocaleString('id-ID')+'</text>';
+      }
+      inner += '<title>'+day+' '+monthNames[histoMonthIdx]+': '+v.toLocaleString('id-ID')+' koli ('+(dayPL[day]?dayPL[day].size:0)+' PL) XP LYN — klik untuk lihat rincian</title>';
+      svgBars += '<g class="bar-clickable" onclick="_lynxpDrill('+day+','+histoMonthIdx+')" role="button" aria-label="'+day+' '+monthNames[histoMonthIdx]+' '+v+' koli XP LYN" style="cursor:pointer">' + inner + '</g>';
+    }
+  });
+
+  if (days.length === 0) {
+    svgBars += '<text x="'+(PAD_L+(totalW-PAD_L)/2)+'" y="'+(PAD_T+CHART_H/2)+'" text-anchor="middle" font-size="13" fill="'+(isDark?'#6b7280':'#9ca3af')+'" font-family="sans-serif">Tidak ada data KOLI LYN XP untuk bulan ini</text>';
+  }
+
+  var svgH = PAD_T + CHART_H + PAD_B;
+  var area = document.getElementById('histoChartArea');
+  area.innerHTML = '<svg viewBox="0 0 '+totalW+' '+svgH+'" width="100%" style="max-width:520px;display:block;margin:0 auto;overflow:visible">'+svgY+svgBars+svgLabels+'</svg>';
+
+  requestAnimationFrame(function() { requestAnimationFrame(function() {
+    area.querySelectorAll('.histo-bar-rect').forEach(function(r,i){ setTimeout(function(){r.classList.add('bar-visible');},i*25); });
+    area.querySelectorAll('.histo-bar-label').forEach(function(t,i){ setTimeout(function(){t.classList.add('bar-visible');},150+i*25); });
+  }); });
+
+  document.getElementById('debugContent').textContent = _buildDebugInfo();
+
+  // Tabel harian
+  var tbody = document.getElementById('histoTableBody');
+  tbody.innerHTML = '';
+  var grandRow = 0;
+  days.forEach(function(day) {
+    var v = dayData[day] || 0;
+    var tr = document.createElement('tr');
+    tr.className = 'hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-colors cursor-pointer';
+    tr.onclick = (function(d) { return function() { _lynxpDrill(d, histoMonthIdx); }; })(day);
+    var dd = String(day).padStart(2,'0');
+    var mm = String(histoMonthIdx+1).padStart(2,'0');
+    tr.innerHTML = '<td class="px-4 py-2.5 font-bold text-gray-700 dark:text-gray-300 whitespace-nowrap">'+dd+'/'+mm+'/'+filterYear+'</td>'
+      + '<td class="px-4 py-2.5 text-center font-black" style="color:'+COLOR+'">'+v.toLocaleString('id-ID')+'</td>'
+      + '<td class="px-4 py-2.5 text-center text-gray-500 dark:text-gray-400 font-medium">'+(dayPL[day]?dayPL[day].size:0)+' PL</td>';
+    tbody.appendChild(tr);
+    grandRow += v;
+  });
+  var trT = document.createElement('tr');
+  trT.className = 'bg-amber-50 dark:bg-amber-900/20 border-t-2 border-amber-200 dark:border-amber-700';
+  trT.innerHTML = '<td class="px-4 py-3 font-extrabold text-amber-800 dark:text-amber-300 text-xs uppercase">TOTAL</td>'
+    + '<td class="px-4 py-3 text-center font-black text-sm text-gray-800 dark:text-gray-100 bg-amber-100 dark:bg-amber-900/40" colspan="2">'+grandRow.toLocaleString('id-ID')+'</td>';
+  tbody.appendChild(trT);
+}
+
+function _lynxpDrill(day, mIdx) {
+  var isDark   = document.documentElement.classList.contains('dark');
+  var COLOR    = isDark ? '#f59e0b' : '#d97706';
+  var filterYear = document.getElementById('histoYearFilter').value;
+
+  var items = rawGudangList.filter(function(item) {
+    if (!_isXpLyn(item)) return false;
+    var d = item.tglBongkarDate;
+    if (!(d instanceof Date) || isNaN(d)) return false;
+    if (String(d.getFullYear()) !== filterYear) return false;
+    if (d.getMonth() !== mIdx) return false;
+    if (d.getDate() !== day) return false;
+    var koli = parseInt(String(item.koli||'0').match(/\d+/))||0;
+    return koli > 0;
+  });
+
+  var totalKoli = items.reduce(function(s, i){ return s + _koli(i); }, 0);
+  var dd = String(day).padStart(2,'0');
+  var mm = String(mIdx+1).padStart(2,'0');
+  var tanggal = dd + '/' + mm + '/' + filterYear;
+
+  _setModalTheme('amber');
+  document.getElementById('cdModalIcon').style.background = COLOR;
+  document.getElementById('cdModalTitle').textContent = 'KOLI LYN XP - ' + tanggal;
+  document.getElementById('cdModalSub').textContent   = items.length + ' Packing List · ' + totalKoli.toLocaleString('id-ID') + ' koli total';
+  document.getElementById('cdBreadcrumb').classList.add('hidden');
+
+  var body = document.getElementById('cdModalBody');
+
+  if (items.length === 0) {
+    body.innerHTML = '<div class="text-center py-12 text-gray-400 dark:text-gray-500"><p class="text-sm font-semibold">Tidak ada data KOLI LYN XP untuk ' + tanggal + '</p></div>';
+  } else {
+    body.innerHTML =
+      '<div class="mb-4 rounded-xl p-3 border flex items-center justify-between" '
+      + 'style="background:' + COLOR + '18;border-color:' + COLOR + '55">'
+      + '<span class="text-xs font-bold" style="color:' + COLOR + '">MARKINGAN = XP LYN · ' + tanggal + '</span>'
+      + '<span class="text-lg font-black" style="color:' + COLOR + '">' + totalKoli.toLocaleString('id-ID') + ' koli</span></div>'
+      + '<div class="rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">'
+      + '<table class="w-full text-xs">'
+      + '<thead><tr class="bg-gray-50 dark:bg-gray-900/50 text-[10px] uppercase font-extrabold tracking-wider text-gray-500">'
+      + '<th class="px-4 py-3 text-left border-b border-gray-100 dark:border-gray-700 w-8">#</th>'
+      + '<th class="px-4 py-3 text-left border-b border-gray-100 dark:border-gray-700">Packing List</th>'
+      + '<th class="px-4 py-3 text-center border-b border-gray-100 dark:border-gray-700 w-20">MARKINGAN</th>'
+      + '<th class="px-4 py-3 text-center border-b border-gray-100 dark:border-gray-700 w-16" style="color:' + COLOR + '">Koli</th>'
+      + '<th class="px-4 py-3 text-center border-b border-gray-100 dark:border-gray-700 text-gray-400 w-24">Pengiriman</th>'
+      + '</tr></thead>'
+      + '<tbody class="divide-y divide-gray-100 dark:divide-gray-700">'
+      + items.map(function(item, i) {
+          var k = _koli(item);
+          return '<tr class="hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-colors">'
+            + '<td class="px-4 py-2.5 text-gray-400 font-bold">' + (i+1) + '</td>'
+            + '<td class="px-4 py-2.5 font-extrabold text-gray-800 dark:text-gray-100">' + (item.packingList||'—') + '</td>'
+            + '<td class="px-4 py-2.5 text-center"><span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-bold border border-amber-200 dark:border-amber-800/40">' + (item.markingan||'') + '</span></td>'
+            + '<td class="px-4 py-2.5 text-center font-black" style="color:' + COLOR + '">' + (k>0?k.toLocaleString('id-ID'):'—') + '</td>'
+            + '<td class="px-4 py-2.5 text-center text-gray-500 dark:text-gray-400 font-medium">' + (item.pengiriman||'—') + '</td>'
+            + '</tr>';
+        }).join('')
+      + '<tr class="bg-gray-50 dark:bg-gray-800/60 border-t-2 border-gray-200 dark:border-gray-600">'
+      + '<td colspan="3" class="px-4 py-2.5 font-extrabold text-[10px] uppercase text-gray-500">Total</td>'
+      + '<td class="px-4 py-2.5 text-center font-black text-sm" style="color:' + COLOR + '">' + totalKoli.toLocaleString('id-ID') + '</td>'
+      + '<td></td></tr>'
+      + '</tbody></table></div>';
+  }
+
+  document.getElementById('containerDrillModal').classList.remove('hidden');
 }
 
 // ── Bongkar Drill: klik bar / baris tabel TGL BONGKAR ───────────
