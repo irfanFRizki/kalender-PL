@@ -3562,6 +3562,8 @@ function openModal(dateStr, events, holidayName, preserveSourceTab) {
         ? '<span class="inline-flex items-center gap-1 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-400 text-[9px] font-extrabold px-2 py-0.5 rounded border border-emerald-400 dark:border-emerald-600 mb-1">✅ Data MD &amp; Data Saya Sama</span>'
         : '';
 
+      var actionBtnsEstimasi = '<button type="button" onclick="openBongkarFromModal(\'' + plKey.replace(/'/g,"\\'") + '\')" class="mt-3 w-full sm:w-auto px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg shadow">↪ Pindah PL</button>';
+
       card.innerHTML = badgeNew + '<span class="absolute top-4 right-4 bg-gray-100 dark:bg-gray-700 text-gray-400 text-[10px] font-bold px-2 rounded z-10">#' + (idx+1) + '</span>'
         + mdBadge
         + '<div class="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-4 pr-6 sm:pr-10 mt-3">'
@@ -3573,7 +3575,7 @@ function openModal(dateStr, events, holidayName, preserveSourceTab) {
         + '<div class="col-span-2 sm:col-span-3 border-t border-gray-100 dark:border-gray-700 pt-3"><p class="text-[9px] text-gray-400 uppercase font-bold tracking-widest mb-1">' + pengirimanLabel + '</p><p class="text-sm font-bold text-gray-800 dark:text-gray-200">' + ev.pengiriman + '</p></div>'
         + infoHtml + fotoHtml
         + _buildTimelineTrack(ev, 'estimasi')
-        + (ev.isMD ? '<button type="button" onclick="copyMdToGdFromModal(' + idx + ')" class="mt-3 w-full sm:w-auto px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg shadow">⧉ Salin ke GD</button>' : '')
+        + (ev.isMD ? '<button type="button" onclick="copyMdToGdFromModal(' + idx + ')" class="mt-3 w-full sm:w-auto px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg shadow">⧉ Salin ke GD</button>' : actionBtnsEstimasi)
         + '</div>';
     } else {
       var tgb = ev.tgBongkar;
@@ -3618,11 +3620,10 @@ function openModal(dateStr, events, holidayName, preserveSourceTab) {
         + '<div class="flex-1 border-t sm:border-t-0 sm:border-l border-gray-200 dark:border-gray-700 pt-3 sm:pt-0 sm:pl-5"><p class="text-[9px] text-orange-500 uppercase font-bold tracking-widest mb-1">PINDAH KE STORE</p><p class="text-sm font-black text-blue-600 dark:text-blue-400">' + ev.pindahKeStore + '</p></div>'
         + '</div>'
         + '<div class="col-span-2 sm:col-span-3 mt-3 flex flex-wrap gap-2 border-t border-gray-100 dark:border-gray-700 pt-3">'
-        + '<button type="button" onclick="openBongkarFromModal(\'' + plKey.replace(/'/g,"\\'") + '\')" class="flex-1 px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg">↪ Pindah PL</button>'
-        + '<button type="button" onclick="openProsesFromModal(\'' + plKey.replace(/'/g,"\\'") + '\',\'belum_bongkar\')" class="flex-1 px-3 py-2 bg-gray-500 text-white text-xs font-bold rounded-lg">📦 Belum Bongkar</button>'
-        + '<button type="button" onclick="openProsesFromModal(\'' + plKey.replace(/'/g,"\\'") + '\',\'proses_check\')" class="flex-1 px-3 py-2 bg-blue-500 text-white text-xs font-bold rounded-lg">🔍 Proses Check</button>'
-        + '<button type="button" onclick="openProsesFromModal(\'' + plKey.replace(/'/g,"\\'") + '\',\'proses_receipt\')" class="flex-1 px-3 py-2 bg-yellow-500 text-white text-xs font-bold rounded-lg">📝 Proses Receipt</button>'
-        + '<button type="button" onclick="openProsesFromModal(\'' + plKey.replace(/'/g,"\\'") + '\',\'belum_turun\')" class="flex-1 px-3 py-2 bg-red-500 text-white text-xs font-bold rounded-lg">⏳ Belum Turun</button>'
+        + (String(ev.status||'').trim() === 'Belom Bongkar' ? '<button type="button" onclick="openProsesFromModal(\'' + plKey.replace(/'/g,"\\'") + '\',\'belum_bongkar\')" class="flex-1 px-3 py-2 bg-gray-500 text-white text-xs font-bold rounded-lg">📦 Belum Bongkar</button>' : '')
+        + (String(ev.status||'').trim() === 'Proses Check' ? '<button type="button" onclick="openProsesFromModal(\'' + plKey.replace(/'/g,"\\'") + '\',\'proses_check\')" class="flex-1 px-3 py-2 bg-blue-500 text-white text-xs font-bold rounded-lg">🔍 Proses Check</button>' : '')
+        + (String(ev.status||'').trim() === 'Proses Receipt' ? '<button type="button" onclick="openProsesFromModal(\'' + plKey.replace(/'/g,"\\'") + '\',\'proses_receipt\')" class="flex-1 px-3 py-2 bg-yellow-500 text-white text-xs font-bold rounded-lg">📝 Proses Receipt</button>' : '')
+        + (String(ev.status||'').trim() === 'Belum Turun Toko' ? '<button type="button" onclick="openProsesFromModal(\'' + plKey.replace(/'/g,"\\'") + '\',\'belum_turun\')" class="flex-1 px-3 py-2 bg-red-500 text-white text-xs font-bold rounded-lg">⏳ Belum Turun</button>' : '')
         + '</div>'
         + infoHtml + fotoHtml
         + _buildTimelineTrack(ev, 'gudang')
