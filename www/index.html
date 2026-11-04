@@ -1671,11 +1671,12 @@ var HISTO_COLOR_PALETTE = [
 ];
 
 var _defaultHistoPrefixGroups = [
-  {prefix:'XP',  label:'XP',     colorIdx:0},
-  {prefix:'MLT', label:'TL',     colorIdx:1},
-  {prefix:'MLJ', label:'JN',     colorIdx:2},
-  {prefix:'MLL', label:'LYN',    colorIdx:3},
-  {prefix:'MLC', label:'LYN CX', colorIdx:4}
+  {prefix:'XP',     label:'XP',        colorIdx:0},
+  {prefix:'MLT',    label:'TL',        colorIdx:1},
+  {prefix:'MLJ',    label:'JN',        colorIdx:2},
+  {prefix:'MLL',    label:'LYN',       colorIdx:3},
+  {prefix:'MLC',    label:'LYN CX',    colorIdx:4},
+  {prefix:'LYN_XP', label:'KOLI LYN XP', colorIdx:5, isMarkingan:true, markinganMatch:'XP LYN'}
 ];
 
 // Prefix groups: mulai dengan default, lalu di-overwrite saat data backend tiba
@@ -1715,11 +1716,13 @@ function getHistoGroups() {
   return histoPrefixGroups.map(function(g, i) {
     var c = _getHistoColor(g.colorIdx !== undefined ? g.colorIdx : i);
     return {
-      key:      g.prefix,
-      label:    g.label,
-      prefix:   g.prefix,
-      color:    c.color,
-      colorDark: c.colorDark
+      key:           g.prefix,
+      label:         g.label,
+      prefix:        g.prefix,
+      color:         c.color,
+      colorDark:     c.colorDark,
+      isMarkingan:   g.isMarkingan || false,
+      markinganMatch:g.markinganMatch || null
     };
   });
 }
@@ -4036,7 +4039,24 @@ function renderHistogram() {
     var koli = parseInt(String(item.koli||'0').match(/\d+/))||0;
     if (koli === 0) return;
     var pl = String(item.packingList||'').toUpperCase().trim();
+    
+    var assigned = false;
+    // Phase 1: Check markingan-based groups first (KOLI LYN XP)
     for (var g = 0; g < GROUPS.length; g++) {
+      if (GROUPS[g].isMarkingan && GROUPS[g].markinganMatch) {
+        var markinganValue = String(item.markingan||'').toUpperCase().trim();
+        if (markinganValue === GROUPS[g].markinganMatch) {
+          shipData[GROUPS[g].key] += koli;
+          shipPL[GROUPS[g].key].add(pl);
+          assigned = true;
+          break;
+        }
+      }
+    }
+    if (assigned) return;
+    // Phase 2: Check prefix-based groups
+    for (var g = 0; g < GROUPS.length; g++) {
+      if (GROUPS[g].isMarkingan) continue;
       if (pl.startsWith(GROUPS[g].prefix)) {
         shipData[GROUPS[g].key] += koli;
         shipPL[GROUPS[g].key].add(pl);
@@ -4057,7 +4077,7 @@ function renderHistogram() {
       + '</div></div>';
   }).join('');
 
-  // Render chart — 4 batang besar per shipment
+  // Render chart — 5 batang besar + KOLI LYN XP = 6 batang total
   _renderHistoChartSingleMonth(GROUPS, shipData, shipPL, isDark);
 
   document.getElementById('debugContent').textContent = _buildDebugInfo();
@@ -4081,7 +4101,7 @@ function renderHistogram() {
   tbody.appendChild(trT);
 }
 
-// Render chart 4 batang besar untuk mode Shipment per-bulan
+// Render chart 5 batang besar + KOLI LYN XP untuk mode Shipment per-bulan
 function _renderHistoChartSingleMonth(GROUPS, shipData, shipPL, isDark) {
   var maxVal = GROUPS.reduce(function(s,g){ return Math.max(s, shipData[g.key]); }, 0);
   if (maxVal === 0) maxVal = 100;
