@@ -4832,7 +4832,7 @@ function renderHistogramLynXp() {
   var peakDay = 0, peakVal = 0;
   for (var d in dayData) { if (dayData[d] > peakVal) { peakVal = dayData[d]; peakDay = parseInt(d); } }
   document.getElementById('histoSummaryCards').innerHTML = [
-    {icon:'🎯', label:'Total Koli LYN XP', val:grandKoli.toLocaleString('id-ID'), color:COLOR, sub:grandPL.size+' PL total', clickDay:0},
+    {icon:'🎯', label:'KOLI LYN XP', val:grandKoli.toLocaleString('id-ID'), color:COLOR, sub:grandPL.size+' PL total', clickDay:0},
     {icon:'📅', label:'Hari Aktif', val:daysWithData, color:'#10b981', sub:'hari ada LYN XP', clickDay:0},
     {icon:'📊', label:'Rata-rata/Hari', val:avgKoli.toLocaleString('id-ID'), color:'#f59e0b', sub:'koli per hari aktif', clickDay:0},
     {icon:'🏆', label:'Puncak', val:peakDay > 0 ? peakDay+' '+monthNames[histoMonthIdx].substring(0,3) : '—', color:'#ef4444', sub:peakDay>0?(peakVal.toLocaleString('id-ID')+' koli'):'—', clickDay:peakDay}
@@ -4988,7 +4988,7 @@ function _lynxpDrill(day, mIdx) {
       + '<th class="px-4 py-3 text-left border-b border-gray-100 dark:border-gray-700">Packing List</th>'
       + '<th class="px-4 py-3 text-center border-b border-gray-100 dark:border-gray-700 w-20">MARKINGAN</th>'
       + '<th class="px-4 py-3 text-center border-b border-gray-100 dark:border-gray-700 w-16" style="color:' + COLOR + '">Koli</th>'
-      + '<th class="px-4 py-3 text-center border-b border-gray-100 dark:border-gray-700 text-gray-400 w-24">Pengiriman</th>'
+      + '<th class="px-4 py-3 text-center border-b border-gray-100 dark:border-gray-700 text-gray-400 w-28">Tgl Bongkar</th>'
       + '</tr></thead>'
       + '<tbody class="divide-y divide-gray-100 dark:divide-gray-700">'
       + items.map(function(item, i) {
@@ -4998,7 +4998,7 @@ function _lynxpDrill(day, mIdx) {
             + '<td class="px-4 py-2.5 font-extrabold text-gray-800 dark:text-gray-100">' + (item.packingList||'—') + '</td>'
             + '<td class="px-4 py-2.5 text-center"><span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 font-bold border border-amber-200 dark:border-amber-800/40">' + (item.markingan||'') + '</span></td>'
             + '<td class="px-4 py-2.5 text-center font-black" style="color:' + COLOR + '">' + (k>0?k.toLocaleString('id-ID'):'—') + '</td>'
-            + '<td class="px-4 py-2.5 text-center text-gray-500 dark:text-gray-400 font-medium">' + (item.pengiriman||'—') + '</td>'
+            + '<td class="px-4 py-2.5 text-center text-gray-500 dark:text-gray-400 font-medium">' + (item.tglBongkar||'—') + '</td>'
             + '</tr>';
         }).join('')
       + '<tr class="bg-gray-50 dark:bg-gray-800/60 border-t-2 border-gray-200 dark:border-gray-600">'
@@ -5057,7 +5057,7 @@ function _bongkarDrill(day, mIdx) {
       + '<th class="px-4 py-3 text-left border-b border-gray-100 dark:border-gray-700 w-8">#</th>'
       + '<th class="px-4 py-3 text-left border-b border-gray-100 dark:border-gray-700">Packing List</th>'
       + '<th class="px-4 py-3 text-center border-b border-gray-100 dark:border-gray-700 w-16" style="color:' + COLOR + '">Koli</th>'
-      + '<th class="px-4 py-3 text-center border-b border-gray-100 dark:border-gray-700 text-gray-400 w-24">Shipment</th>'
+      + '<th class="px-4 py-3 text-center border-b border-gray-100 dark:border-gray-700 text-gray-400 w-28">Tgl Bongkar</th>'
       + '</tr></thead>'
       + '<tbody class="divide-y divide-gray-100 dark:divide-gray-700">'
       + items.map(function(item, i) {
@@ -5066,7 +5066,7 @@ function _bongkarDrill(day, mIdx) {
             + '<td class="px-4 py-2.5 text-gray-400 font-bold">' + (i+1) + '</td>'
             + '<td class="px-4 py-2.5 font-extrabold text-gray-800 dark:text-gray-100">' + (item.packingList||'—') + '</td>'
             + '<td class="px-4 py-2.5 text-center font-black" style="color:' + COLOR + '">' + (k>0?k.toLocaleString('id-ID'):'—') + '</td>'
-            + '<td class="px-4 py-2.5 text-center text-gray-500 dark:text-gray-400 font-medium">' + (item.pengiriman||'—') + '</td>'
+            + '<td class="px-4 py-2.5 text-center text-gray-500 dark:text-gray-400 font-medium">' + (item.tglBongkar||'—') + '</td>'
             + '</tr>';
         }).join('')
       + '<tr class="bg-gray-50 dark:bg-gray-800/60 border-t-2 border-gray-200 dark:border-gray-600">'
