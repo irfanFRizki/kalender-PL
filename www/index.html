@@ -4933,6 +4933,10 @@ function _lynxpDrill(day, mIdx) {
   var COLOR    = isDark ? '#f59e0b' : '#d97706';
   var filterYear = document.getElementById('histoYearFilter').value;
 
+  // Debug: log jumlah total rawGudangList dan filter result
+  console.log('[_lynxpDrill] Total rawGudangList:', rawGudangList.length);
+  console.log('[_lynxpDrill] Filter: day=' + day + ', month=' + mIdx + ', year=' + filterYear);
+  
   var items = rawGudangList.filter(function(item) {
     if (!_isXpLyn(item)) return false;
     var d = item.tglBongkarDate;
@@ -4943,6 +4947,18 @@ function _lynxpDrill(day, mIdx) {
     var koli = parseInt(String(item.koli||'0').match(/\d+/))||0;
     return koli > 0;
   });
+  
+  console.log('[_lynxpDrill] Filtered items found:', items.length);
+  if (items.length > 0) {
+    console.log('[_lynxpDrill] Sample item:', items[0]);
+  } else {
+    console.warn('[_lynxpDrill] No items found! Checking XP LYN data...');
+    var xpLynAll = rawGudangList.filter(function(item) { return _isXpLyn(item); });
+    console.log('[_lynxpDrill] Total XP LYN items in rawGudangList:', xpLynAll.length);
+    if (xpLynAll.length > 0) {
+      console.log('[_lynxpDrill] Sample XP LYN item:', xpLynAll[0]);
+    }
+  }
 
   var totalKoli = items.reduce(function(s, i){ return s + _koli(i); }, 0);
   var dd = String(day).padStart(2,'0');
