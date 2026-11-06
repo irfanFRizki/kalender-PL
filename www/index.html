@@ -1765,8 +1765,31 @@ function _rebuildShipGroupCfg() {
   SHIP_GROUP_CFG = {};
   histoPrefixGroups.forEach(function(g, i) {
     var c = _getHistoColor(g.colorIdx !== undefined ? g.colorIdx : i);
-    SHIP_GROUP_CFG[g.prefix] = { label: g.label, prefix: g.prefix, color: c.color, colorDark: c.colorDark, accent: 'violet' };
+    SHIP_GROUP_CFG[g.prefix] = { label: g.label, prefix: g.prefix, color: c.color, colorDark: c.colorDark, accent: 'violet',
+      isMarkingan: g.isMarkingan || false, markinganMatch: g.markinganMatch || null };
   });
+}
+
+// Normalisasi nilai MARKINGAN (kolom J): huruf besar, spasi ganda dirapikan
+function _normMark(v) { return String(v || '').toUpperCase().replace(/\s+/g, ' ').trim(); }
+
+// Tentukan grup shipment sebuah item: grup berbasis MARKINGAN (KOLI LYN XP) dicek lebih dulu,
+// baru grup berbasis awalan nama PL. Dipakai grafik, rincian (drill) & debug agar angkanya selalu sama.
+// Mengembalikan prefix (= key) grup, atau null bila tidak masuk grup mana pun.
+function _shipGroupKeyOf(item, groups) {
+  var mk = _normMark(item && item.markingan);
+  var i, g;
+  for (i = 0; i < groups.length; i++) {
+    g = groups[i];
+    if (g.isMarkingan && g.markinganMatch && mk === _normMark(g.markinganMatch)) return g.prefix;
+  }
+  var pl = String((item && item.packingList) || '').toUpperCase().trim();
+  for (i = 0; i < groups.length; i++) {
+    g = groups[i];
+    if (g.isMarkingan) continue;
+    if (pl.startsWith(g.prefix)) return g.prefix;
+  }
+  return null;
 }
 
 var seenPLs           = JSON.parse(localStorage.getItem('estimasi_seen_pls') || '{}');
@@ -3841,10 +3864,8 @@ function _buildDebugInfo() {
     var peng = String(item.pengiriman||'').toUpperCase().trim();
 
     // Shipment breakdown (dari prefix PL)
-    var matched = false;
-    for (var gi = 0; gi < SHIP_GROUPS.length; gi++) {
-      if (pl.startsWith(SHIP_GROUPS[gi].prefix)) { bulanShip[m][SHIP_GROUPS[gi].key] += koli; matched = true; break; }
-    }
+    var shipKey = _shipGroupKeyOf(item, SHIP_GROUPS);
+    if (shipKey !== null) bulanShip[m][shipKey] += koli;
 
     // Pengiriman breakdown
     var isMetro     = peng.includes('METRO');
@@ -4048,30 +4069,11 @@ function renderHistogram() {
     var koli = parseInt(String(item.koli||'0').match(/\d+/))||0;
     if (koli === 0) return;
     var pl = String(item.packingList||'').toUpperCase().trim();
-    
-    var assigned = false;
-    // Phase 1: Check markingan-based groups first (KOLI LYN XP)
-    for (var g = 0; g < GROUPS.length; g++) {
-      if (GROUPS[g].isMarkingan && GROUPS[g].markinganMatch) {
-        var markinganValue = String(item.markingan||'').toUpperCase().trim();
-        if (markinganValue === GROUPS[g].markinganMatch) {
-          shipData[GROUPS[g].key] += koli;
-          shipPL[GROUPS[g].key].add(pl);
-          assigned = true;
-          break;
-        }
-      }
-    }
-    if (assigned) return;
-    // Phase 2: Check prefix-based groups
-    for (var g = 0; g < GROUPS.length; g++) {
-      if (GROUPS[g].isMarkingan) continue;
-      if (pl.startsWith(GROUPS[g].prefix)) {
-        shipData[GROUPS[g].key] += koli;
-        shipPL[GROUPS[g].key].add(pl);
-        break;
-      }
-    }
+    // Markingan dulu (KOLI LYN XP), baru awalan PL — logika sama dengan rincian (_shipmentDrill)
+    var gk = _shipGroupKeyOf(item, GROUPS);
+    if (gk === null) return;
+    shipData[gk] += koli;
+    shipPL[gk].add(pl);
   });
 
   var grandTotal = GROUPS.reduce(function(s,g){ return s + shipData[g.key]; }, 0);
@@ -4679,8 +4681,10 @@ function _shipmentDrill(groupKey, mIdx) {
   _drillMIdx  = mIdx;
   _drillYear  = document.getElementById('histoYearFilter').value;
 
+  // Grup berbasis MARKINGAN (KOLI LYN XP) tidak punya PL berawalan "LYN_XP" — cocokkan lewat
+  // klasifikasi yang sama dengan grafik, supaya rincian = angka di bar/kartu
   var items = _filterByYearMonth(rawGudangList).filter(function(item) {
-    return String(item.packingList||'').toUpperCase().trimLeft().startsWith(cfg.prefix);
+    return _shipGroupKeyOf(item, histoPrefixGroups) === groupKey;
   });
 
   var totalKoli = items.reduce(function(s, i){ return s + _koli(i); }, 0);
