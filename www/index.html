@@ -1770,6 +1770,12 @@ function _rebuildShipGroupCfg() {
   });
 }
 
+// Label "Koli <grup>"; bila nama grup sudah diawali "KOLI" (mis. "KOLI LYN XP") tidak diulang
+function _koliLabel(label) {
+  label = String(label || '');
+  return /^koli\b/i.test(label.trim()) ? label : 'Koli ' + label;
+}
+
 // Normalisasi nilai MARKINGAN (kolom J): huruf besar, spasi ganda dirapikan
 function _normMark(v) { return String(v || '').toUpperCase().replace(/\s+/g, ' ').trim(); }
 
@@ -4082,7 +4088,7 @@ function renderHistogram() {
   document.getElementById('histoSummaryCards').innerHTML = GROUPS.map(function(g) {
     return '<div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm p-3.5 flex items-center gap-3 cursor-pointer hover:shadow-md hover:border-violet-300 dark:hover:border-violet-600 transition-all group" onclick="_shipmentDrill(\''+g.key+'\','+histoMonthIdx+')" title="Klik untuk lihat rincian '+g.label+'">'
       + '<div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm text-white shadow-sm flex-shrink-0" style="background:' + (isDark?g.colorDark:g.color) + '">' + g.label + '</div>'
-      + '<div><p class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">Koli ' + g.label + '</p>'
+      + '<div><p class="text-[10px] font-bold uppercase text-gray-400 tracking-wider">' + _koliLabel(g.label) + '</p>'
       + '<p class="text-xl font-black" style="color:' + (isDark?g.colorDark:g.color) + '">' + shipData[g.key].toLocaleString('id-ID') + '</p>'
       + '<p class="text-[9px] text-violet-400 font-bold mt-0.5 group-hover:underline flex items-center gap-0.5"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>Lihat Rincian</p>'
       + '</div></div>';
@@ -4711,7 +4717,7 @@ function _shipmentDrill(groupKey, mIdx) {
       '<div class="mb-4 rounded-xl p-3 border flex items-center justify-between" '
       + 'style="background:' + clr + '18;border-color:' + clr + '55">'
       + '<span class="text-xs font-bold" style="color:' + clr + '">'
-      + 'Total Koli ' + cfg.label + ' — ' + scope + '</span>'
+      + 'Total ' + _koliLabel(cfg.label) + ' — ' + scope + '</span>'
       + '<span class="text-lg font-black" style="color:' + clr + '">'
       + totalKoli.toLocaleString('id-ID') + ' koli</span></div>'
       // Table
